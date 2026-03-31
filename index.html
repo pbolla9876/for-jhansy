@@ -3,180 +3,181 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>A Quiet Space for You</title>
+    <title>For Jhansy</title>
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&family=Lora:ital@1&display=swap" rel="stylesheet">
     <style>
-        /* 1. Base Styling */
+        :root { --accent: #d63384; --soft-pink: #fff5f7; }
+        
         body { 
-            background: linear-gradient(135deg, #fff5f7 0%, #fdfcf0 100%); 
-            font-family: 'Lora', serif; color: #5D4037; 
-            padding: 0; margin: 0; overflow-x: hidden;
-            scroll-behavior: smooth;
+            background: var(--soft-pink); 
+            margin: 0; padding: 0; 
+            font-family: 'Lora', serif; 
+            color: #5D4037;
+            overflow-x: hidden;
         }
 
-        /* 2. The Refined Elegant Butterfly */
-        #butterfly-guide {
+        /* The Butterfly Object */
+        #butterfly {
             position: fixed;
-            width: 30px; height: 30px;
-            left: 50%; bottom: 40px;
-            transform: translateX(-50%);
+            width: 40px; height: 40px;
             z-index: 9999;
             pointer-events: none;
-            transition: all 0.3s ease-out;
-        }
-
-        .butterfly-body {
-            position: absolute;
-            top: 10px; left: 14px;
-            width: 2px; height: 15px;
-            background: #ad1457;
-            border-radius: 2px;
-            z-index: 2;
+            transition: top 2s cubic-bezier(0.45, 0.05, 0.55, 0.95), 
+                        left 2s cubic-bezier(0.45, 0.05, 0.55, 0.95);
+            transform: translate(-50%, -50%);
         }
 
         .wing {
-            position: absolute;
-            width: 18px; height: 22px;
-            background: rgba(214, 51, 132, 0.5); /* Soft transparency */
-            border: 1px solid rgba(214, 51, 132, 0.7);
+            position: absolute; width: 20px; height: 25px;
+            background: rgba(214, 51, 132, 0.6);
+            border: 1px solid var(--accent);
             border-radius: 50% 50% 20% 50%;
-            top: 5px;
+            animation: flap 0.15s infinite alternate;
             transform-origin: right center;
-            animation: flap-left 0.15s infinite alternate ease-in-out;
         }
+        .right { left: 18px; border-radius: 50% 50% 50% 20%; transform-origin: left center; }
+        
+        @keyframes flap { from { transform: rotateY(0deg); } to { transform: rotateY(75deg); } }
 
-        .right {
-            left: 16px;
-            border-radius: 50% 50% 50% 20%;
-            transform-origin: left center;
-            animation: flap-right 0.15s infinite alternate ease-in-out;
-        }
-
-        @keyframes flap-left {
-            from { transform: rotateY(0deg) skewY(-5deg); }
-            to { transform: rotateY(75deg) skewY(5deg); }
-        }
-
-        @keyframes flap-right {
-            from { transform: rotateY(0deg) skewY(5deg); }
-            to { transform: rotateY(-75deg) skewY(-5deg); }
-        }
-
-        /* 3. Section Reveal Logic */
+        /* Cinematic Sections */
         section {
-            min-height: 100vh; display: flex; flex-direction: column;
-            justify-content: center; align-items: center;
-            padding: 60px 20px; box-sizing: border-box;
-            opacity: 0; transform: translateY(40px);
-            transition: all 1.2s ease-out;
+            height: 100vh;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            opacity: 0;
+            transition: opacity 1s, transform 1s;
+            transform: translateY(50px);
         }
 
-        section.visible { opacity: 1; transform: translateY(0); }
+        section.active { opacity: 1; transform: translateY(0); }
+        
+        /* When a section disappears (the 'flying away' effect) */
+        section.exit { opacity: 0; transform: translateY(-100px); pointer-events: none; }
 
-        /* 4. Content Elements */
-        h1 { font-family: 'Dancing Script', cursive; color: #d63384; font-size: 3.2rem; margin-bottom: 10px; }
-        .section-title { font-family: 'Dancing Script', cursive; color: #ad1457; font-size: 2.5rem; }
+        h1 { font-family: 'Dancing Script', cursive; font-size: 3.5rem; color: var(--accent); margin: 0; }
+        
+        .name-container { position: relative; display: inline-block; }
+        
+        /* The "Spot" where the butterfly lands on the 'y' */
+        #landing-spot { position: absolute; top: 0; right: -10px; width: 5px; height: 5px; }
 
         .polaroid {
-            background: white; padding: 15px 15px 45px 15px;
-            border-radius: 4px; box-shadow: 0 15px 35px rgba(0,0,0,0.1);
-            max-width: 400px; width: 95%; margin: 25px 0;
-            transform: rotate(-1.5deg);
+            background: white; padding: 15px 15px 40px 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            max-width: 350px; width: 80%;
+            transform: rotate(-2deg);
         }
-        .polaroid:nth-child(even) { transform: rotate(1.5deg); }
-        img, video { width: 100%; border-radius: 2px; display: block; }
+        img, video { width: 100%; border-radius: 2px; }
 
         .letter { 
-            background-color: white; padding: 40px; border-radius: 0 50px; 
-            max-width: 500px; line-height: 2; text-align: left; font-style: italic;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.05); border-left: 6px solid #d63384;
+            background: white; padding: 40px; border-radius: 0 50px; 
+            max-width: 450px; border-left: 6px solid var(--accent);
+            text-align: left; font-style: italic; box-shadow: 0 10px 30px rgba(0,0,0,0.05);
         }
 
-        .video-container {
-            position: relative; padding-bottom: 56.25%; width: 95%; max-width: 500px;
-            border-radius: 20px; overflow: hidden; margin: 30px 0;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-        }
-        .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
-        
-        .highlight { color: #d63384; font-weight: bold; font-style: normal; }
-        .scroll-hint { margin-top: 40px; font-size: 0.85rem; color: #ad1457; letter-spacing: 1px; opacity: 0.7; }
+        .scroll-hint { position: fixed; bottom: 30px; width: 100%; text-align: center; opacity: 0; transition: 1s; font-size: 0.8rem; color: var(--accent); letter-spacing: 2px; }
+        .show-hint { opacity: 0.6; }
     </style>
 </head>
 <body>
 
-    <div id="butterfly-guide">
-        <div class="butterfly-body"></div>
+    <div id="butterfly">
+        <div style="position:absolute; top:10px; left:16px; width:2px; height:12px; background:#ad1457; border-radius:2px;"></div>
         <div class="wing left"></div>
         <div class="wing right"></div>
     </div>
 
-    <section id="intro" class="visible">
-        <h1>For You, Jhansy 🌿</h1>
-        <p>A sanctuary for your heart and mind.</p>
-        <div class="scroll-hint">SCROLL SLOWLY</div>
+    <section id="scene1">
+        <div class="name-container">
+            <h1>For You, <span id="target-name">Jhansy</span> 🌿</h1>
+            <div id="landing-spot"></div>
+        </div>
+        <p style="margin-top: 20px; font-style: italic; color: #8D6E63;">A sanctuary for your heart and mind.</p>
     </section>
 
-    <section id="message">
+    <section id="scene2">
         <div class="letter">
-            <p>
-                Jhansy,<br><br>
-                I built this place for you to just breathe. There is no urgency here, only peace. <br><br>
-                I picked these things and made this space so you could feel cared for, even from a distance.
-            </p>
+            <p>I built this space for you to just breathe. <br><br> There is no urgency here, only peace. Every detail was chosen to help you feel lighter today.</p>
         </div>
     </section>
 
-    <section id="flowers">
-        <h3 class="section-title">🌸 Petals of Peace</h3>
-        <div class="polaroid"><img src="flowers1.jpg" alt="Lilies"></div>
-        <div class="polaroid"><img src="flowers2.jpg" alt="Details"></div>
+    <section id="scene3">
+        <h2 style="font-family:'Dancing Script'; color:var(--accent)">🌸 Petals of Peace</h2>
+        <div class="polaroid"><img src="flowers1.jpg"></div>
     </section>
 
-    <section id="treats">
-        <h3 class="section-title">🍦 Sweetness for the Soul</h3>
-        <div class="polaroid"><img src="icecream_photo.jpg" alt="Mochi Boxes"></div>
+    <section id="scene4">
         <div class="polaroid">
-            <video controls playsinline preload="metadata">
+            <video id="p-video" playsinline preload="metadata">
                 <source src="icecream.mov" type="video/quicktime">
-                <source src="icecream.mov" type="video/mp4">
             </video>
         </div>
+        <p>Your favorite Mocha and Chocolate Mochi. <br> I wish I could share this with you now. 🍫</p>
     </section>
 
-    <section id="movie">
-        <h3 class="section-title">🎬 A Moment to Disappear</h3>
-        <div class="video-container">
-            <iframe src="https://www.youtube.com/embed/17Sre_m-g_E" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+    <section id="scene5">
+        <div class="letter" style="border-left: none; border-right: 6px solid var(--accent); text-align: right;">
+            <p>Rest your eyes. <br> Be at peace. <br><br> <strong>With all my love, P.</strong></p>
         </div>
     </section>
 
-    <section id="final">
-        <div class="letter">
-            <p>
-                Take a deep breath. Rest your eyes. <br><br>
-                <span class="highlight">No pressure to reply. Just be at peace.</span>
-            </p>
-        </div>
-        <h1 style="font-size: 2.5rem; margin-top: 40px;">With all my love, P.</h1>
-    </section>
+    <div id="hint" class="scroll-hint">SCROLL DOWN</div>
 
     <script>
-        // Intersection Observer for Scroll Reveal
+        const butterfly = document.getElementById('butterfly');
+        const landingSpot = document.getElementById('landing-spot');
         const sections = document.querySelectorAll('section');
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) entry.target.classList.add('visible');
-            });
-        }, { threshold: 0.1 });
+        const hint = document.getElementById('hint');
+        let currentStep = 0;
 
-        sections.forEach(section => observer.observe(section));
+        // INITIAL ANIMATION: Butterfly enters and lands
+        window.onload = () => {
+            // Start butterfly off-screen
+            butterfly.style.top = "120%";
+            butterfly.style.left = "0%";
 
-        // Butterfly Movement
+            setTimeout(() => {
+                // Step 1: Fade in text
+                sections[0].classList.add('active');
+                
+                // Step 2: Fly butterfly to the landing spot
+                const rect = landingSpot.getBoundingClientRect();
+                butterfly.style.top = rect.top + "px";
+                butterfly.style.left = rect.left + "px";
+                
+                // Step 3: Show scroll hint after landing
+                setTimeout(() => hint.classList.add('show-hint'), 3000);
+            }, 1000);
+        };
+
+        // SCROLL LOGIC: One by one appearance/disappearance
         window.addEventListener('scroll', () => {
-            const scrollY = window.scrollY;
-            const moveX = Math.sin(scrollY / 70) * 40;
-            document.getElementById('butterfly-guide').style.transform = `translateX(calc(-50% + ${moveX}px))`;
+            const scrollPercent = window.scrollY / (document.body.scrollHeight - window.innerHeight);
+            const step = Math.floor(scrollPercent * sections.length);
+
+            if (step !== currentStep && step < sections.length) {
+                // Exit previous section
+                sections[currentStep].classList.remove('active');
+                sections[currentStep].classList.add('exit');
+
+                // Enter new section
+                currentStep = step;
+                sections[currentStep].classList.add('active');
+                sections[currentStep].classList.remove('exit');
+
+                // Move butterfly to follow the "eye"
+                if(currentStep > 0) {
+                    butterfly.style.top = "80%"; 
+                    butterfly.style.left = (50 + Math.sin(window.scrollY/100)*20) + "%";
+                }
+
+                // Auto-play video if in scene 4
+                if(currentStep === 3) document.getElementById('p-video').play();
+            }
         });
     </script>
 </body>
