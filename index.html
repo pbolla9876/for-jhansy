@@ -25,1111 +25,253 @@
       margin: 0;
       font-family: Georgia, "Times New Roman", serif;
       color: var(--text);
-      background:
-        linear-gradient(180deg, #fffaf6 0%, #fff8fb 32%, #f8f0ea 100%);
+      background: linear-gradient(180deg, #fffaf6 0%, #fff8fb 32%, #f8f0ea 100%);
       overflow-x: hidden;
     }
 
-    .page {
-      position: relative;
-      min-height: 100vh;
-      overflow-x: hidden;
-    }
-
-    .sun-bloom {
-      position: fixed;
-      right: -8rem;
-      top: -5rem;
-      width: 24rem;
-      height: 24rem;
-      border-radius: 50%;
-      z-index: 0;
-      background: radial-gradient(circle, rgba(247,220,166,0.75) 0%, rgba(255,243,214,0.45) 28%, rgba(255,255,255,0.05) 65%, transparent 78%);
-      filter: blur(18px);
-      pointer-events: none;
-      animation: glow 8s ease-in-out infinite alternate;
-    }
-
-    @keyframes glow {
-      from { opacity: 0.75; transform: scale(0.98); }
-      to { opacity: 1; transform: scale(1.04); }
-    }
-
-    .garden-haze,
-    .petals,
-    .guardian-butterfly,
-    .ground-glow {
-      pointer-events: none;
-      position: fixed;
-      inset: 0;
-      z-index: 0;
-    }
-
-    .garden-haze::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(180deg, rgba(255,250,246,0.50), rgba(255,250,246,0.84) 30%, rgba(246,239,231,0.92) 100%);
-    }
-
-    .haze-blob {
-      position: absolute;
-      border-radius: 999px;
-      filter: blur(44px);
-      opacity: 0.7;
-    }
-
-    .haze-1 {
-      left: -10%;
-      top: 8%;
-      width: 10rem;
-      height: 10rem;
-      background: rgba(248,221,232,0.58);
-      animation: drift1 14s ease-in-out infinite;
-    }
-
-    .haze-2 {
-      right: 12%;
-      bottom: 20%;
-      width: 13rem;
-      height: 13rem;
-      background: rgba(247,220,166,0.42);
-      animation: drift2 16s ease-in-out infinite;
-    }
-
-    .haze-3 {
-      left: 0;
-      right: 0;
-      bottom: -2rem;
-      margin: auto;
-      width: 80vw;
-      height: 16rem;
-      background: radial-gradient(ellipse at center, rgba(206,226,198,0.28), rgba(255,255,255,0) 70%);
-      animation: drift3 9s ease-in-out infinite;
-    }
-
-    @keyframes drift1 {
-      0%,100% { transform: translate(0,0); }
-      50% { transform: translate(40px,20px); }
-    }
-    @keyframes drift2 {
-      0%,100% { transform: translate(0,0); }
-      50% { transform: translate(-30px,-22px); }
-    }
-    @keyframes drift3 {
-      0%,100% { transform: scaleX(1); }
-      50% { transform: scaleX(1.03); }
-    }
-
-    .ground-glow {
-      inset: auto 0 0 0;
-      height: 12rem;
-      background: linear-gradient(180deg, transparent, rgba(219,228,210,0.24) 30%, rgba(214,225,205,0.34));
-    }
-
-    .petal {
-      position: absolute;
-      top: -30px;
-      width: 10px;
-      height: 10px;
-      border-radius: 999px;
-      background: rgba(146, 186, 132, 0.58);
-      filter: blur(1px);
-      animation-name: fall;
-      animation-timing-function: linear;
-      animation-iteration-count: infinite;
-    }
-
-    @keyframes fall {
-      from {
-        transform: translate3d(0, -40px, 0) rotate(0deg);
-      }
-      to {
-        transform: translate3d(var(--drift, 30px), 110vh, 0) rotate(360deg);
-      }
-    }
-
-    .content {
-      position: relative;
-      z-index: 1;
-    }
-
-    .hero {
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 2rem 1.5rem 4rem;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .hero-inner {
-      max-width: 72rem;
-      width: 100%;
-      text-align: center;
-      position: relative;
-    }
-
-    .pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      border-radius: 999px;
-      padding: 0.7rem 1rem;
-      border: 1px solid var(--white-line);
-      background: rgba(255,255,255,0.6);
-      box-shadow: 0 8px 30px rgba(180,140,140,0.12);
-      backdrop-filter: blur(10px);
-      font-size: 0.95rem;
-      color: #6d5c5c;
-      opacity: 0;
-      transform: translateY(24px);
-      animation: fadeUp 1.2s ease forwards 1.2s;
-    }
-
-    .pill .spark {
-      color: var(--rose);
-      font-size: 1rem;
-    }
-
+    /* --- Animations --- */
     @keyframes fadeUp {
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .name-wrap {
-      position: relative;
-      width: fit-content;
-      margin: 1.5rem auto 0;
-      padding: 1rem 2rem;
-      min-height: 8rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .hero-name {
-      position: relative;
-      z-index: 2;
-      margin: 0;
-      font-size: clamp(3rem, 9vw, 5.6rem);
-      font-weight: 600;
-      letter-spacing: 0.22em;
-      line-height: 1;
-      background: linear-gradient(90deg, #8f3e63, #c95e8b, #f08fb0);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-      opacity: 0;
-      transform: translateY(26px) scale(0.96);
-      filter: blur(16px);
-      animation: nameIn 1.8s ease forwards 1.3s;
-      white-space: nowrap;
-    }
-
-    @keyframes nameIn {
-      to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-        filter: blur(0px);
-      }
-    }
-
-    .arrival-butterfly {
-      position: absolute;
-      left: 50%;
-      top: 50%;
-      width: 80px;
-      height: 80px;
-      transform: translate(-50%, -50%);
-      z-index: 3;
-      animation: flyIn 2.3s ease-in-out forwards, landSoft 1.4s ease-in-out forwards 3.2s;
-      filter: drop-shadow(0 10px 25px rgba(201,94,139,0.3));
-    }
-
-    @keyframes flyIn {
-      from {
-        opacity: 0;
-        transform: translate(-300px, -110px) scale(0.7) rotate(-14deg);
-      }
-      to {
-        opacity: 1;
-        transform: translate(-50%, -50%) scale(1) rotate(0deg);
-      }
-    }
-
-    @keyframes landSoft {
-      from {
-        transform: translate(-50%, -50%) scale(1) rotate(0deg);
-      }
-      to {
-        transform: translate(120px, -8px) scale(0.84) rotate(4deg);
-      }
-    }
-
-    .butterfly {
-      position: relative;
-      width: 100%;
-      height: 100%;
-    }
-
-    .wing {
-      position: absolute;
-      border-radius: 999px;
-    }
-
-    .wing-tl {
-      left: 10px;
-      top: 22px;
-      width: 30px;
-      height: 34px;
-      border-radius: 80% 30% 80% 30%;
-      background: linear-gradient(135deg, #f7c6d8, #e58aad, #c95e8b);
-      transform-origin: right center;
-      animation: flapL 0.36s ease-in-out infinite;
-    }
-
-    .wing-bl {
-      left: 16px;
-      top: 46px;
-      width: 22px;
-      height: 22px;
-      border-radius: 80% 30% 80% 30%;
-      background: linear-gradient(135deg, #fde8ef, #ebb3c7);
-      transform-origin: right center;
-      animation: flapL2 0.43s ease-in-out infinite;
-    }
-
-    .wing-tr {
-      right: 10px;
-      top: 22px;
-      width: 30px;
-      height: 34px;
-      border-radius: 30% 80% 30% 80%;
-      background: linear-gradient(225deg, #f7c6d8, #e58aad, #c95e8b);
-      transform-origin: left center;
-      animation: flapR 0.36s ease-in-out infinite;
-    }
-
-    .wing-br {
-      right: 16px;
-      top: 46px;
-      width: 22px;
-      height: 22px;
-      border-radius: 30% 80% 30% 80%;
-      background: linear-gradient(225deg, #fde8ef, #ebb3c7);
-      transform-origin: left center;
-      animation: flapR2 0.43s ease-in-out infinite;
-    }
-
-    .body-line {
-      position: absolute;
-      left: 50%;
-      top: 28px;
-      width: 3px;
-      height: 30px;
-      transform: translateX(-50%);
-      background: #6f5d5d;
-      border-radius: 999px;
+      from { opacity: 0; transform: translateY(20px); filter: blur(5px); }
+      to { opacity: 1; transform: translateY(0); filter: blur(0); }
     }
 
     @keyframes flapL { 0%,100% { transform: rotate(22deg); } 50% { transform: rotate(-12deg); } }
-    @keyframes flapL2 { 0%,100% { transform: rotate(12deg); } 50% { transform: rotate(-9deg); } }
     @keyframes flapR { 0%,100% { transform: rotate(-22deg); } 50% { transform: rotate(12deg); } }
-    @keyframes flapR2 { 0%,100% { transform: rotate(-12deg); } 50% { transform: rotate(9deg); } }
 
-    .hero-quote-wrap {
-      margin: 2rem auto 0;
-      max-width: 44rem;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 0.35rem;
+    /* --- Layout Elements --- */
+    .sun-bloom {
+      position: fixed; right: -8rem; top: -5rem; width: 24rem; height: 24rem;
+      border-radius: 50%; background: radial-gradient(circle, rgba(247,220,166,0.4) 0%, transparent 70%);
+      filter: blur(40px); pointer-events: none; z-index: 0;
     }
 
-    .hero-quote-line,
-    .hero-note {
-      opacity: 0;
-      transform: translateY(14px);
+    .petal {
+      position: fixed; top: -30px; width: 10px; height: 10px;
+      border-radius: 50%; background: rgba(146, 186, 132, 0.4);
+      pointer-events: none; z-index: 1;
+      animation: fall linear infinite;
     }
 
-    .hero-quote-line {
-      font-size: clamp(1.02rem, 2.2vw, 1.22rem);
-      line-height: 1.9;
-      color: #6b5a5a;
-      letter-spacing: 0.02em;
-      text-align: center;
-      text-shadow: 0 8px 24px rgba(255,255,255,0.35);
-    }
-
-    .hero-quote-line-1 { animation: fadeUp 1s ease forwards 2.6s; }
-    .hero-quote-line-2 { animation: fadeUp 1s ease forwards 3s; }
-    .hero-quote-line-3 { animation: fadeUp 1s ease forwards 3.4s; }
-    .hero-quote-line-4 { animation: fadeUp 1s ease forwards 3.8s; }
-    .hero-quote-line-5 { animation: fadeUp 1s ease forwards 4.2s; }
-
-    .hero-note {
-      margin-top: 2rem;
-      font-size: 0.82rem;
-      letter-spacing: 0.24em;
-      text-transform: lowercase;
-      color: #a28f8f;
-      animation: fadeUp 1s ease forwards 3.3s;
-    }
-
-    .section-label {
-      max-width: 76rem;
-      margin: 0 auto;
-      padding: 0 1.5rem 1rem;
-      text-align: center;
-      font-size: 0.8rem;
-      text-transform: uppercase;
-      letter-spacing: 0.28em;
-      color: #aa9999;
-    }
-
-    .section {
-      position: relative;
-      z-index: 1;
-      padding: 3.5rem 1.25rem;
-    }
-
-    .section-inner {
-      max-width: 76rem;
-      margin: 0 auto;
-      overflow: hidden;
-      border-radius: 2rem;
-      border: 1px solid var(--white-line);
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(18px);
-      background: linear-gradient(135deg, rgba(255,244,247,0.92), rgba(255,255,255,0.82), rgba(249,240,232,0.84));
-    }
-
-    .section-grid {
-      display: grid;
-      grid-template-columns: 1.05fr 0.95fr;
-      min-height: 38rem;
-    }
-
-    .section-copy,
-    .section-media {
-      position: relative;
-    }
-
-    .section-copy {
-      padding: 2.2rem 2rem 2.6rem;
-    }
-
-    .time-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.7rem;
-      border-radius: 999px;
-      border: 1px solid var(--white-line);
-      background: rgba(255,255,255,0.6);
-      padding: 0.7rem 1rem;
-      font-size: 0.95rem;
-      color: #6d5c5c;
-      box-shadow: 0 6px 18px rgba(160,125,125,0.08);
-    }
-
-    .section-title {
-      margin: 1.2rem 0 0;
-      max-width: 32rem;
-      font-size: clamp(2rem, 4vw, 3rem);
-      letter-spacing: 0.08em;
-      color: #6a5656;
-      font-weight: 600;
-    }
-
-    .prompt-badge,
-    .body-text,
-    .media-unlocked,
-    .media-note,
-    .video-block,
-    .ending-text {
-      opacity: 0;
-      transform: translateY(18px);
-      filter: blur(14px);
-      transition: opacity 1.2s ease, transform 1.2s ease, filter 1.2s ease;
-    }
-
-    .section.unlocked.reveal-stage-1 .prompt-badge,
-    .section.unlocked.reveal-stage-2 .media-unlocked,
-    .section.unlocked.reveal-stage-2 .media-note,
-    .section.unlocked.reveal-stage-2 .video-block,
-    .section.unlocked.reveal-stage-3 .body-text,
-    .section.unlocked.reveal-stage-3 .ending-text {
-      opacity: 1;
-      transform: translateY(0);
-      filter: blur(0);
-    }
-
-    .prompt-badge {
-      display: inline-flex;
-      margin-top: 2rem;
-      border-radius: 999px;
-      background: rgba(255,255,255,0.72);
-      color: var(--rose-deep);
-      box-shadow: 0 10px 30px rgba(201,94,139,0.12);
-      backdrop-filter: blur(10px);
-      padding: 0.9rem 1.2rem;
-      font-size: 1.1rem;
-    }
-
-    .body-text {
-      margin-top: 1.5rem;
-      max-width: 42rem;
-      font-size: 1.05rem;
-      line-height: 2;
-      color: #6d5c5c;
-      white-space: pre-line;
-    }
-
-    .locked-card {
-      margin-top: 2rem;
-      max-width: 34rem;
-      border-radius: 1.5rem;
-      border: 1px solid var(--white-line);
-      background: rgba(255,255,255,0.55);
-      box-shadow: 0 18px 60px rgba(160,125,125,0.1);
-      backdrop-filter: blur(12px);
-      padding: 1.4rem;
-    }
-
-    .locked-text {
-      font-size: 1rem;
-      line-height: 1.9;
-      color: #786767;
-    }
-
-    .countdown {
-      margin-top: 1rem;
-      font-size: 0.95rem;
-      color: #7e6d6d;
-      display: flex;
-      align-items: center;
-      gap: 0.55rem;
-      flex-wrap: wrap;
-    }
-
-    .next-reveal {
-      margin-top: 1.2rem;
-      font-size: 0.92rem;
-      color: #9f8f8f;
-    }
-
-    .section-media {
-      min-height: 22rem;
-      overflow: hidden;
-      background: radial-gradient(circle at 30% 20%, rgba(255,255,255,0.75), transparent 36%), radial-gradient(circle at 70% 80%, rgba(255,255,255,0.45), transparent 30%);
-    }
-
-    .media-unlocked,
-    .media-locked {
-      position: absolute;
-      inset: 0;
-    }
-
-    .media-unlocked img,
-    .media-unlocked video,
-    .evening-screen iframe {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      border: 0;
-      display: block;
-    }
-
-    .media-overlay {
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,250,246,0.15) 36%, rgba(63,42,42,0.14));
-    }
-
-    .media-note {
-      position: absolute;
-      left: 1.5rem;
-      right: 1.5rem;
-      bottom: 1.5rem;
-      border-radius: 1.3rem;
-      border: 1px solid rgba(255,255,255,0.42);
-      background: rgba(255,255,255,0.3);
-      padding: 0.95rem 1.1rem;
-      color: rgba(255,255,255,0.95);
-      box-shadow: 0 16px 40px rgba(0,0,0,0.12);
-      backdrop-filter: blur(12px);
-      font-size: 0.96rem;
-    }
-
-    .media-locked {
-      display: grid;
-      place-items: center;
-      background: linear-gradient(180deg, rgba(255,255,255,0.18), rgba(255,255,255,0.32));
-    }
-
-    .media-locked-card {
-      border-radius: 2rem;
-      border: 1px solid var(--white-line);
-      background: rgba(255,255,255,0.5);
-      box-shadow: 0 18px 60px rgba(160,125,125,0.1);
-      padding: 2rem 2rem;
-      text-align: center;
-      color: #7a6969;
-      min-width: 18rem;
-    }
-
-    .lock-circle {
-      width: 3.5rem;
-      height: 3.5rem;
-      margin: 0 auto 1rem;
-      border-radius: 50%;
-      display: grid;
-      place-items: center;
-      background: rgba(255,255,255,0.7);
-      color: var(--rose);
-      font-size: 1.2rem;
-    }
-
-    .video-block {
-      margin-top: 1.6rem;
-      border-radius: 1.6rem;
-      border: 1px solid var(--white-line);
-      background: rgba(255,255,255,0.55);
-      box-shadow: 0 18px 60px rgba(160,125,125,0.1);
-      backdrop-filter: blur(12px);
-      padding: 1rem;
-      overflow: hidden;
-    }
-
-    .video-frame {
-      aspect-ratio: 16 / 9;
-      width: 100%;
-      overflow: hidden;
-      border-radius: 1.2rem;
-      background: linear-gradient(135deg, rgba(201,94,139,0.13), rgba(255,255,255,0.75), rgba(247,220,166,0.22));
-      display: grid;
-      place-items: center;
-      color: #7d6f6f;
-      font-size: 1rem;
-    }
-
-    .evening {
-      padding: 1rem 1.25rem 6rem;
-    }
-
-    .evening-inner {
-      max-width: 76rem;
-      margin: 0 auto;
-      overflow: hidden;
-      border-radius: 2.2rem;
-      border: 1px solid rgba(255,255,255,0.6);
-      background: linear-gradient(180deg, rgba(245,239,236,0.86), rgba(244,239,245,0.92));
-      box-shadow: 0 25px 80px rgba(92,72,72,0.16);
-      backdrop-filter: blur(18px);
-    }
-
-    .evening-grid {
-      display: grid;
-      grid-template-columns: 1fr 1.05fr;
-    }
-
-    .evening-copy {
-      padding: 2.2rem 2rem 2.6rem;
-    }
-
-    .evening-media {
-      position: relative;
-      min-height: 26rem;
-      padding: 1.5rem;
-      background: linear-gradient(180deg, rgba(37,29,38,0.96), rgba(56,40,55,0.95));
-      border-left: 1px solid rgba(255,255,255,0.08);
-    }
-
-    .evening-media::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(circle at 50% 10%, rgba(255,232,190,0.13), transparent 25%), radial-gradient(circle at 50% 120%, rgba(201,94,139,0.18), transparent 35%);
-    }
-
-    .evening-screen {
-      position: relative;
-      z-index: 1;
-      overflow: hidden;
-      border-radius: 1.5rem;
-      border: 1px solid rgba(255,255,255,0.1);
-      background: rgba(0,0,0,0.3);
-      box-shadow: 0 20px 60px rgba(0,0,0,0.25);
-      backdrop-filter: blur(10px);
-    }
-
-    .screen-bar {
-      display: flex;
-      align-items: center;
-      gap: 0.55rem;
-      border-bottom: 1px solid rgba(255,255,255,0.1);
-      padding: 0.85rem 1rem;
-      color: rgba(255,255,255,0.62);
-      font-size: 0.72rem;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-    }
-
-    .dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      display: inline-block;
-    }
-
-    .dot.red { background: rgba(252,165,165,0.9); }
-    .dot.amber { background: rgba(253,230,138,0.9); }
-    .dot.green { background: rgba(134,239,172,0.9); }
-
-    .screen-body {
-      aspect-ratio: 16 / 9;
-      padding: 0.75rem;
-      background: linear-gradient(180deg, rgba(20,20,24,0.82), rgba(40,28,45,0.96));
-    }
-
-    .ending-text {
-      position: relative;
-      z-index: 1;
-      margin-top: 1.6rem;
-      border-radius: 1.5rem;
-      border: 1px solid rgba(255,255,255,0.1);
-      background: rgba(255,255,255,0.08);
-      backdrop-filter: blur(12px);
-      padding: 1.5rem;
-      color: rgba(255,255,255,0.92);
-      line-height: 2;
-      font-size: 1rem;
-      white-space: pre-line;
-    }
-
-    .footer {
-      padding: 0 1.5rem 4rem;
-      text-align: center;
-      color: #a39292;
-      font-size: 0.85rem;
+    @keyframes fall {
+      to { transform: translate3d(var(--drift), 110vh, 0) rotate(360deg); }
     }
 
     .guardian-butterfly {
-      z-index: 2;
+      position: fixed; left: 2rem; top: 5rem; width: 60px; height: 60px;
+      z-index: 100; pointer-events: none; transition: transform 0.1s linear;
     }
 
-    .guardian-butterfly .guardian {
-      position: absolute;
-      left: 1rem;
-      top: 4rem;
-      width: 64px;
-      height: 64px;
-      opacity: 0.9;
-      filter: drop-shadow(0 8px 20px rgba(201,94,139,0.25));
-      animation: guardianFloat 12s ease-in-out infinite;
+    /* --- Butterfly Drawing --- */
+    .butterfly { position: relative; width: 100%; height: 100%; }
+    .wing { position: absolute; border-radius: 50% 20%; background: var(--rose); opacity: 0.8; transform-origin: center; }
+    .wing-l { left: 0; top: 10px; width: 25px; height: 30px; animation: flapL 0.4s infinite; transform-origin: right; }
+    .wing-r { right: 0; top: 10px; width: 25px; height: 30px; animation: flapR 0.4s infinite; transform-origin: left; }
+    .body-line { position: absolute; left: 50%; top: 15px; width: 3px; height: 25px; background: #555; transform: translateX(-50%); border-radius: 5px; }
+
+    /* --- Content Sections --- */
+    .section {
+      padding: 4rem 1rem; max-width: 900px; margin: 0 auto;
+      opacity: 0; transform: translateY(30px); transition: all 1.5s ease;
+    }
+    .section.unlocked { opacity: 1; transform: translateY(0); }
+
+    .card {
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(15px);
+      border-radius: 30px;
+      padding: 2rem;
+      border: 1px solid var(--white-line);
+      box-shadow: var(--shadow);
     }
 
-    @keyframes guardianFloat {
-      0% { transform: translate(0,0) rotate(0deg); }
-      25% { transform: translate(38px,-10px) rotate(5deg); }
-      50% { transform: translate(16px,6px) rotate(-4deg); }
-      75% { transform: translate(52px,-12px) rotate(6deg); }
-      100% { transform: translate(24px,0) rotate(0deg); }
+    .media-box {
+      margin-top: 1.5rem; border-radius: 20px; overflow: hidden;
+      display: none; /* Controlled by JS */
+      animation: fadeUp 1s ease forwards;
     }
 
-    @media (max-width: 980px) {
-      .section-grid,
-      .evening-grid {
-        grid-template-columns: 1fr;
-      }
+    .media-box img, .media-box video { width: 100%; display: block; }
 
-      .evening-media {
-        border-left: 0;
-        border-top: 1px solid rgba(255,255,255,0.08);
-      }
-
-      .hero-name {
-        letter-spacing: 0.14em;
-        white-space: normal;
-      }
-
-      .arrival-butterfly {
-        width: 68px;
-        height: 68px;
-        animation: flyInMobile 2.3s ease-in-out forwards, landSoftMobile 1.4s ease-in-out forwards 3.2s;
-      }
-
-      @keyframes flyInMobile {
-        from {
-          opacity: 0;
-          transform: translate(-220px, -90px) scale(0.7) rotate(-14deg);
-        }
-        to {
-          opacity: 1;
-          transform: translate(-50%, -50%) scale(1) rotate(0deg);
-        }
-      }
-
-      @keyframes landSoftMobile {
-        from {
-          transform: translate(-50%, -50%) scale(1) rotate(0deg);
-        }
-        to {
-          transform: translate(82px, -4px) scale(0.84) rotate(4deg);
-        }
-      }
+    .countdown-text {
+      font-style: italic; color: var(--muted); font-size: 0.9rem; margin-top: 10px;
     }
 
-    @media (max-width: 640px) {
-      .section-copy,
-      .evening-copy,
-      .evening-media {
-        padding: 1.4rem;
-      }
-
-      .media-note {
-        left: 1rem;
-        right: 1rem;
-        bottom: 1rem;
-      }
-
-      .guardian-butterfly .guardian {
-        left: 0.35rem;
-        width: 58px;
-        height: 58px;
-      }
+    .locked-overlay {
+      background: rgba(240, 240, 240, 0.4);
+      padding: 2rem; border-radius: 20px; text-align: center;
+      border: 1px dashed #ccc;
     }
+
+    /* --- Typography --- */
+    h1 { font-size: 3.5rem; letter-spacing: 5px; color: var(--rose-deep); text-align: center; margin-bottom: 0.5rem; }
+    .subtitle { text-align: center; color: var(--muted); letter-spacing: 2px; margin-bottom: 5rem; }
+    
+    /* --- Evening/Final Styling --- */
+    .ending-text { 
+        white-space: pre-line; line-height: 1.8; margin-top: 2rem; 
+        font-size: 1.1rem; color: #444; display: none;
+    }
+
   </style>
 </head>
 <body>
-  <div class="page">
-    <div class="sun-bloom"></div>
 
-    <div class="garden-haze">
-      <div class="haze-blob haze-1"></div>
-      <div class="haze-blob haze-2"></div>
-      <div class="haze-blob haze-3"></div>
-    </div>
+  <div class="sun-bloom"></div>
+  <div id="petals"></div>
 
-    <div class="petals" id="petals"></div>
-
-    <div class="guardian-butterfly" id="guardianButterfly">
-      <div class="guardian butterfly">
-        <div class="wing wing-tl"></div>
-        <div class="wing wing-bl"></div>
-        <div class="wing wing-tr"></div>
-        <div class="wing wing-br"></div>
-        <div class="body-line"></div>
-      </div>
-    </div>
-
-    <div class="ground-glow"></div>
-
-    <div class="content">
-      <section class="hero">
-        <div class="hero-inner">
-          <div class="pill"><span class="spark">✦</span><span>Silent Presence</span></div>
-
-          <div class="name-wrap">
-            <div class="arrival-butterfly butterfly">
-              <div class="wing wing-tl"></div>
-              <div class="wing wing-bl"></div>
-              <div class="wing wing-tr"></div>
-              <div class="wing wing-br"></div>
-              <div class="body-line"></div>
-            </div>
-            <h1 class="hero-name">JHANSY 🌿</h1>
-          </div>
-
-          <div class="hero-quote-wrap">
-            <div class="hero-quote-line hero-quote-line-1">Morning light...</div>
-            <div class="hero-quote-line hero-quote-line-2">a little wind...</div>
-            <div class="hero-quote-line hero-quote-line-3">a small butterfly nearby...</div>
-            <div class="hero-quote-line hero-quote-line-4">and a day that unfolds softly,</div>
-            <div class="hero-quote-line hero-quote-line-5">one quiet moment at a time.</div>
-          </div>
-          <div class="hero-note">let the day arrive slowly</div>
-        </div>
-      </section>
-
-      <div class="section-label">timed reveals based on local device time</div>
-
-      <section class="section" id="morningSection" data-hour="9" data-minute="0">
-        <div class="section-inner">
-          <div class="section-grid">
-            <div class="section-copy">
-              <div class="time-pill">🌸 <span>9:00 AM</span></div>
-              <h2 class="section-title">Morning Bloom</h2>
-
-              <div class="prompt-badge">Flower kada?</div>
-              <div class="body-text">Good morning, Jhansy. Ee roju sun chudu entha calm ga, entha bright ga undo... exactly matching the vibe for today. Just ee garden chustu, modati light ni enjoy chey. Flower kada? Actually, neekante beautiful edi ledu, but maybe these flowers can bring a little extra light to your morning. Just stay right here, deep breath teesko, and relax. Let this butterfly be your company while the day begins. Ee quietness ni, ee colors ni enjoy chey... you deserve a morning this peaceful.</div>
-
-              <div class="locked-card">
-                <div class="locked-text">Quiet for now... this part of the day is still resting.</div>
-                <div class="countdown" data-countdown></div>
-                <div class="next-reveal">After this, the next soft reveal arrives at 12:00 PM.</div>
-              </div>
-            </div>
-
-            <div class="section-media">
-              <div class="media-unlocked">
-                <img src="flowers1.jpg" alt="Soft romantic flowers in a dreamy garden" />
-                <div class="media-overlay"></div>
-                <div class="media-note">a small moment, arriving softly</div>
-                <img src="flowers2.jpg" alt="Additional flowers" style="position:absolute; width:34%; max-width:200px; right:1rem; top:1rem; border-radius:1.2rem; border:1px solid rgba(255,255,255,0.45); box-shadow:0 14px 32px rgba(0,0,0,0.12); object-fit:cover; aspect-ratio:4/5;" />
-              </div>
-              <div class="media-locked">
-                <div class="media-locked-card">
-                  <div class="lock-circle">✦</div>
-                  <div>Resting until 9:00 AM</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section class="section" id="coffeeSection" data-hour="12" data-minute="0">
-        <div class="section-inner" style="background: linear-gradient(135deg, rgba(255,248,238,0.92), rgba(255,245,247,0.82), rgba(255,255,255,0.84));">
-          <div class="section-grid">
-            <div class="section-copy">
-              <div class="time-pill">☕ <span>12:00 PM</span></div>
-              <h2 class="section-title">Noon Comfort</h2>
-
-              <div class="prompt-badge">Coffee kavali kada...</div>
-              <div class="body-text">It’s already noon... time fast ga velthunda leka slow ga na? I know exactly ee time lo em thalochanivstundo. Coffee kavali kada? I can almost smell that cold Starbucks Mocha right now. Aa modati sip teseppudu vache aa chinna comfort untundi chudu, adi miss avvaku. A simple cold drink can change the whole mood of a day. Just take a slow sip, phone pakkana petti, and let the world outside fade away for a bit. Hope this brings a little bit of coolness and comfort to your afternoon.</div>
-
-              <div class="video-block" id="coffeeVideoBlock">
-                <div class="video-frame" id="coffeeVideoFrame">Add your coffee video here later</div>
-              </div>
-
-              <div class="locked-card">
-                <div class="locked-text">Quiet for now... this part of the day is still resting.</div>
-                <div class="countdown" data-countdown></div>
-                <div class="next-reveal">After this, the next soft reveal arrives at 3:30 PM.</div>
-              </div>
-            </div>
-
-            <div class="section-media">
-              <div class="media-unlocked">
-                <img src="https://images.unsplash.com/photo-1517701604599-bb29b5690c?auto=format&fit=crop&w=1200&q=80" alt="Iced mocha style coffee in a romantic café mood" />
-                <div class="media-overlay"></div>
-                <div class="media-note">a little coolness, a little comfort</div>
-              </div>
-              <div class="media-locked">
-                <div class="media-locked-card">
-                  <div class="lock-circle">✦</div>
-                  <div>Resting until 12:00 PM</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section class="section" id="sweetSection" data-hour="15" data-minute="30">
-        <div class="section-inner" style="background: linear-gradient(135deg, rgba(250,246,243,0.92), rgba(255,245,247,0.82), rgba(255,250,243,0.84));">
-          <div class="section-grid">
-            <div class="section-copy">
-              <div class="time-pill">🍫 <span>3:30 PM</span></div>
-              <h2 class="section-title">Sweet Little Pause</h2>
-
-              <div class="prompt-badge">Chocolate ice cream tinte baguntundhi kada</div>
-              <div class="body-text">Konchem sweet craving start ayyuntundi ee paatiki... Chocolate ice cream tinte baguntundhi kada? Edaina sweet tinte aa kick e veru, especially right now. Since it's hard to share it in person, let’s share the moment here. Watch this and just enjoy the sweetness. Imagine iddaram kurchuni, kaburlu chepthu, ee sweet treats enjoy chestunnam ani. It’s like a small, sweet hug for your soul to help you get through the rest of the day with a smile.</div>
-
-              <div class="video-block" id="sweetVideoBlock">
-                <div class="video-frame" id="sweetVideoFrame" style="padding:0; background:black;">
-                  <video controls playsinline preload="metadata" poster="icecream_photo.jpg" style="width:100%; height:100%; object-fit:cover; display:block; border-radius:1.2rem;">
-                    <source src="icecream.mov" type="video/quicktime" />
-                    <source src="icecream.mov" type="video/mp4" />
-                    Your browser does not support the video tag.
-                  </video>
-                </div>
-              </div>
-
-              <div class="locked-card">
-                <div class="locked-text">Quiet for now... this part of the day is still resting.</div>
-                <div class="countdown" data-countdown></div>
-                <div class="next-reveal">After this, the next soft reveal arrives at 6:00 PM.</div>
-              </div>
-            </div>
-
-            <div class="section-media">
-              <div class="media-unlocked">
-                <img src="icecream_photo.jpg" alt="Chocolate dessert in a cinematic romantic style" />
-                <div class="media-overlay"></div>
-                <div class="media-note">sweetness, arriving like a small pause</div>
-              </div>
-              <div class="media-locked">
-                <div class="media-locked-card">
-                  <div class="lock-circle">✦</div>
-                  <div>Resting until 3:30 PM</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section class="evening" id="movieSection" data-hour="18" data-minute="0">
-        <div class="evening-inner section">
-          <div class="evening-grid">
-            <div class="evening-copy">
-              <div class="time-pill">🎬 <span>Movie chudama...</span></div>
-              <h2 class="section-title">The last reveal of the day</h2>
-              <div class="body-text" style="opacity:1;transform:none;filter:none;max-width:40rem;">Oka calm evening laga settle avvadam... a small movie, a little quiet, and then the day can slowly come to rest.</div>
-
-              <div class="locked-card">
-                <div class="locked-text">Movie reveal is resting for now.</div>
-                <div class="countdown" data-countdown></div>
-              </div>
-
-              <div class="video-block" style="opacity:1;transform:none;filter:none;">
-                <div class="video-frame">You can also replace this with your own video later</div>
-              </div>
-            </div>
-
-            <div class="evening-media">
-              <div class="evening-screen media-unlocked">
-                <div class="screen-bar">
-                  <span class="dot red"></span>
-                  <span class="dot amber"></span>
-                  <span class="dot green"></span>
-                  <span style="margin-left: 0.6rem;">EVENING SCREEN</span>
-                </div>
-                <div class="screen-body">
-                  <iframe src="https://www.youtube.com/embed/ysz5S6PUM-U" title="Evening movie" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-                </div>
-              </div>
-
-              <div class="media-locked">
-                <div class="media-locked-card" style="background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.82); border-color: rgba(255,255,255,0.12);">
-                  <div class="lock-circle" style="background: rgba(255,255,255,0.1); color: white;">✦</div>
-                  <div>Movie reveal is resting for now</div>
-                  <div style="margin-top:0.5rem; font-size:0.9rem; color: rgba(255,255,255,0.62);">Unfolds at 6:00 PM</div>
-                </div>
-              </div>
-
-              <div class="ending-text">Antha ayipoyaka… konchem calm ga, konchem silent ga undadam baguntundhi kada.
-
-Ivala ela gadichindo telidu… fast ga aina, slow ga aina… but I just hope ee roju konchem light ga anipinchindhi ani.
-
-Ee small moments… flowers, coffee, sweets, movie… ivanni just ala vachinattu, vellinattu… kani konchem company ichinattu anipinchali.
-
-Em cheppalanna anipinchaledu… kani okati matram nijam — you deserve days that feel this soft.
-
-Rest well… peaceful ga nidra po… 🌿</div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <div class="footer">soft light • slow wind • one moment at a time</div>
+  <div class="guardian-butterfly" id="guardian">
+    <div class="butterfly">
+      <div class="wing wing-l"></div>
+      <div class="wing wing-r"></div>
+      <div class="body-line"></div>
     </div>
   </div>
 
+  <header style="padding-top: 10vh;">
+    <h1>JHANSY 🌿</h1>
+    <p class="subtitle">let the day arrive slowly</p>
+  </header>
+
+  <section class="section" id="morningSection" data-hour="9" data-minute="0">
+    <div class="card">
+      <div class="time-pill">🌸 9:00 AM — Morning Bloom</div>
+      <div class="unlocked-content">
+          <p>Good morning, Jhansy. Ee roju sun chudu entha calm ga undo... exactly matching the vibe for today.</p>
+          <div class="media-box"><img src="flowers1.jpg" alt="Flowers"></div>
+      </div>
+      <div class="locked-overlay">
+        <p>Resting... arrives with the morning light.</p>
+        <div class="countdown-text" data-countdown></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="coffeeSection" data-hour="12" data-minute="0">
+    <div class="card">
+      <div class="time-pill">☕ 12:00 PM — Noon Comfort</div>
+      <div class="unlocked-content">
+          <p>Coffee kavali kada? A simple cold drink can change the whole mood of a day. Enjoy this sip.</p>
+          <div class="media-box"><img src="coffee.jpg" alt="Coffee"></div>
+      </div>
+      <div class="locked-overlay">
+        <p>A mid-day refresh is resting for now.</p>
+        <div class="countdown-text" data-countdown></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="sweetSection" data-hour="15" data-minute="30">
+    <div class="card">
+      <div class="time-pill">🍫 3:30 PM — Sweet Pause</div>
+      <div class="unlocked-content">
+          <p>Chocolate ice cream tinte baguntundhi kada? Imagine iddaram kurchuni enjoy chestunnam ani.</p>
+          <div class="media-box">
+              <video controls playsinline muted poster="icecream_photo.jpg">
+                <source src="icecream.mov" type="video/quicktime">
+                <source src="icecream.mov" type="video/mp4">
+              </video>
+          </div>
+      </div>
+      <div class="locked-overlay">
+        <p>Something sweet is arriving soon.</p>
+        <div class="countdown-text" data-countdown></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="movieSection" data-hour="18" data-minute="0">
+    <div class="card" style="background: rgba(30, 30, 35, 0.05);">
+      <div class="time-pill">🎬 6:00 PM — Finale</div>
+      <div class="unlocked-content">
+          <div class="media-box">
+            <iframe width="100%" height="315" src="https://www.youtube.com/embed/ysz5S6PUM-U" frameborder="0" allowfullscreen></iframe>
+          </div>
+          <div class="ending-text">
+            Antha ayipoyaka… peaceful ga nidra po.
+            You deserve days that feel this soft. 🌿
+          </div>
+      </div>
+      <div class="locked-overlay">
+        <p>The finale arrives at sunset.</p>
+        <div class="countdown-text" data-countdown></div>
+      </div>
+    </div>
+  </section>
+
+  <footer style="padding: 5rem; text-align: center; color: #999; font-size: 0.8rem;">
+    one moment at a time
+  </footer>
+
   <script>
+    // --- 1. Petal Generation ---
     const petalsContainer = document.getElementById('petals');
-    for (let i = 0; i < 18; i++) {
+    for (let i = 0; i < 15; i++) {
       const petal = document.createElement('div');
       petal.className = 'petal';
-      petal.style.left = `${(i * 7) % 100}vw`;
-      petal.style.opacity = `${0.2 + (i % 5) * 0.08}`;
-      petal.style.transform = `scale(${0.6 + (i % 4) * 0.15})`;
-      petal.style.animationDuration = `${18 + (i % 6) * 4}s`;
-      petal.style.animationDelay = `${i * 0.7}s`;
-      petal.style.setProperty('--drift', `${(i % 2 === 0 ? 1 : -1) * (20 + (i % 5) * 8)}px`);
+      petal.style.left = `${Math.random() * 100}vw`;
+      petal.style.animationDuration = `${10 + Math.random() * 15}s`;
+      petal.style.animationDelay = `${Math.random() * 10}s`;
+      petal.style.setProperty('--drift', `${(Math.random() - 0.5) * 200}px`);
       petalsContainer.appendChild(petal);
     }
 
-    function getUnlockDate(hour, minute) {
+    // --- 2. Smooth Butterfly Follow ---
+    let targetY = 0, currentY = 0;
+    const guardian = document.getElementById('guardian');
+    window.addEventListener('scroll', () => { targetY = window.scrollY; }, { passive: true });
+
+    function lerpButterfly() {
+      currentY += (targetY - currentY) * 0.05;
+      const drift = Math.sin(Date.now() / 1000) * 20;
+      guardian.style.transform = `translateY(${currentY * 0.1}px) translateX(${drift}px)`;
+      requestAnimationFrame(lerpButterfly);
+    }
+    lerpButterfly();
+
+    // --- 3. The Logic (Fixed for a specific date) ---
+    // SET THE DATE HERE (Year, Month [0-11], Day)
+    const EVENT_DATE = new Date(2026, 2, 31); // March 31, 2026
+
+    function updateSystem() {
       const now = new Date();
-      const d = new Date(now);
-      d.setHours(hour, minute, 0, 0);
-      return d;
-    }
+      
+      document.querySelectorAll('.section').forEach(section => {
+        const h = parseInt(section.dataset.hour);
+        const m = parseInt(section.dataset.minute);
+        
+        const unlockTime = new Date(EVENT_DATE);
+        unlockTime.setHours(h, m, 0);
 
-    function formatTime(date) {
-      return date.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
-    }
+        const diff = unlockTime - now;
+        const isUnlocked = diff <= 0;
 
-    function formatRemaining(ms) {
-      const remaining = Math.max(0, ms);
-      const hours = Math.floor(remaining / 3600000);
-      const minutes = Math.floor((remaining % 3600000) / 60000);
-      const seconds = Math.floor((remaining % 60000) / 1000);
-      return `${hours}h ${minutes}m ${seconds}s`;
-    }
+        const lockedUI = section.querySelector('.locked-overlay');
+        const unlockedUI = section.querySelector('.unlocked-content');
+        const media = section.querySelector('.media-box');
+        const countdown = section.querySelector('[data-countdown]');
+        const endText = section.querySelector('.ending-text');
 
-    const sectionConfigs = [
-      { id: 'morningSection', next: '12:00 PM' },
-      { id: 'coffeeSection', next: '3:30 PM' },
-      { id: 'sweetSection', next: '6:00 PM' },
-      { id: 'movieSection', next: null }
-    ];
-
-    function applyRevealStages(section) {
-      section.classList.remove('reveal-stage-1', 'reveal-stage-2', 'reveal-stage-3');
-      setTimeout(() => section.classList.add('reveal-stage-1'), 500);
-      setTimeout(() => section.classList.add('reveal-stage-2'), 1800);
-      setTimeout(() => section.classList.add('reveal-stage-3'), 2600);
-    }
-
-    const stageStarted = new Set();
-
-    function updateSections() {
-      const now = new Date();
-      sectionConfigs.forEach(({ id }) => {
-        const section = document.getElementById(id);
-        const hour = Number(section.dataset.hour);
-        const minute = Number(section.dataset.minute);
-        const unlockAt = getUnlockDate(hour, minute);
-        const unlocked = now >= unlockAt;
-        const countdownEls = section.querySelectorAll('[data-countdown]');
-        const lockedCards = section.querySelectorAll('.locked-card');
-        const mediaLocked = section.querySelectorAll('.media-locked');
-        const mediaUnlocked = section.querySelectorAll('.media-unlocked');
-        const endingText = section.querySelector('.ending-text');
-
-        countdownEls.forEach((el) => {
-          if (!unlocked) {
-            el.textContent = `✦ Resting... unlocks at ${formatTime(unlockAt)} · ${formatRemaining(unlockAt.getTime() - now.getTime())}`;
-          } else {
-            el.textContent = '';
-          }
-        });
-
-        lockedCards.forEach((card) => card.style.display = unlocked ? 'none' : 'block');
-        mediaLocked.forEach((card) => card.style.display = unlocked ? 'none' : 'grid');
-        mediaUnlocked.forEach((card) => card.style.display = unlocked ? 'block' : 'none');
-
-        if (unlocked) {
+        if (isUnlocked) {
           section.classList.add('unlocked');
-          if (!stageStarted.has(id)) {
-            stageStarted.add(id);
-            applyRevealStages(section);
-          }
-          if (endingText && !section.classList.contains('reveal-stage-3')) {
-            setTimeout(() => section.classList.add('reveal-stage-3'), 2600);
-          }
+          lockedUI.style.display = 'none';
+          unlockedUI.style.display = 'block';
+          if(media) media.style.display = 'block';
+          if(endText) endText.style.display = 'block';
         } else {
-          section.classList.remove('unlocked', 'reveal-stage-1', 'reveal-stage-2', 'reveal-stage-3');
-          stageStarted.delete(id);
+          lockedUI.style.display = 'block';
+          unlockedUI.style.display = 'none';
+          
+          // Format Countdown
+          const hrs = Math.floor(diff / 3600000);
+          const mins = Math.floor((diff % 3600000) / 60000);
+          const secs = Math.floor((diff % 60000) / 1000);
+          countdown.innerHTML = `✦ Unfolding in ${hrs}h ${mins}m ${secs}s`;
         }
       });
     }
 
-    updateSections();
-    setInterval(updateSections, 1000);
-
-    const guardian = document.querySelector('.guardian-butterfly .guardian');
-    window.addEventListener('scroll', () => {
-      const y = window.scrollY || 0;
-      const drift = Math.sin(y / 160) * 18;
-      const glide = Math.cos(y / 220) * 14;
-      guardian.style.transform = `translate(${drift}px, ${glide}px)`;
-    }, { passive: true });
+    setInterval(updateSystem, 1000);
+    updateSystem();
   </script>
 </body>
 </html>
