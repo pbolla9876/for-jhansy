@@ -11,96 +11,82 @@
       --cream: #fffaf6;
       --paper: #ffffff;
       --text: #4a3f3f;
-      --gold-soft: #d4af37;
+      --muted: #8b7676;
+      --green: #3ba35e;
     }
 
+    * { box-sizing: border-box; }
     body, html { 
       margin: 0; padding: 0; 
       background: var(--cream);
       font-family: 'Georgia', serif;
-      overflow: hidden; /* Lock scroll until letter is done */
+      overflow-x: hidden;
+      scroll-behavior: smooth;
     }
 
-    /* --- Cinematic Intro --- */
+    /* --- PHASE 1: THE CEREMONY --- */
     #ceremony-overlay {
       position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
       display: flex; flex-direction: column; align-items: center; justify-content: center;
-      z-index: 5000;
+      z-index: 5000; background: var(--cream);
+      transition: opacity 1.5s ease;
     }
 
-    @keyframes envelopeFloat {
-      0% { transform: translateY(-200px) rotate(-5deg); opacity: 0; }
-      100% { transform: translateY(0) rotate(0deg); opacity: 1; }
+    @keyframes envelopeLand {
+      0% { transform: translateY(-300px) rotate(-10deg); opacity: 0; filter: blur(10px); }
+      100% { transform: translateY(0) rotate(0deg); opacity: 1; filter: blur(0); }
     }
 
-    /* --- The Physical Envelope --- */
     .envelope {
-      width: 300px; height: 200px;
-      background: #f3ebd6;
-      border: 1px solid #dcd0b8;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      width: 320px; height: 220px;
+      background: #f4ecd8; border: 1px solid #e0d5ba;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.1);
       display: flex; align-items: center; justify-content: center;
-      cursor: pointer;
-      animation: envelopeFloat 2s ease-out forwards;
-      position: relative;
-      transition: all 0.5s ease;
+      cursor: pointer; animation: envelopeLand 2s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+      transition: transform 0.4s ease;
     }
-
     .envelope:hover { transform: scale(1.05); }
+    .envelope-name { font-size: 2rem; color: var(--rose-deep); letter-spacing: 5px; text-transform: uppercase; border-bottom: 2px solid var(--rose); padding-bottom: 5px; }
 
-    .envelope-name {
-      font-size: 1.8rem; color: var(--rose-deep);
-      letter-spacing: 4px; text-transform: uppercase;
-      border-bottom: 1px solid var(--rose); padding-bottom: 5px;
-    }
-
-    /* --- The Formal Letter (Stationery) --- */
+    /* --- THE STATIONERY LETTER --- */
     #letter-scene {
-      display: none; /* Hidden until envelope clicked */
-      position: absolute; top: 50%; left: 50%;
+      display: none; position: fixed; top: 50%; left: 50%;
       transform: translate(-50%, -50%);
-      width: 90%; max-width: 500px;
-      height: 80vh;
-      background: var(--paper);
-      box-shadow: 0 0 50px rgba(0,0,0,0.1);
-      border: 15px solid white; /* Paper border effect */
-      outline: 1px solid #eee;
+      width: 90%; max-width: 550px; height: 85vh;
+      background: var(--paper); border: 20px solid white;
+      box-shadow: 0 0 60px rgba(0,0,0,0.15);
+      z-index: 6000; overflow-y: auto; scrollbar-width: none;
       padding: 40px 20px;
-      overflow-y: auto;
-      scrollbar-width: none;
-      z-index: 6000;
     }
 
-    .letter-header {
-      text-align: center; margin-bottom: 30px;
-      border-bottom: 1px double #eee; padding-bottom: 20px;
-    }
+    .letter-header { text-align: center; margin-bottom: 30px; border-bottom: 1px double #eee; padding-bottom: 20px; }
+    .letterhead-name { font-size: 2.2rem; color: var(--rose-deep); letter-spacing: 6px; text-transform: uppercase; margin: 0; }
+    .letterhead-sub { font-size: 0.75rem; color: #999; letter-spacing: 3px; margin-top: 10px; }
 
-    .letterhead-name {
-      font-size: 2rem; color: var(--rose-deep);
-      letter-spacing: 6px; text-transform: uppercase; margin: 0;
-    }
+    #typed-text { font-size: 1.15rem; line-height: 2; color: var(--text); white-space: pre-wrap; padding: 0 15px; }
 
-    .leaf-icon { color: #3ba35e; font-size: 1.5rem; }
-
-    #typed-text {
-      font-size: 1.1rem; line-height: 1.9; color: var(--text);
-      white-space: pre-wrap; padding: 0 10px;
-    }
-
-    /* --- UI Prompts --- */
+    /* --- UI PROMPTS --- */
     .scroll-hint {
       position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
       color: var(--rose-deep); font-weight: bold; opacity: 0;
-      transition: opacity 1s; z-index: 7000;
-      text-align: center;
+      transition: opacity 1s; z-index: 7000; text-align: center;
     }
-
     .show-hint { opacity: 1; animation: bounce 2s infinite; }
     @keyframes bounce { 0%, 100% {transform:translate(-50%, 0);} 50% {transform:translate(-50%, -10px);} }
 
-    /* --- Background Fade --- */
-    .fade-out { opacity: 0; pointer-events: none; transition: 1s; }
+    /* --- PHASE 2: THE MAIN WORLD --- */
+    #main-world { opacity: 0; filter: blur(20px); transition: all 2.5s ease; padding-top: 10vh; }
+    .world-active #main-world { opacity: 1; filter: blur(0); }
+    .world-active #ceremony-overlay { opacity: 0; pointer-events: none; }
+
+    .section { padding: 5rem 1rem; max-width: 800px; margin: 0 auto; opacity: 0; transform: translateY(40px); transition: 1.5s; }
+    .section.visible { opacity: 1; transform: translateY(0); }
+
+    .card { background: white; border-radius: 30px; padding: 2.5rem; box-shadow: 0 20px 60px rgba(150,120,120,0.1); border: 1px solid rgba(0,0,0,0.03); }
+    .time-pill { color: var(--rose-deep); font-weight: bold; font-size: 0.9rem; margin-bottom: 1rem; display: block; letter-spacing: 1px; }
+    .media-box { margin-top: 2rem; border-radius: 20px; overflow: hidden; display: none; }
+    .media-box img, .media-box video { width: 100%; display: block; }
+    .locked-msg { text-align: center; padding: 2rem; border: 1px dashed #ccc; border-radius: 20px; color: var(--muted); }
   </style>
 </head>
 <body>
@@ -112,51 +98,131 @@
 
     <div id="letter-scene">
       <div class="letter-header">
-        <h1 class="letterhead-name">JHANSY <span class="leaf-icon">🌿</span></h1>
-        <p style="font-size: 0.8rem; color: #999; letter-spacing: 2px;">STRICTLY PRIVATE</p>
+        <h1 class="letterhead-name">JHANSY <span style="color:var(--green)">🌿</span></h1>
+        <p class="letterhead-sub">STRICTLY PRIVATE</p>
       </div>
       <div id="typed-text"></div>
     </div>
 
     <div class="scroll-hint" id="scrollHint">
-      Scroll down to begin your day...<br>↓
+      Scroll down to see the world...<br>↓
     </div>
   </div>
 
-  <script>
-    const message = `Hi Jaanu...\n\nChustu chustune 25 days ayipoyindhi kada. Last time when you got this, I was with you.\n\nBefore that, I used to send the flowers, coffee, and ice cream... but this time I can't do any of those.\n\nBut nenu idiot ni kada? Mental fellow ni! Agutanu anukuntunava? NEVER.\n\nSo Jhansy, happy menstrual day! Idi kuda "happy" antunna ani thittoku... ledu le, already tittukune unattu unnav... ninnu chuste telsustundhi le. But its ok.\n\nSo Jhansy, here we go. I made something for you to make your spirit high when your body is down.\n\nOka dialogue cheppi finish chesthe super untundhi kada...\n\nJaanu, nuvvu iroju prapanchanni chudalekapothe enti? Ah prapanchanni nee daggariki teeskuni vasta! 😂😂😍😍\n\nHahaha... Baga navvukunnaava? So roju anta ilane navvukunta undhu.`;
+  <div id="main-world">
+    
+    <section class="section" id="morningSection" data-hour="9" data-minute="0">
+      <div class="card">
+        <span class="time-pill">🌸 9:00 AM — Morning Bloom</span>
+        <div class="unlocked-content" style="display:none;">
+          <p>Good morning, Jhansy. Ee roju sun chudu entha calm ga undo... precisely matching the vibe for today.</p>
+          <div class="media-box" style="display:block;"><img src="flowers1.jpg" alt="Flowers"></div>
+        </div>
+        <div class="locked-msg">Arriving with the morning light...<br><small data-countdown></small></div>
+      </div>
+    </section>
 
+    <section class="section" id="coffeeSection" data-hour="12" data-minute="0">
+      <div class="card">
+        <span class="time-pill">☕ 12:00 PM — Mid-day Refresh</span>
+        <div class="unlocked-content" style="display:none;">
+          <p>Coffee kavali kada? A simple cold drink can change the whole mood of a day. Enjoy this sip.</p>
+          <div class="media-box" style="display:block;"><img src="coffee.jpg" alt="Coffee"></div>
+        </div>
+        <div class="locked-msg">A cool refresh is resting for now...<br><small data-countdown></small></div>
+      </div>
+    </section>
+
+    <section class="section" id="sweetSection" data-hour="15" data-minute="30">
+      <div class="card">
+        <span class="time-pill">🍫 3:30 PM — Afternoon Sweet</span>
+        <div class="unlocked-content" style="display:none;">
+          <p>Chocolate ice cream tinte baguntundhi kada? Imagine iddaram kurchuni enjoy chestunnam ani.</p>
+          <div class="media-box" style="display:block;">
+            <video controls playsinline muted poster="icecream_photo.jpg">
+              <source src="icecream.mov" type="video/quicktime">
+            </video>
+          </div>
+        </div>
+        <div class="locked-msg">Something sweet is arriving soon...<br><small data-countdown></small></div>
+      </div>
+    </section>
+
+    <footer style="padding: 10rem 2rem; text-align: center; color: var(--muted); font-style: italic;">
+      one moment at a time.
+    </footer>
+  </div>
+
+  <script>
+    const text = `Hi Jaanu...\n\nChustu chustune 25 days ayipoyindhi kada. Last time when you got this, I was with you.\n\nBefore that, I used to send the flowers, coffee, and ice cream... but this time I can't do any of those.\n\nBut nenu idiot ni kada? Mental fellow ni! Agutanu anukuntunava? NEVER.\n\nSo Jhansy, happy menstrual day! Idi kuda "happy" antunna ani thittoku... ledu le, already tittukune unattu unnav... ninnu chuste telsustundhi le. But its ok.\n\nSo Jhansy, here we go. I made something for you to make your spirit high when your body is down.\n\nOka dialogue cheppi finish chesthe super untundhi kada...\n\nJaanu, nuvvu iroju prapanchanni chudalekapothe enti? Ah prapanchanni nee daggariki teeskuni vasta! 😂😂😍😍\n\nHahaha... Baga navvukunnaava? So roju anta ilane navvukunta undhu.`;
+
+    // 1. OPEN LETTER LOGIC
     function openLetter() {
       const env = document.getElementById('envelope');
       const scene = document.getElementById('letter-scene');
       const typedTarget = document.getElementById('typed-text');
       const scrollHint = document.getElementById('scrollHint');
 
-      // Hide envelope
       env.style.opacity = '0';
-      env.style.transform = 'scale(0.8)';
+      env.style.transform = 'translateY(50px) scale(0.9)';
       
       setTimeout(() => {
         env.style.display = 'none';
         scene.style.display = 'block';
         
-        // Typing effect
         let i = 0;
         function typeWriter() {
-          if (i < message.length) {
-            typedTarget.innerHTML += message.charAt(i);
+          if (i < text.length) {
+            typedTarget.innerHTML += text.charAt(i);
             i++;
-            // Auto-scroll the letter down as it types
             scene.scrollTop = scene.scrollHeight;
-            setTimeout(typeWriter, 45);
+            setTimeout(typeWriter, 40);
           } else {
             scrollHint.classList.add('show-hint');
-            document.body.style.overflow = 'auto'; // Unlock scroll
+            document.body.style.overflow = 'auto'; 
           }
         }
         typeWriter();
-      }, 600);
+      }, 800);
     }
+
+    // 2. WORLD REVEAL & UNLOCK LOGIC
+    const EVENT_DATE = new Date(2026, 2, 31); // March 31, 2026
+
+    function updateWorld() {
+      const now = new Date();
+      if (window.scrollY > 100) document.body.classList.add('world-active');
+
+      document.querySelectorAll('.section').forEach(section => {
+        const h = parseInt(section.dataset.hour);
+        const m = parseInt(section.dataset.minute);
+        const unlockAt = new Date(EVENT_DATE);
+        unlockAt.setHours(h, m, 0);
+
+        const isUnlocked = now >= unlockAt;
+        const locked = section.querySelector('.locked-msg');
+        const unlocked = section.querySelector('.unlocked-content');
+        const countdown = section.querySelector('[data-countdown]');
+
+        if (isUnlocked) {
+          locked.style.display = 'none';
+          unlocked.style.display = 'block';
+        } else if (countdown) {
+          const diff = unlockAt - now;
+          const hrs = Math.floor(diff / 3600000);
+          const mins = Math.floor((diff % 3600000) / 60000);
+          const secs = Math.floor((diff % 60000) / 1000);
+          countdown.innerHTML = `Unfolds in ${hrs}h ${mins}m ${secs}s`;
+        }
+
+        // Intersection Observer for fade-in
+        const rect = section.getBoundingClientRect();
+        if (rect.top < window.innerHeight * 0.8) section.classList.add('visible');
+      });
+    }
+
+    setInterval(updateWorld, 1000);
+    window.addEventListener('scroll', updateWorld);
   </script>
 </body>
 </html>
