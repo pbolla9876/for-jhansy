@@ -6,6 +6,7 @@
     <title>A Quiet Space for You</title>
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&family=Lora:ital@1&display=swap" rel="stylesheet">
     <style>
+        /* 1. Base Styling */
         body { 
             background: linear-gradient(135deg, #fff5f7 0%, #fdfcf0 100%); 
             font-family: 'Lora', serif; color: #5D4037; 
@@ -13,99 +14,128 @@
             scroll-behavior: smooth;
         }
 
-        /* The Animated Butterfly (Pure CSS - No Image Needed) */
+        /* 2. The Refined Elegant Butterfly */
         #butterfly-guide {
             position: fixed;
-            width: 40px; height: 40px;
-            left: 50%; bottom: 30px;
+            width: 30px; height: 30px;
+            left: 50%; bottom: 40px;
             transform: translateX(-50%);
             z-index: 9999;
             pointer-events: none;
             transition: all 0.3s ease-out;
         }
 
+        .butterfly-body {
+            position: absolute;
+            top: 10px; left: 14px;
+            width: 2px; height: 15px;
+            background: #ad1457;
+            border-radius: 2px;
+            z-index: 2;
+        }
+
         .wing {
-            position: absolute; width: 20px; height: 30px;
-            background: #d63384; border-radius: 50% 50% 0 50%;
-            opacity: 0.8;
-            animation: flap 0.2s infinite alternate;
-        }
-        .right { left: 20px; border-radius: 50% 50% 50% 0; animation-delay: 0.2s; }
-
-        @keyframes flap {
-            from { transform: rotateY(0deg); }
-            to { transform: rotateY(70deg); }
+            position: absolute;
+            width: 18px; height: 22px;
+            background: rgba(214, 51, 132, 0.5); /* Soft transparency */
+            border: 1px solid rgba(214, 51, 132, 0.7);
+            border-radius: 50% 50% 20% 50%;
+            top: 5px;
+            transform-origin: right center;
+            animation: flap-left 0.15s infinite alternate ease-in-out;
         }
 
-        /* Sections */
+        .right {
+            left: 16px;
+            border-radius: 50% 50% 50% 20%;
+            transform-origin: left center;
+            animation: flap-right 0.15s infinite alternate ease-in-out;
+        }
+
+        @keyframes flap-left {
+            from { transform: rotateY(0deg) skewY(-5deg); }
+            to { transform: rotateY(75deg) skewY(5deg); }
+        }
+
+        @keyframes flap-right {
+            from { transform: rotateY(0deg) skewY(5deg); }
+            to { transform: rotateY(-75deg) skewY(-5deg); }
+        }
+
+        /* 3. Section Reveal Logic */
         section {
             min-height: 100vh; display: flex; flex-direction: column;
             justify-content: center; align-items: center;
-            padding: 40px 20px; box-sizing: border-box;
-            opacity: 0; transform: translateY(30px);
-            transition: all 1.5s ease-out;
+            padding: 60px 20px; box-sizing: border-box;
+            opacity: 0; transform: translateY(40px);
+            transition: all 1.2s ease-out;
         }
 
         section.visible { opacity: 1; transform: translateY(0); }
 
-        h1 { font-family: 'Dancing Script', cursive; color: #d63384; font-size: 3rem; margin-bottom: 10px; }
-        .section-title { font-family: 'Dancing Script', cursive; color: #ad1457; font-size: 2.2rem; }
+        /* 4. Content Elements */
+        h1 { font-family: 'Dancing Script', cursive; color: #d63384; font-size: 3.2rem; margin-bottom: 10px; }
+        .section-title { font-family: 'Dancing Script', cursive; color: #ad1457; font-size: 2.5rem; }
 
         .polaroid {
-            background: white; padding: 15px 15px 40px 15px;
+            background: white; padding: 15px 15px 45px 15px;
             border-radius: 4px; box-shadow: 0 15px 35px rgba(0,0,0,0.1);
-            max-width: 400px; width: 90%; margin: 20px 0;
-            transform: rotate(-1deg);
+            max-width: 400px; width: 95%; margin: 25px 0;
+            transform: rotate(-1.5deg);
         }
-        img, video { width: 100%; border-radius: 2px; }
+        .polaroid:nth-child(even) { transform: rotate(1.5deg); }
+        img, video { width: 100%; border-radius: 2px; display: block; }
 
         .letter { 
-            background-color: white; padding: 30px; border-radius: 0 40px; 
-            max-width: 500px; line-height: 1.8; text-align: left;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.05); border-left: 5px solid #d63384;
+            background-color: white; padding: 40px; border-radius: 0 50px; 
+            max-width: 500px; line-height: 2; text-align: left; font-style: italic;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05); border-left: 6px solid #d63384;
         }
 
         .video-container {
-            position: relative; padding-bottom: 56.25%; width: 90%; max-width: 500px;
-            border-radius: 15px; overflow: hidden; margin: 20px 0;
+            position: relative; padding-bottom: 56.25%; width: 95%; max-width: 500px;
+            border-radius: 20px; overflow: hidden; margin: 30px 0;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
         }
         .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
         
-        .highlight { color: #d63384; font-weight: bold; }
+        .highlight { color: #d63384; font-weight: bold; font-style: normal; }
+        .scroll-hint { margin-top: 40px; font-size: 0.85rem; color: #ad1457; letter-spacing: 1px; opacity: 0.7; }
     </style>
 </head>
 <body>
 
     <div id="butterfly-guide">
+        <div class="butterfly-body"></div>
         <div class="wing left"></div>
         <div class="wing right"></div>
     </div>
 
-    <section id="one" class="visible">
+    <section id="intro" class="visible">
         <h1>For You, Jhansy 🌿</h1>
         <p>A sanctuary for your heart and mind.</p>
-        <p style="margin-top: 50px; font-size: 0.8rem; color: #ad1457;">(Scroll slowly to explore)</p>
+        <div class="scroll-hint">SCROLL SLOWLY</div>
     </section>
 
-    <section id="two">
+    <section id="message">
         <div class="letter">
             <p>
                 Jhansy,<br><br>
                 I built this place for you to just breathe. There is no urgency here, only peace. <br><br>
-                Even though I’m not there to hand you these things, I wanted you to see that I’m holding this space for you.
+                I picked these things and made this space so you could feel cared for, even from a distance.
             </p>
         </div>
     </section>
 
-    <section id="three">
+    <section id="flowers">
         <h3 class="section-title">🌸 Petals of Peace</h3>
-        <div class="polaroid"><img src="flowers1.jpg"></div>
-        <div class="polaroid"><img src="flowers2.jpg"></div>
+        <div class="polaroid"><img src="flowers1.jpg" alt="Lilies"></div>
+        <div class="polaroid"><img src="flowers2.jpg" alt="Details"></div>
     </section>
 
-    <section id="four">
+    <section id="treats">
         <h3 class="section-title">🍦 Sweetness for the Soul</h3>
-        <div class="polaroid"><img src="icecream_photo.jpg"></div>
+        <div class="polaroid"><img src="icecream_photo.jpg" alt="Mochi Boxes"></div>
         <div class="polaroid">
             <video controls playsinline preload="metadata">
                 <source src="icecream.mov" type="video/quicktime">
@@ -114,40 +144,39 @@
         </div>
     </section>
 
-    <section id="five">
+    <section id="movie">
         <h3 class="section-title">🎬 A Moment to Disappear</h3>
         <div class="video-container">
             <iframe src="https://www.youtube.com/embed/17Sre_m-g_E" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
         </div>
     </section>
 
-    <section id="six">
+    <section id="final">
         <div class="letter">
             <p>
                 Take a deep breath. Rest your eyes. <br><br>
                 <span class="highlight">No pressure to reply. Just be at peace.</span>
             </p>
         </div>
-        <h1 style="font-size: 2rem;">With all my love, P.</h1>
+        <h1 style="font-size: 2.5rem; margin-top: 40px;">With all my love, P.</h1>
     </section>
 
     <script>
-        // Reveal sections on scroll
+        // Intersection Observer for Scroll Reveal
         const sections = document.querySelectorAll('section');
-        const butterfly = document.getElementById('butterfly-guide');
-
-        window.addEventListener('scroll', () => {
-            const scrollPos = window.scrollY + (window.innerHeight / 1.5);
-            
-            sections.forEach(section => {
-                if (scrollPos > section.offsetTop) {
-                    section.classList.add('visible');
-                }
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) entry.target.classList.add('visible');
             });
+        }, { threshold: 0.1 });
 
-            // Butterfly "dancing" logic
-            const moveX = Math.sin(window.scrollY / 50) * 30;
-            butterfly.style.transform = `translateX(calc(-50% + ${moveX}px))`;
+        sections.forEach(section => observer.observe(section));
+
+        // Butterfly Movement
+        window.addEventListener('scroll', () => {
+            const scrollY = window.scrollY;
+            const moveX = Math.sin(scrollY / 70) * 40;
+            document.getElementById('butterfly-guide').style.transform = `translateX(calc(-50% + ${moveX}px))`;
         });
     </script>
 </body>
