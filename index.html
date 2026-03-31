@@ -6,221 +6,149 @@
     <title>A Quiet Space for You</title>
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&family=Lora:ital@1&display=swap" rel="stylesheet">
     <style>
-        /* Base Styling */
         body { 
             background: linear-gradient(135deg, #fff5f7 0%, #fdfcf0 100%); 
-            font-family: 'Lora', serif; 
-            color: #5D4037; 
-            padding: 0; margin: 0; 
-            overflow-x: hidden;
-            scroll-behavior: smooth; /* Smooth scrolling makes it feel gentle */
+            font-family: 'Lora', serif; color: #5D4037; 
+            padding: 0; margin: 0; overflow-x: hidden;
+            scroll-behavior: smooth;
         }
 
-        /* Define all sections but hide them initially */
+        /* The Animated Butterfly (Pure CSS - No Image Needed) */
+        #butterfly-guide {
+            position: fixed;
+            width: 40px; height: 40px;
+            left: 50%; bottom: 30px;
+            transform: translateX(-50%);
+            z-index: 9999;
+            pointer-events: none;
+            transition: all 0.3s ease-out;
+        }
+
+        .wing {
+            position: absolute; width: 20px; height: 30px;
+            background: #d63384; border-radius: 50% 50% 0 50%;
+            opacity: 0.8;
+            animation: flap 0.2s infinite alternate;
+        }
+        .right { left: 20px; border-radius: 50% 50% 50% 0; animation-delay: 0.2s; }
+
+        @keyframes flap {
+            from { transform: rotateY(0deg); }
+            to { transform: rotateY(70deg); }
+        }
+
+        /* Sections */
         section {
-            width: 100%;
-            opacity: 0;
-            display: none; /* Removed from layout until ready */
-            text-align: center;
+            min-height: 100vh; display: flex; flex-direction: column;
+            justify-content: center; align-items: center;
+            padding: 40px 20px; box-sizing: border-box;
+            opacity: 0; transform: translateY(30px);
+            transition: all 1.5s ease-out;
         }
 
-        /* Special Styling for the First 'Intro' section */
-        #intro-screen {
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-            opacity: 1; /* This is visible first */
-        }
+        section.visible { opacity: 1; transform: translateY(0); }
 
-        #intro-title-group {
-            opacity: 0; /* Hides the title until butterfly arrives */
-        }
+        h1 { font-family: 'Dancing Script', cursive; color: #d63384; font-size: 3rem; margin-bottom: 10px; }
+        .section-title { font-family: 'Dancing Script', cursive; color: #ad1457; font-size: 2.2rem; }
 
-        /* Section 2 Styling (For your new message) */
-        #intro-message {
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 40px;
-            box-sizing: border-box;
-            background-color: rgba(255, 255, 255, 0.4); /* Subtle background shift */
-        }
-
-        /* Section Titles and Polaroid Containers from previous version */
-        h1 { font-family: 'Dancing Script', cursive; color: #d63384; font-size: 3.2rem; }
-        .section-title { font-family: 'Dancing Script', cursive; color: #ad1457; margin-top: 50px; font-size: 2.2rem; }
-        
-        .polaroid-container {
-            margin: 25px auto; width: 85%; max-width: 450px;
+        .polaroid {
             background: white; padding: 15px 15px 40px 15px;
             border-radius: 4px; box-shadow: 0 15px 35px rgba(0,0,0,0.1);
-            transform: rotate(-1deg); text-align: center;
+            max-width: 400px; width: 90%; margin: 20px 0;
+            transform: rotate(-1deg);
         }
-        
-        .polaroid-container:nth-child(even) { transform: rotate(1.5deg); }
-        img, video { width: 100%; display: block; }
-        
-        /* THE BUTTERFLY SECTION */
-        
-        /* The specific guiding butterfly that follows the scroll */
-        #scrolling-butterfly {
-            position: fixed;
-            bottom: -50px; /* Start hidden below the screen */
-            left: 50%;
-            transform: translateX(-50%);
-            width: 100px; /* Adjust size */
-            height: 100px;
-            z-index: 1000;
-            opacity: 0;
-            transition: all 0.2s linear; /* Smooth movement when following scroll */
-        }
-        
-        /* Common style for the intro butterfly and scrolling butterfly */
-        .butterfly-img {
-            width: 100%;
-            height: auto;
-            animation: flap 0.3s ease-in-out infinite alternate;
-        }
+        img, video { width: 100%; border-radius: 2px; }
 
-        /* Make the wings move */
-        @keyframes flap {
-            from { transform: scaleX(1); }
-            to { transform: scaleX(0.7); }
-        }
-
-        /* THE ANIMATION TRIGGERS (Added via Javascript) */
-        
-        /* 1. Intro Butterfly: Fly up to the center */
-        @keyframes flyIntoCenter {
-            0% { top: 110%; left: 50%; opacity: 0; }
-            100% { top: 50%; left: 50%; opacity: 1; transform: translate(-50%, -50%); }
-        }
-
-        /* 2. Intro Text: Fade-In once butterfly arrives */
-        .show-intro-title {
-            animation: fadeInTitle 2s ease-out forwards;
-        }
-        @keyframes fadeInTitle {
-            0% { opacity: 0; transform: translateY(10px); }
-            100% { opacity: 1; transform: translateY(0); }
-        }
-
-        /* 3. Sanctuary Content: Fade-In when scrolled into view */
-        .reveal-section {
-            animation: fadeInSection 2s ease-out forwards;
-            display: block; /* Section is added to the layout */
-        }
-        @keyframes fadeInSection {
-            0% { opacity: 0; transform: translateY(20px); }
-            100% { opacity: 1; transform: translateY(0); }
-        }
-        
-        /* Letter and Video Link Styling from previous version */
         .letter { 
-            background-color: white; padding: 40px; border-radius: 0px 50px 0px 50px; 
-            max-width: 500px; margin: 60px auto; line-height: 2; 
-            border-left: 5px solid #d63384; text-align: left; font-style: italic;
+            background-color: white; padding: 30px; border-radius: 0 40px; 
+            max-width: 500px; line-height: 1.8; text-align: left;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.05); border-left: 5px solid #d63384;
         }
-        .highlight { color: #d63384; font-weight: bold; font-style: normal; }
-        .video-link { font-size: 0.9rem; color: #ad1457; text-decoration: underline; font-weight: bold; display: block;}
+
+        .video-container {
+            position: relative; padding-bottom: 56.25%; width: 90%; max-width: 500px;
+            border-radius: 15px; overflow: hidden; margin: 20px 0;
+        }
+        .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+        
+        .highlight { color: #d63384; font-weight: bold; }
     </style>
 </head>
 <body>
 
-    <div id="scrolling-butterfly">
-        <img src="https://gifdb.com/images/high/beautiful-flying-purple-butterfly-8tbyj001r6a5cajk.webp" alt="Guiding Butterfly" class="butterfly-img">
+    <div id="butterfly-guide">
+        <div class="wing left"></div>
+        <div class="wing right"></div>
     </div>
 
-    <section id="intro-screen">
-        <div id="temp-intro-butterfly" style="position: absolute; width: 150px; height: 150px; animation: flyIntoCenter 3s ease-out forwards;">
-             <img src="https://gifdb.com/images/high/beautiful-flying-purple-butterfly-8tbyj001r6a5cajk.webp" alt="Welcome Butterfly" class="butterfly-img">
-        </div>
-
-        <div id="intro-title-group">
-            <h1>For You, Jhansy 🌿</h1>
-            <p style="color: #8D6E63; letter-spacing: 1px;"><i>A sanctuary for your heart and mind.</i></p>
-        </div>
+    <section id="one" class="visible">
+        <h1>For You, Jhansy 🌿</h1>
+        <p>A sanctuary for your heart and mind.</p>
+        <p style="margin-top: 50px; font-size: 0.8rem; color: #ad1457;">(Scroll slowly to explore)</p>
     </section>
 
-    <section id="intro-message">
+    <section id="two">
         <div class="letter">
             <p>
                 Jhansy,<br><br>
-                I built this sanctuary as a place where you can just breathe. There is no urgency here, only peace. I hope these simple things help you relax, even for a moment.<br><br>
-                <span class="highlight">Keep scrolling to enter the sanctuary.</span>
+                I built this place for you to just breathe. There is no urgency here, only peace. <br><br>
+                Even though I’m not there to hand you these things, I wanted you to see that I’m holding this space for you.
             </p>
         </div>
     </section>
 
-    <section id="sanctuary-content" style="padding-bottom: 80px;">
+    <section id="three">
         <h3 class="section-title">🌸 Petals of Peace</h3>
-        <div class="polaroid-container"><img src="flowers1.jpg" alt="Lilies"></div>
-        <div class="polaroid-container"><img src="flowers2.jpg" alt="A closer look"></div>
+        <div class="polaroid"><img src="flowers1.jpg"></div>
+        <div class="polaroid"><img src="flowers2.jpg"></div>
+    </section>
 
+    <section id="four">
         <h3 class="section-title">🍦 Sweetness for the Soul</h3>
-        <div class="polaroid-container"><img src="icecream_photo.jpg" alt="Your favorites"></div>
-        <div class="polaroid-container">
-            <video id="mainVideo" controls playsinline preload="metadata">
+        <div class="polaroid"><img src="icecream_photo.jpg"></div>
+        <div class="polaroid">
+            <video controls playsinline preload="metadata">
                 <source src="icecream.mov" type="video/quicktime">
-                Your browser does not support the video tag.
+                <source src="icecream.mov" type="video/mp4">
             </video>
         </div>
-        <a href="icecream.mov" class="video-link">Tap here if the video doesn't load 🤍</a>
+    </section>
 
+    <section id="five">
+        <h3 class="section-title">🎬 A Moment to Disappear</h3>
+        <div class="video-container">
+            <iframe src="https://www.youtube.com/embed/17Sre_m-g_E" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+        </div>
+    </section>
+
+    <section id="six">
         <div class="letter">
             <p>
-                My Dearest Jhansy,<br><br>
-                Every flower I picked and every mochi I bought was a silent message to you: <span class="highlight">"I am here, and I am thinking of you."</span><br><br>
-                No pressure to reply. Just be at peace.🤍
+                Take a deep breath. Rest your eyes. <br><br>
+                <span class="highlight">No pressure to reply. Just be at peace.</span>
             </p>
         </div>
-        <p style="font-family: 'Dancing Script', cursive; font-size: 1.8rem; color: #d63384;">With all my love, P.</p>
+        <h1 style="font-size: 2rem;">With all my love, P.</h1>
     </section>
 
     <script>
-        // Tier 1: Execute on Load
-        window.onload = function() {
-            // Wait 3 seconds for the butterfly to arrive in center
-            setTimeout(function() {
-                // Fade in the Title
-                document.getElementById('intro-title-group').classList.add('show-intro-title');
-                
-                // Hide the temp butterfly and show the guiding butterfly
-                document.getElementById('temp-intro-butterfly').style.display = 'none';
-                document.getElementById('scrolling-butterfly').style.opacity = '1';
-                document.getElementById('scrolling-butterfly').style.bottom = '20px'; // Final fixed position
-            }, 3000); 
-        };
+        // Reveal sections on scroll
+        const sections = document.querySelectorAll('section');
+        const butterfly = document.getElementById('butterfly-guide');
 
-        // Tier 2 & 3: Execute on Scroll (Data Visibility pipeline)
-        window.addEventListener('scroll', function() {
-            var scrollY = window.scrollY;
-            var windowHeight = window.innerHeight;
+        window.addEventListener('scroll', () => {
+            const scrollPos = window.scrollY + (window.innerHeight / 1.5);
+            
+            sections.forEach(section => {
+                if (scrollPos > section.offsetTop) {
+                    section.classList.add('visible');
+                }
+            });
 
-            // Trigger Section 2 (The Intro Message)
-            var messageSection = document.getElementById('intro-message');
-            if (scrollY > windowHeight / 3 && !messageSection.classList.contains('reveal-section')) {
-                messageSection.classList.add('reveal-section');
-            }
-
-            // Trigger Section 3 (The Sanctuary Content)
-            var sanctuarySection = document.getElementById('sanctuary-content');
-            if (scrollY > windowHeight && !sanctuarySection.classList.contains('reveal-section')) {
-                sanctuarySection.classList.add('reveal-section');
-                // Force-load the video when visible
-                document.getElementById('mainVideo').load();
-            }
-
-            // Butterfly "Guide" Logic: Make the butterfly dance as she scrolls
-            var butterfly = document.getElementById('scrolling-butterfly');
-            // Slight horizontal movement based on scroll position (creates a 'wave')
-            var lateralOffset = Math.sin(scrollY / 100) * 20; 
-            butterfly.style.left = `calc(50% + ${lateralOffset}px)`;
+            // Butterfly "dancing" logic
+            const moveX = Math.sin(window.scrollY / 50) * 30;
+            butterfly.style.transform = `translateX(calc(-50% + ${moveX}px))`;
         });
     </script>
-
 </body>
 </html>
