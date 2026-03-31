@@ -4,11 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>For You, Jhansy 🌿</title>
-  
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet" />
-
   <style>
     :root {
       --bg-1: #fffaf8;
@@ -17,527 +15,244 @@
       --rose: #c95e8b;
       --rose-deep: #a93b67;
       --ink: #5c463f;
-      --paper: rgba(255, 255, 255, 0.88);
-      --shadow: 0 20px 60px rgba(141, 86, 112, 0.12);
-      --radius: 32px;
-      --safe-bottom: calc(env(safe-area-inset-bottom, 0px) + 88px);
+      --paper: rgba(255, 255, 255, 0.9);
+      --shadow: 0 30px 80px rgba(141, 86, 112, 0.12);
+      --radius: 36px;
     }
 
-    * { 
-      box-sizing: border-box; 
-      -webkit-tap-highlight-color: transparent;
-    }
+    * { box-sizing: border-box; -webkit-font-smoothing: antialiased; }
 
     html, body {
-      margin: 0;
-      width: 100%;
-      min-height: 100%;
-      background: linear-gradient(180deg, var(--bg-1) 0%, var(--bg-2) 58%, var(--bg-3) 100%);
-      color: var(--ink);
-      font-family: 'Lora', serif;
-      -webkit-font-smoothing: antialiased;
-      scroll-behavior: smooth;
-      overflow-x: hidden;
+      margin: 0; padding: 0; width: 100%; min-height: 100%;
+      background: linear-gradient(180deg, var(--bg-1) 0%, var(--bg-2) 40%, var(--bg-3) 100%);
+      color: var(--ink); font-family: 'Lora', serif;
+      overflow-x: hidden; scroll-behavior: smooth;
     }
 
-    /* Ambient Background Blooms */
-    body::before,
-    body::after {
-      content: "";
-      position: fixed;
-      pointer-events: none;
-      z-index: 0;
-      filter: blur(60px);
-      opacity: 0.6;
+    /* Cinematic Sun Bloom */
+    .sun {
+      position: fixed; top: -150px; right: -150px; width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(255, 248, 200, 0.5) 0%, transparent 70%);
+      filter: blur(80px); z-index: 1; pointer-events: none;
+      animation: sunDrift 20s ease-in-out infinite alternate;
     }
+    @keyframes sunDrift { from { transform: translate(0,0); } to { transform: translate(-50px, 30px); } }
 
-    body::before {
-      width: 60vw;
-      height: 60vw;
-      right: -10vw;
-      top: -10vw;
-      background: radial-gradient(circle, rgba(255, 183, 207, 0.4), transparent 70%);
-      animation: bloom 12s ease-in-out infinite alternate;
+    /* The Butterfly Messenger */
+    .butterfly {
+      position: fixed; left: -100px; top: 50%; width: 50px; height: 44px;
+      z-index: 1000; pointer-events: none; transform: translate(-50%, -50%);
+      will-change: left, top, transform;
     }
-
-    body::after {
-      width: 50vw;
-      height: 50vw;
-      left: -8vw;
-      bottom: -8vw;
-      background: radial-gradient(circle, rgba(255, 225, 180, 0.35), transparent 70%);
-      animation: bloom 15s ease-in-out infinite alternate-reverse;
+    .butterfly .wing {
+      position: absolute; width: 25px; height: 32px;
+      border: 1px solid rgba(169, 59, 103, 0.3);
+      background: linear-gradient(135deg, rgba(255, 215, 230, 0.7), rgba(255, 255, 255, 0.2));
+      backdrop-filter: blur(2px);
     }
+    .wing.left { left: 0; border-radius: 70% 30% 30% 70% / 80% 20% 80% 20%; transform-origin: right center; animation: flapL 0.15s ease-in-out infinite alternate; }
+    .wing.right { right: 0; border-radius: 30% 70% 70% 30% / 20% 80% 20% 80%; transform-origin: left center; animation: flapR 0.15s ease-in-out infinite alternate; }
+    @keyframes flapL { from { transform: rotateY(0deg); } to { transform: rotateY(75deg); } }
+    @keyframes flapR { from { transform: rotateY(0deg); } to { transform: rotateY(-75deg); } }
 
-    @keyframes bloom {
-      from { transform: translate3d(0, 0, 0) scale(1); }
-      to { transform: translate3d(20px, -15px, 0) scale(1.1); }
+    /* Layout & Scenes */
+    .hero-reveal {
+      position: fixed; inset: 0; z-index: 900; background: var(--bg-1);
+      display: flex; align-items: center; justify-content: center;
+      transition: opacity 2s ease, visibility 2s ease;
     }
-
-    .app {
-      position: relative;
-      min-height: 100vh;
-      isolation: isolate;
+    .hero-reveal.fade-out { opacity: 0; visibility: hidden; }
+    .name-text {
+      font-family: 'Dancing Script', cursive; font-size: clamp(3rem, 12vw, 5rem);
+      color: var(--rose-deep); opacity: 0; transform: translateY(30px);
+      transition: all 1.5s cubic-bezier(0.22, 1, 0.36, 1);
     }
+    .name-text.show { opacity: 1; transform: translateY(0); }
 
-    /* Scene Transitions */
-    .scene-stack {
-      position: relative;
-      z-index: 2;
-    }
-
+    .scene-container { position: relative; z-index: 2; width: 100%; max-width: 500px; margin: 0 auto; padding: 100vh 20px 50px; }
+    
     .scene {
-      position: relative;
-      min-height: 100dvh;
-      display: grid;
-      place-items: center;
-      padding: calc(env(safe-area-inset-top, 0px) + 40px) 24px var(--safe-bottom);
-      opacity: 0;
-      transform: translateY(40px);
-      transition: opacity 1s ease, transform 1.2s cubic-bezier(0.2, 0.8, 0.2, 1), filter 1s ease;
-      filter: blur(10px);
+      margin-bottom: 120px; opacity: 0.15; transform: scale(0.95);
+      transition: all 1.2s cubic-bezier(0.22, 1, 0.36, 1);
       pointer-events: none;
     }
-
-    .scene.is-active {
-      opacity: 1;
-      transform: translateY(0);
-      filter: blur(0);
-      pointer-events: auto;
+    .scene.unlocked { opacity: 1; transform: scale(1); pointer-events: auto; }
+    
+    .card {
+      background: var(--paper); border-radius: var(--radius); padding: 35px 25px;
+      box-shadow: var(--shadow); border: 1px solid rgba(255,255,255,0.6);
+      position: relative; overflow: hidden;
+    }
+    .card::before {
+      content: ""; position: absolute; top: 0; left: 0; width: 6px; height: 100%;
+      background: linear-gradient(to bottom, var(--rose), var(--rose-deep));
     }
 
-    .scene.is-past {
-      transform: translateY(-40px);
-    }
-
-    .content {
-      width: min(100%, 450px);
-      position: relative;
-    }
-
-    /* Card Styling */
-    .glass-card,
-    .letter,
-    .closing-card {
-      width: 100%;
-      background: var(--paper);
-      border: 1px solid rgba(255, 255, 255, 0.7);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(15px);
-      -webkit-backdrop-filter: blur(15px);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .letter,
-    .closing-card {
-      padding: 40px 32px;
-    }
-
-    .letter::before,
-    .closing-card::after {
-      content: "";
-      position: absolute;
-      width: 4px;
-      height: 40px;
-      background: var(--rose);
-      border-radius: 2px;
-      opacity: 0.6;
-    }
-
-    .letter::before { top: 40px; left: 16px; }
-    .closing-card::after { bottom: 40px; right: 16px; }
-
-    .section-kicker {
-      margin: 0 0 16px;
-      font-size: 0.75rem;
-      letter-spacing: 0.25em;
-      text-transform: uppercase;
-      color: var(--rose-deep);
-      font-weight: 500;
-      opacity: 0.8;
-    }
-
-    .section-title {
-      margin: 0 0 20px;
-      font-family: 'Dancing Script', cursive;
-      color: var(--rose-deep);
-      font-size: clamp(2.2rem, 9vw, 3rem);
-      line-height: 1.1;
-    }
-
-    .body-copy {
-      margin: 0;
-      font-size: 1.05rem;
-      line-height: 1.9;
-      color: var(--ink);
-      opacity: 0.9;
-    }
-
-    .signature {
-      margin-top: 24px;
-      font-family: 'Dancing Script', cursive;
-      font-size: 2rem;
-      color: var(--rose-deep);
-    }
-
-    /* Polaroid Layout */
-    .polaroid-grid {
-      display: grid;
-      gap: 20px;
-    }
+    h2 { font-family: 'Dancing Script', cursive; font-size: 2.2rem; color: var(--rose-deep); margin: 0 0 20px; }
+    p { line-height: 1.9; font-size: 1.05rem; margin-bottom: 25px; color: var(--ink); }
 
     .polaroid {
-      background: #fff;
-      padding: 12px 12px 40px;
-      border-radius: 4px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-      transform-origin: center;
-      transition: transform 0.4s ease;
+      background: white; padding: 10px 10px 35px; border-radius: 2px;
+      box-shadow: 0 15px 40px rgba(0,0,0,0.08); transform: rotate(-1.5deg);
+      margin-bottom: 25px;
+    }
+    .polaroid img, .polaroid video { width: 100%; display: block; border-radius: 1px; }
+    
+    .lock-timer {
+      background: rgba(169, 59, 103, 0.05); border: 1px dashed var(--rose);
+      padding: 15px; border-radius: 15px; text-align: center;
+      font-size: 0.85rem; color: var(--rose-deep); letter-spacing: 1px;
     }
 
-    .polaroid:hover {
-      transform: scale(1.02) rotate(0deg) !important;
+    .yt-box {
+      width: 100%; aspect-ratio: 16/9; border-radius: 15px; overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.15);
     }
 
-    .polaroid figure { margin: 0; }
-
-    .polaroid img,
-    .polaroid video {
-      width: 100%;
-      display: block;
-      aspect-ratio: 1 / 1;
-      object-fit: cover;
-      background: #fafafa;
+    /* Scroll Indicator */
+    .indicator {
+      position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
+      font-size: 0.7rem; text-transform: uppercase; letter-spacing: 3px;
+      color: var(--rose); opacity: 0; transition: opacity 1s;
     }
+    .indicator.visible { opacity: 0.7; animation: bounce 2s infinite; }
+    @keyframes bounce { 0%, 100% { transform: translate(-50%, 0); } 50% { transform: translate(-50%, 10px); } }
 
-    .polaroid figcaption {
-      margin-top: 15px;
-      text-align: center;
-      font-family: 'Dancing Script', cursive;
-      font-size: 1.5rem;
-      color: #8e5268;
-    }
-
-    /* Media Specifics */
-    .media-stack { display: grid; gap: 20px; }
-
-    /* Hero Overlay */
-    .hero-overlay {
-      position: fixed;
-      inset: 0;
-      display: grid;
-      place-items: center;
-      z-index: 20;
-      background: var(--bg-1);
-      transition: opacity 1.2s ease, visibility 1.2s ease;
-    }
-
-    .hero-overlay.is-hidden {
-      opacity: 0;
-      visibility: hidden;
-    }
-
-    .hero-copy {
-      text-align: center;
-      opacity: 0;
-      transform: translateY(20px);
-      transition: all 1s ease;
-    }
-
-    .hero-copy.show {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    .hero-title {
-      font-family: 'Dancing Script', cursive;
-      font-size: clamp(3rem, 12vw, 5rem);
-      color: var(--rose-deep);
-      margin: 10px 0;
-    }
-
-    /* Scroll Hint */
-    .scroll-hint {
-      position: fixed;
-      bottom: 40px;
-      left: 50%;
-      transform: translateX(-50%);
-      font-size: 0.7rem;
-      letter-spacing: 0.3em;
-      text-transform: uppercase;
-      color: var(--rose-deep);
-      opacity: 0;
-      transition: opacity 1s ease;
-      z-index: 10;
-    }
-
-    .scroll-hint.show { opacity: 0.6; animation: bounce 2s infinite; }
-
-    @keyframes bounce {
-      0%, 20%, 50%, 80%, 100% { transform: translateX(-50%) translateY(0); }
-      40% { transform: translateX(-50%) translateY(-10px); }
-      60% { transform: translateX(-50%) translateY(-5px); }
-    }
-
-    /* Butterfly Element */
-    .butterfly {
-      position: fixed;
-      width: 40px;
-      height: 40px;
-      z-index: 100;
-      pointer-events: none;
-      will-change: transform, left, top;
-    }
-
-    .wing {
-      position: absolute;
-      width: 20px;
-      height: 25px;
-      background: rgba(201, 94, 139, 0.4);
-      border: 1px solid rgba(201, 94, 139, 0.6);
-      border-radius: 50% 50% 0 50%;
-    }
-
-    .wing.right {
-      right: 0;
-      border-radius: 50% 50% 50% 0;
-    }
-
-    .wing.left { animation: flapLeft 0.2s infinite alternate; transform-origin: right center; }
-    .wing.right { animation: flapRight 0.2s infinite alternate; transform-origin: left center; }
-
-    @keyframes flapLeft { from { transform: rotateY(0deg); } to { transform: rotateY(70deg); } }
-    @keyframes flapRight { from { transform: rotateY(0deg); } to { transform: rotateY(-70deg); } }
-
-    /* Navigation Dots */
-    .footer-dots {
-      position: fixed;
-      right: 24px;
-      top: 50%;
-      transform: translateY(-50%);
-      display: flex;
-      flex-direction: column;
-      gap: 15px;
-      z-index: 30;
-    }
-
-    .footer-dots button {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      border: 2px solid var(--rose);
-      background: transparent;
-      padding: 0;
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
-
-    .footer-dots button.active {
-      background: var(--rose);
-      transform: scale(1.3);
-    }
-
-    @media (min-width: 768px) {
-      .polaroid-grid { grid-template-columns: 1fr 1fr; }
-      .media-stack { grid-template-columns: 1fr 1fr; }
-    }
   </style>
 </head>
-
 <body>
-  <div class="app">
-    <div id="heroOverlay" class="hero-overlay">
-      <div id="heroCopy" class="hero-copy">
-        <p class="section-kicker">Welcome, beautiful</p>
-        <h1 class="hero-title">For Jhansy</h1>
-        <p class="body-copy">A quiet place made just for you.</p>
-      </div>
-    </div>
 
-    <div id="butterfly" class="butterfly">
-      <div class="wing left"></div>
-      <div class="wing right"></div>
-    </div>
-
-    <div class="scene-stack">
-      <section class="scene is-active" data-index="0">
-        <div class="content">
-          <article class="letter">
-            <p class="section-kicker">Hello, Jhansy</p>
-            <h2 class="section-title">A soft place to land</h2>
-            <p class="body-copy">
-              I wanted to build something that felt like a deep breath. 
-              In a world that moves too fast, let this be our little 
-              corner of calm and sweetness.
-            </p>
-          </article>
-        </div>
-      </section>
-
-      <section class="scene" data-index="1">
-        <div class="content">
-          <div class="glass-card" style="padding: 24px;">
-            <p class="section-kicker" style="text-align: center;">For your peace</p>
-            <h2 class="section-title" style="text-align: center;">Lilies for you</h2>
-            <div class="polaroid-grid">
-              <div class="polaroid" style="transform: rotate(-3deg);">
-                <figure>
-                  <img src="flowers1.jpg" alt="Lilies">
-                  <figcaption>Pure calm</figcaption>
-                </figure>
-              </div>
-              <div class="polaroid" style="transform: rotate(3deg);">
-                <figure>
-                  <img src="flowers2.jpg" alt="Lilies">
-                  <figcaption>Just because</figcaption>
-                </figure>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section class="scene" data-index="2">
-        <div class="content">
-          <div class="glass-card" style="padding: 24px;">
-            <p class="section-kicker" style="text-align: center;">Sweet moments</p>
-            <h2 class="section-title" style="text-align: center;">A little treat</h2>
-            <div class="media-stack">
-              <div class="polaroid" style="transform: rotate(-2deg);">
-                <figure>
-                  <img src="icecream_photo.jpg" alt="Ice Cream">
-                  <figcaption>Sweetness</figcaption>
-                </figure>
-              </div>
-              <div class="polaroid" style="transform: rotate(2deg);">
-                <figure>
-                  <video id="icecreamVideo" playsinline muted loop>
-                    <source src="icecream.mov" type="video/quicktime">
-                    <source src="icecream.mov" type="video/mp4">
-                  </video>
-                  <figcaption>Magic</figcaption>
-                </figure>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section class="scene" data-index="3">
-        <div class="content">
-          <article class="closing-card">
-            <p class="section-kicker">My Promise</p>
-            <h2 class="section-title">Always here</h2>
-            <p class="body-copy">
-              No matter how the day goes, remember that you are cherished, 
-              valued, and so very loved. Come back here whenever 
-              you need a reminder.
-            </p>
-            <div class="signature">Always, P.</div>
-          </article>
-        </div>
-      </section>
-    </div>
-
-    <div id="scrollHint" class="scroll-hint">Scroll to explore</div>
-
-    <nav class="footer-dots">
-      <button class="active" data-go="0"></button>
-      <button data-go="1"></button>
-      <button data-go="2"></button>
-      <button data-go="3"></button>
-    </nav>
+  <div class="sun"></div>
+  
+  <div id="hero" class="hero-reveal">
+    <div id="name" class="name-text">Jhansy 🌿</div>
   </div>
+
+  <div id="butterfly" class="butterfly">
+    <div class="wing left"></div>
+    <div class="wing right"></div>
+  </div>
+
+  <div class="scene-container">
+    
+    <section id="s9" class="scene" data-hour="9">
+      <div class="card">
+        <h2>Good morning, Jhansy.</h2>
+        <p>Ee roju sun chudu entha calm ga, entha bright ga undo... exactly matching the vibe for today. Just ee garden chustu, modati light ni enjoy chey. **Flower kada?** Actually, neekante beautiful edi ledu, but maybe these flowers can bring a little extra light to your morning. Just stay right here, deep breath teesko, and relax. Let this butterfly be your company while the day begins. Ee quietness ni, ee colors ni enjoy chey... you deserve a morning this peaceful.</p>
+        <div class="polaroid">
+          <img src="flowers1.jpg" alt="A morning bloom">
+        </div>
+      </div>
+    </section>
+
+    <section id="s12" class="scene" data-hour="12">
+      <div class="card">
+        <h2>Coffee kavali kada?</h2>
+        <p>It’s already noon... time fast ga velthunda leka slow ga na? I know exactly ee time lo em thalochanivstundo. I can almost smell that cold Starbucks Mocha right now. Aa modati sip teseppudu vache aa chinna comfort untundi chudu, adi miss avvaku. A simple cold drink can change the whole mood of a day. Just take a slow sip, phone pakkana petti, and let the world outside fade away for a bit. Hope this brings a little bit of coolness and comfort to your afternoon.</p>
+        <div class="polaroid" style="transform: rotate(2deg); background: #fafafa; border: 1px solid #eee;">
+          <div style="height: 250px; display: flex; align-items:center; justify-content:center; flex-direction:column; color: #5c463f;">
+            <span style="font-size: 4rem;">☕</span>
+            <div style="font-family: 'Dancing Script'; font-size: 1.5rem; margin-top: 10px;">Your Starbucks Mocha</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="s15" class="scene" data-hour="15.5">
+      <div class="card">
+        <h2>Chocolate ice cream tinte baguntundhi kada?</h2>
+        <p>Konchem sweet craving start ayyuntundi ee paatiki... Edaina sweet tinte aa kick e veru, especially right now. Since it's hard to share it in person, let’s share the moment here. Watch this and just enjoy the sweetness. Imagine iddaram kurchuni, kaburlu chepthu, ee sweet treats enjoy chestunnam ani. It’s like a small, sweet hug for your soul to help you get through the rest of the day with a smile.</p>
+        <div class="polaroid">
+          <video id="mochiVideo" playsinline loop muted>
+            <source src="icecream.mov" type="video/quicktime">
+          </video>
+        </div>
+      </div>
+    </section>
+
+    <section id="s18" class="scene" data-hour="18">
+      <div class="card">
+        <h2>Movie chuste baguntundhit kada?</h2>
+        <p>Antha ayipoyaka, relax ga oka cinema chustu time spend chesthe untundi... Let’s just settle in, chill out, and get lost in a completely different story for a while. Everything else pakkana pettey.</p>
+        <div class="yt-box">
+          <iframe width="100%" height="100%" src="https://www.youtube.com/embed/jfKfPfyJRdk?controls=1" frameborder="0" allowfullscreen></iframe>
+        </div>
+        <div style="margin-top: 40px; padding-top: 30px; border-top: 1px solid rgba(169,59,103,0.1);">
+          <p style="font-style: italic; color: var(--rose-deep); text-align: center;">Jhansy... asalu ivanni chestunnatte, I realized one thing very deeply. I’m truly, deeply missing doing all these things for you in person. Neeku coffee ivvadam, flowers ivvadam, manam kalisi sweet tinadam... I miss it all. Hope you felt that today. You mean so much. Rest well, sleep peacefully, and know that I’m always, always in your corner. Goodnight.</p>
+          <div style="font-family: 'Dancing Script'; font-size: 2.2rem; text-align: right; color: var(--rose-deep);">P.</div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <div id="scrollHint" class="indicator">Scroll down</div>
 
   <script>
     const butterfly = document.getElementById('butterfly');
-    const heroOverlay = document.getElementById('heroOverlay');
-    const heroCopy = document.getElementById('heroCopy');
-    const scrollHint = document.getElementById('scrollHint');
+    const hero = document.getElementById('hero');
+    const name = document.getElementById('name');
     const scenes = document.querySelectorAll('.scene');
-    const dots = document.querySelectorAll('.footer-dots button');
-    const video = document.getElementById('icecreamVideo');
+    const scrollHint = document.getElementById('scrollHint');
 
-    let currentScene = 0;
-    let isIntroDone = false;
-
-    // Smooth Butterfly Follow
-    document.addEventListener('mousemove', (e) => {
-      if(!isIntroDone) return;
-      butterfly.style.left = e.clientX + 'px';
-      butterfly.style.top = e.clientY + 'px';
-      butterfly.style.transition = 'left 0.6s cubic-bezier(0.23, 1, 0.32, 1), top 0.6s cubic-bezier(0.23, 1, 0.32, 1)';
-    });
-
-    // Touch Support for Butterfly
-    document.addEventListener('touchmove', (e) => {
-      if(!isIntroDone) return;
-      const touch = e.touches[0];
-      butterfly.style.left = touch.clientX + 'px';
-      butterfly.style.top = touch.clientY + 'px';
-    });
-
-    // Scene Navigation
-    function updateScenes(index) {
-      scenes.forEach((scene, i) => {
-        scene.classList.remove('is-active', 'is-past');
-        if (i === index) scene.classList.add('is-active');
-        if (i < index) scene.classList.add('is-past');
-      });
-
-      dots.forEach((dot, i) => {
-        dot.classList.toggle('active', i === index);
-      });
-
-      // Video Play/Pause Control
-      if (index === 2) video.play();
-      else video.pause();
-
-      currentScene = index;
-    }
-
-    // Scroll Handler
-    window.addEventListener('scroll', () => {
-      if (!isIntroDone) return;
-      
-      const scrollPos = window.scrollY + (window.innerHeight / 2);
-      scenes.forEach((scene, i) => {
-        if (scrollPos > scene.offsetTop && scrollPos < scene.offsetTop + scene.offsetHeight) {
-          if (currentScene !== i) updateScenes(i);
-        }
-      });
-
-      if(window.scrollY > 100) scrollHint.classList.remove('show');
-    });
-
-    // Dot Click Handler
-    dots.forEach(dot => {
-      dot.addEventListener('click', () => {
-        const index = parseInt(dot.dataset.go);
-        window.scrollTo({
-          top: scenes[index].offsetTop,
-          behavior: 'smooth'
-        });
-      });
-    });
-
-    // Intro Animation
-    window.addEventListener('DOMContentLoaded', () => {
+    // Init Reveal
+    window.onload = () => {
+      // Butterfly flight path to name
       setTimeout(() => {
-        heroCopy.classList.add('show');
+        butterfly.style.transition = "all 3s cubic-bezier(0.22, 1, 0.36, 1)";
+        butterfly.style.left = "50%";
+        butterfly.style.top = "45%";
       }, 500);
 
       setTimeout(() => {
-        heroOverlay.classList.add('is-hidden');
-        isIntroDone = true;
-        scrollHint.classList.add('show');
-        // Initial butterfly position
-        butterfly.style.left = '50%';
-        butterfly.style.top = '50%';
-      }, 3500);
+        name.classList.add('show');
+        butterfly.style.left = "calc(50% + 100px)";
+        butterfly.style.top = "42%";
+      }, 2000);
+
+      setTimeout(() => {
+        hero.classList.add('fade-out');
+        scrollHint.classList.add('visible');
+        checkTime();
+      }, 5000);
+    };
+
+    function checkTime() {
+      const now = new Date();
+      const currentHour = now.getHours() + (now.getMinutes() / 60);
+
+      scenes.forEach(scene => {
+        const unlockHour = parseFloat(scene.dataset.hour);
+        if (currentHour >= unlockHour) {
+          scene.classList.add('unlocked');
+          if (scene.id === 's15') document.getElementById('mochiVideo').play();
+        } else {
+          // If locked, we replace the card content with a timer placeholder
+          const card = scene.querySelector('.card');
+          if (!scene.classList.contains('unlocked')) {
+             const originalHtml = card.innerHTML;
+             card.setAttribute('data-original', originalHtml);
+             card.innerHTML = `<h2>Coming soon...</h2><p style="text-align:center; opacity: 0.6;">This moment is still resting. It will reveal itself at ${scene.dataset.hour % 12 || 12} ${scene.dataset.hour >= 12 ? 'PM' : 'AM'}.</p>`;
+          }
+        }
+      });
+    }
+
+    window.addEventListener('scroll', () => {
+      const scrollY = window.scrollY;
+      
+      // Butterfly follows scroll
+      butterfly.style.top = (scrollY + (window.innerHeight * 0.4)) + "px";
+      
+      // Floating movement
+      const xOffset = Math.sin(scrollY / 100) * 30;
+      butterfly.style.left = `calc(85% + ${xOffset}px)`;
+
+      if (scrollY > 100) scrollHint.classList.remove('visible');
     });
+
+    // Refresh time check every minute
+    setInterval(checkTime, 60000);
   </script>
 </body>
 </html>
