@@ -1,258 +1,253 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>For You, Jhansy 🌿</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet" />
-  <style>
-    :root {
-      --bg-1: #fffaf8;
-      --bg-2: #fff1f4;
-      --bg-3: #fef7ef;
-      --rose: #c95e8b;
-      --rose-deep: #a93b67;
-      --ink: #5c463f;
-      --paper: rgba(255, 255, 255, 0.9);
-      --shadow: 0 30px 80px rgba(141, 86, 112, 0.12);
-      --radius: 36px;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Silent Presence</title>
 
-    * { box-sizing: border-box; -webkit-font-smoothing: antialiased; }
+<style>
 
-    html, body {
-      margin: 0; padding: 0; width: 100%; min-height: 100%;
-      background: linear-gradient(180deg, var(--bg-1) 0%, var(--bg-2) 40%, var(--bg-3) 100%);
-      color: var(--ink); font-family: 'Lora', serif;
-      overflow-x: hidden; scroll-behavior: smooth;
-    }
+/* ---------- GLOBAL ---------- */
+body {
+    margin: 0;
+    font-family: 'Georgia', serif;
+    background: linear-gradient(to bottom, #fffafc, #f7f1f4);
+    color: #444;
+    overflow-x: hidden;
+}
 
-    /* Cinematic Sun Bloom */
-    .sun {
-      position: fixed; top: -150px; right: -150px; width: 600px; height: 600px;
-      background: radial-gradient(circle, rgba(255, 248, 200, 0.5) 0%, transparent 70%);
-      filter: blur(80px); z-index: 1; pointer-events: none;
-      animation: sunDrift 20s ease-in-out infinite alternate;
-    }
-    @keyframes sunDrift { from { transform: translate(0,0); } to { transform: translate(-50px, 30px); } }
+.section {
+    min-height: 100vh;
+    padding: 60px 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transform: translateY(40px);
+    transition: all 1.2s ease;
+}
 
-    /* The Butterfly Messenger */
-    .butterfly {
-      position: fixed; left: -100px; top: 50%; width: 50px; height: 44px;
-      z-index: 1000; pointer-events: none; transform: translate(-50%, -50%);
-      will-change: left, top, transform;
-    }
-    .butterfly .wing {
-      position: absolute; width: 25px; height: 32px;
-      border: 1px solid rgba(169, 59, 103, 0.3);
-      background: linear-gradient(135deg, rgba(255, 215, 230, 0.7), rgba(255, 255, 255, 0.2));
-      backdrop-filter: blur(2px);
-    }
-    .wing.left { left: 0; border-radius: 70% 30% 30% 70% / 80% 20% 80% 20%; transform-origin: right center; animation: flapL 0.15s ease-in-out infinite alternate; }
-    .wing.right { right: 0; border-radius: 30% 70% 70% 30% / 20% 80% 20% 80%; transform-origin: left center; animation: flapR 0.15s ease-in-out infinite alternate; }
-    @keyframes flapL { from { transform: rotateY(0deg); } to { transform: rotateY(75deg); } }
-    @keyframes flapR { from { transform: rotateY(0deg); } to { transform: rotateY(-75deg); } }
+.section.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
 
-    /* Layout & Scenes */
-    .hero-reveal {
-      position: fixed; inset: 0; z-index: 900; background: var(--bg-1);
-      display: flex; align-items: center; justify-content: center;
-      transition: opacity 2s ease, visibility 2s ease;
-    }
-    .hero-reveal.fade-out { opacity: 0; visibility: hidden; }
-    .name-text {
-      font-family: 'Dancing Script', cursive; font-size: clamp(3rem, 12vw, 5rem);
-      color: var(--rose-deep); opacity: 0; transform: translateY(30px);
-      transition: all 1.5s cubic-bezier(0.22, 1, 0.36, 1);
-    }
-    .name-text.show { opacity: 1; transform: translateY(0); }
+h1 {
+    font-size: 3rem;
+    color: #c95e8b;
+    letter-spacing: 2px;
+}
 
-    .scene-container { position: relative; z-index: 2; width: 100%; max-width: 500px; margin: 0 auto; padding: 100vh 20px 50px; }
-    
-    .scene {
-      margin-bottom: 120px; opacity: 0.15; transform: scale(0.95);
-      transition: all 1.2s cubic-bezier(0.22, 1, 0.36, 1);
-      pointer-events: none;
-    }
-    .scene.unlocked { opacity: 1; transform: scale(1); pointer-events: auto; }
-    
-    .card {
-      background: var(--paper); border-radius: var(--radius); padding: 35px 25px;
-      box-shadow: var(--shadow); border: 1px solid rgba(255,255,255,0.6);
-      position: relative; overflow: hidden;
-    }
-    .card::before {
-      content: ""; position: absolute; top: 0; left: 0; width: 6px; height: 100%;
-      background: linear-gradient(to bottom, var(--rose), var(--rose-deep));
-    }
+.text {
+    max-width: 700px;
+    font-size: 1.1rem;
+    line-height: 1.8;
+    text-align: center;
+}
 
-    h2 { font-family: 'Dancing Script', cursive; font-size: 2.2rem; color: var(--rose-deep); margin: 0 0 20px; }
-    p { line-height: 1.9; font-size: 1.05rem; margin-bottom: 25px; color: var(--ink); }
+/* ---------- LOCKED STATE ---------- */
+.locked {
+    opacity: 0.4;
+    filter: blur(2px);
+}
 
-    .polaroid {
-      background: white; padding: 10px 10px 35px; border-radius: 2px;
-      box-shadow: 0 15px 40px rgba(0,0,0,0.08); transform: rotate(-1.5deg);
-      margin-bottom: 25px;
-    }
-    .polaroid img, .polaroid video { width: 100%; display: block; border-radius: 1px; }
-    
-    .lock-timer {
-      background: rgba(169, 59, 103, 0.05); border: 1px dashed var(--rose);
-      padding: 15px; border-radius: 15px; text-align: center;
-      font-size: 0.85rem; color: var(--rose-deep); letter-spacing: 1px;
-    }
+.lock-box {
+    font-size: 1rem;
+    color: #888;
+    margin-top: 10px;
+}
 
-    .yt-box {
-      width: 100%; aspect-ratio: 16/9; border-radius: 15px; overflow: hidden;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-    }
+/* ---------- BUTTERFLY ---------- */
+.butterfly {
+    position: fixed;
+    top: 20%;
+    left: 10%;
+    width: 40px;
+    height: 40px;
+    z-index: 999;
+    animation: float 6s ease-in-out infinite;
+}
 
-    /* Scroll Indicator */
-    .indicator {
-      position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
-      font-size: 0.7rem; text-transform: uppercase; letter-spacing: 3px;
-      color: var(--rose); opacity: 0; transition: opacity 1s;
-    }
-    .indicator.visible { opacity: 0.7; animation: bounce 2s infinite; }
-    @keyframes bounce { 0%, 100% { transform: translate(-50%, 0); } 50% { transform: translate(-50%, 10px); } }
+.wing {
+    width: 20px;
+    height: 30px;
+    background: #c95e8b;
+    position: absolute;
+    border-radius: 50%;
+    opacity: 0.8;
+}
 
-  </style>
+.left-wing {
+    left: 0;
+    transform-origin: right center;
+    animation: flapLeft 0.5s infinite alternate;
+}
+
+.right-wing {
+    right: 0;
+    transform-origin: left center;
+    animation: flapRight 0.5s infinite alternate;
+}
+
+@keyframes flapLeft {
+    from { transform: rotate(20deg); }
+    to { transform: rotate(-20deg); }
+}
+
+@keyframes flapRight {
+    from { transform: rotate(-20deg); }
+    to { transform: rotate(20deg); }
+}
+
+@keyframes float {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-20px); }
+    100% { transform: translateY(0px); }
+}
+
+/* ---------- VISUAL ELEMENTS ---------- */
+.image {
+    width: 300px;
+    border-radius: 20px;
+    margin: 20px 0;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+
+video {
+    width: 300px;
+    border-radius: 20px;
+}
+
+/* ---------- SUN BLOOM ---------- */
+.sun {
+    position: absolute;
+    top: 50px;
+    right: 80px;
+    width: 120px;
+    height: 120px;
+    background: radial-gradient(circle, #ffe4ec, transparent);
+    border-radius: 50%;
+    animation: glow 4s infinite alternate;
+}
+
+@keyframes glow {
+    from { opacity: 0.5; }
+    to { opacity: 1; }
+}
+
+</style>
 </head>
+
 <body>
 
-  <div class="sun"></div>
-  
-  <div id="hero" class="hero-reveal">
-    <div id="name" class="name-text">Jhansy 🌿</div>
-  </div>
+<div class="sun"></div>
 
-  <div id="butterfly" class="butterfly">
-    <div class="wing left"></div>
-    <div class="wing right"></div>
-  </div>
+<!-- Butterfly -->
+<div class="butterfly">
+    <div class="wing left-wing"></div>
+    <div class="wing right-wing"></div>
+</div>
 
-  <div class="scene-container">
-    
-    <section id="s9" class="scene" data-hour="9">
-      <div class="card">
-        <h2>Good morning, Jhansy.</h2>
-        <p>Ee roju sun chudu entha calm ga, entha bright ga undo... exactly matching the vibe for today. Just ee garden chustu, modati light ni enjoy chey. **Flower kada?** Actually, neekante beautiful edi ledu, but maybe these flowers can bring a little extra light to your morning. Just stay right here, deep breath teesko, and relax. Let this butterfly be your company while the day begins. Ee quietness ni, ee colors ni enjoy chey... you deserve a morning this peaceful.</p>
-        <div class="polaroid">
-          <img src="flowers1.jpg" alt="A morning bloom">
-        </div>
-      </div>
-    </section>
+<!-- NAME -->
+<section class="section visible">
+    <h1>Jhansy 🌿</h1>
+</section>
 
-    <section id="s12" class="scene" data-hour="12">
-      <div class="card">
-        <h2>Coffee kavali kada?</h2>
-        <p>It’s already noon... time fast ga velthunda leka slow ga na? I know exactly ee time lo em thalochanivstundo. I can almost smell that cold Starbucks Mocha right now. Aa modati sip teseppudu vache aa chinna comfort untundi chudu, adi miss avvaku. A simple cold drink can change the whole mood of a day. Just take a slow sip, phone pakkana petti, and let the world outside fade away for a bit. Hope this brings a little bit of coolness and comfort to your afternoon.</p>
-        <div class="polaroid" style="transform: rotate(2deg); background: #fafafa; border: 1px solid #eee;">
-          <div style="height: 250px; display: flex; align-items:center; justify-content:center; flex-direction:column; color: #5c463f;">
-            <span style="font-size: 4rem;">☕</span>
-            <div style="font-family: 'Dancing Script'; font-size: 1.5rem; margin-top: 10px;">Your Starbucks Mocha</div>
-          </div>
-        </div>
-      </div>
-    </section>
+<!-- 9 AM -->
+<section id="morning" class="section">
+    <img src="https://images.unsplash.com/photo-1501004318641-b39e6451bec6" class="image">
+    <div class="text">
+        Good morning, Jhansy. Ee roju sun chudu entha calm ga, entha bright ga undo... exactly matching the vibe for today. Just ee garden chustu, modati light ni enjoy chey. Flower kada? Actually, neekante beautiful edi ledu, but maybe these flowers can bring a little extra light to your morning. Just stay right here, deep breath teesko, and relax. Let this butterfly be your company while the day begins. Ee quietness ni, ee colors ni enjoy chey... you deserve a morning this peaceful.
+    </div>
+    <div class="lock-box" id="lock-morning"></div>
+</section>
 
-    <section id="s15" class="scene" data-hour="15.5">
-      <div class="card">
-        <h2>Chocolate ice cream tinte baguntundhi kada?</h2>
-        <p>Konchem sweet craving start ayyuntundi ee paatiki... Edaina sweet tinte aa kick e veru, especially right now. Since it's hard to share it in person, let’s share the moment here. Watch this and just enjoy the sweetness. Imagine iddaram kurchuni, kaburlu chepthu, ee sweet treats enjoy chestunnam ani. It’s like a small, sweet hug for your soul to help you get through the rest of the day with a smile.</p>
-        <div class="polaroid">
-          <video id="mochiVideo" playsinline loop muted>
-            <source src="icecream.mov" type="video/quicktime">
-          </video>
-        </div>
-      </div>
-    </section>
+<!-- 12 PM -->
+<section id="coffee" class="section">
+    <img src="https://images.unsplash.com/photo-1509042239860-f550ce710b93" class="image">
+    <div class="text">
+        It’s already noon... time fast ga velthunda leka slow ga na? I know exactly ee time lo em thalochanivstundo. Coffee kavali kada? I can almost smell that cold Starbucks Mocha right now. Aa modati sip teseppudu vache aa chinna comfort untundi chudu, adi miss avvaku. A simple cold drink can change the whole mood of a day. Just take a slow sip, phone pakkana petti, and let the world outside fade away for a bit. Hope this brings a little bit of coolness and comfort to your afternoon.
+    </div>
+    <div class="lock-box" id="lock-coffee"></div>
+</section>
 
-    <section id="s18" class="scene" data-hour="18">
-      <div class="card">
-        <h2>Movie chuste baguntundhit kada?</h2>
-        <p>Antha ayipoyaka, relax ga oka cinema chustu time spend chesthe untundi... Let’s just settle in, chill out, and get lost in a completely different story for a while. Everything else pakkana pettey.</p>
-        <div class="yt-box">
-          <iframe width="100%" height="100%" src="https://www.youtube.com/embed/jfKfPfyJRdk?controls=1" frameborder="0" allowfullscreen></iframe>
-        </div>
-        <div style="margin-top: 40px; padding-top: 30px; border-top: 1px solid rgba(169,59,103,0.1);">
-          <p style="font-style: italic; color: var(--rose-deep); text-align: center;">Jhansy... asalu ivanni chestunnatte, I realized one thing very deeply. I’m truly, deeply missing doing all these things for you in person. Neeku coffee ivvadam, flowers ivvadam, manam kalisi sweet tinadam... I miss it all. Hope you felt that today. You mean so much. Rest well, sleep peacefully, and know that I’m always, always in your corner. Goodnight.</p>
-          <div style="font-family: 'Dancing Script'; font-size: 2.2rem; text-align: right; color: var(--rose-deep);">P.</div>
-        </div>
-      </div>
-    </section>
+<!-- 3:30 PM -->
+<section id="sweet" class="section">
+    <video controls>
+        <source src="icecream.mov" type="video/mp4">
+    </video>
+    <div class="text">
+        Konchem sweet craving start ayyuntundi ee paatiki... Chocolate ice cream tinte baguntundhi kada? Edaina sweet tinte aa kick e veru, especially right now. Since it's hard to share it in person, let’s share the moment here. Watch this and just enjoy the sweetness. Imagine iddaram kurchuni, kaburlu chepthu, ee sweet treats enjoy chestunnam ani. It’s like a small, sweet hug for your soul to help you get through the rest of the day with a smile.
+    </div>
+    <div class="lock-box" id="lock-sweet"></div>
+</section>
 
-  </div>
+<!-- 6 PM -->
+<section id="movie" class="section">
+    <iframe width="300" height="200" src="https://www.youtube.com/embed/ysz5S6PUM-U"></iframe>
+    <div class="text">
+        Antha ayipoyaka, relax ga oka movie chuste baguntundhit kada? Let’s just settle in, chill out, and get lost in a completely different story for a while. Everything else pakkana pettey. Jhansy... asalu ivanni chestunnatte, I realized one thing very deeply. I’m truly, deeply missing doing all these things for you in person. Neeku coffee ivvadam, flowers ivvadam, manam kalisi sweet tinadam... I miss it all. Hope you felt that today. You mean so much. Rest well, sleep peacefully, and know that I’m always, always in your corner. Goodnight.
+    </div>
+    <div class="lock-box" id="lock-movie"></div>
+</section>
 
-  <div id="scrollHint" class="indicator">Scroll down</div>
+<script>
 
-  <script>
-    const butterfly = document.getElementById('butterfly');
-    const hero = document.getElementById('hero');
-    const name = document.getElementById('name');
-    const scenes = document.querySelectorAll('.scene');
-    const scrollHint = document.getElementById('scrollHint');
+/* ---------- TIME LOGIC ---------- */
 
-    // Init Reveal
-    window.onload = () => {
-      // Butterfly flight path to name
-      setTimeout(() => {
-        butterfly.style.transition = "all 3s cubic-bezier(0.22, 1, 0.36, 1)";
-        butterfly.style.left = "50%";
-        butterfly.style.top = "45%";
-      }, 500);
+function unlockSections() {
+    const now = new Date();
 
-      setTimeout(() => {
-        name.classList.add('show');
-        butterfly.style.left = "calc(50% + 100px)";
-        butterfly.style.top = "42%";
-      }, 2000);
+    const morningTime = new Date();
+    morningTime.setHours(9,0,0);
 
-      setTimeout(() => {
-        hero.classList.add('fade-out');
-        scrollHint.classList.add('visible');
-        checkTime();
-      }, 5000);
-    };
+    const coffeeTime = new Date();
+    coffeeTime.setHours(12,0,0);
 
-    function checkTime() {
-      const now = new Date();
-      const currentHour = now.getHours() + (now.getMinutes() / 60);
+    const sweetTime = new Date();
+    sweetTime.setHours(15,30,0);
 
-      scenes.forEach(scene => {
-        const unlockHour = parseFloat(scene.dataset.hour);
-        if (currentHour >= unlockHour) {
-          scene.classList.add('unlocked');
-          if (scene.id === 's15') document.getElementById('mochiVideo').play();
-        } else {
-          // If locked, we replace the card content with a timer placeholder
-          const card = scene.querySelector('.card');
-          if (!scene.classList.contains('unlocked')) {
-             const originalHtml = card.innerHTML;
-             card.setAttribute('data-original', originalHtml);
-             card.innerHTML = `<h2>Coming soon...</h2><p style="text-align:center; opacity: 0.6;">This moment is still resting. It will reveal itself at ${scene.dataset.hour % 12 || 12} ${scene.dataset.hour >= 12 ? 'PM' : 'AM'}.</p>`;
-          }
-        }
-      });
+    const movieTime = new Date();
+    movieTime.setHours(18,0,0);
+
+    checkSection("morning", morningTime);
+    checkSection("coffee", coffeeTime);
+    checkSection("sweet", sweetTime);
+    checkSection("movie", movieTime);
+}
+
+function checkSection(id, unlockTime) {
+    const section = document.getElementById(id);
+    const lockText = document.getElementById("lock-" + id);
+
+    const now = new Date();
+
+    if (now >= unlockTime) {
+        section.classList.add("visible");
+        section.classList.remove("locked");
+        lockText.innerHTML = "";
+    } else {
+        section.classList.add("locked");
+        lockText.innerHTML = "Resting... unlocks at " + unlockTime.toLocaleTimeString();
     }
+}
 
-    window.addEventListener('scroll', () => {
-      const scrollY = window.scrollY;
-      
-      // Butterfly follows scroll
-      butterfly.style.top = (scrollY + (window.innerHeight * 0.4)) + "px";
-      
-      // Floating movement
-      const xOffset = Math.sin(scrollY / 100) * 30;
-      butterfly.style.left = `calc(85% + ${xOffset}px)`;
-
-      if (scrollY > 100) scrollHint.classList.remove('visible');
+/* ---------- SCROLL REVEAL ---------- */
+window.addEventListener("scroll", () => {
+    document.querySelectorAll(".section").forEach(sec => {
+        const rect = sec.getBoundingClientRect();
+        if (rect.top < window.innerHeight - 100) {
+            sec.classList.add("visible");
+        }
     });
+});
 
-    // Refresh time check every minute
-    setInterval(checkTime, 60000);
-  </script>
+/* ---------- INIT ---------- */
+unlockSections();
+setInterval(unlockSections, 60000);
+
+</script>
+
 </body>
 </html>
