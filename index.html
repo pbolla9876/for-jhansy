@@ -3,107 +3,117 @@
 <head>
     <title>A Quiet Space for You</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&family=Lora:ital@1&display=swap" rel="stylesheet">
     <style>
-        /* Soft, calming theme */
+        /* 1. Soft Romantic Palette */
         body { 
-            background: linear-gradient(180deg, #FDFCF0 0%, #FFF5F5 100%); 
-            font-family: 'Georgia', serif; 
+            background: linear-gradient(135deg, #fff5f7 0%, #fdfcf0 100%); 
+            font-family: 'Lora', serif; 
             text-align: center; 
             color: #5D4037; 
-            padding: 20px; 
-            margin: 0; 
-        }
-        
-        h1 { color: #d63384; font-size: 2.2rem; margin-top: 40px; }
-        .section-title { font-style: italic; color: #8D6E63; margin-top: 40px; font-size: 1.4rem; }
-        
-        /* Media Styling */
-        img, video { 
-            max-width: 90%; 
-            border-radius: 20px; 
-            margin: 20px 0; 
-            box-shadow: 0 10px 30px rgba(214, 51, 132, 0.1); 
+            padding: 0; margin: 0; 
+            overflow-x: hidden;
         }
 
-        /* The Heart-Touching Note */
-        .note { 
+        /* 2. Floating Hearts Background Effect */
+        .heart-bg {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: -1; opacity: 0.5;
+        }
+
+        /* 3. Typography */
+        h1 { 
+            font-family: 'Dancing Script', cursive; 
+            color: #d63384; font-size: 3rem; 
+            margin-top: 60px; text-shadow: 2px 2px 4px rgba(0,0,0,0.05);
+        }
+        
+        .section-title { 
+            font-family: 'Dancing Script', cursive;
+            color: #ad1457; margin-top: 50px; font-size: 2rem; 
+        }
+
+        /* 4. Soft Media Styling */
+        .media-container {
+            margin: 20px auto; width: 90%; max-width: 500px;
+            border-radius: 30px; overflow: hidden;
+            box-shadow: 0 20px 40px rgba(214, 51, 132, 0.1);
+            border: 8px solid white;
+            transition: transform 0.3s ease;
+        }
+        
+        img, video { width: 100%; display: block; }
+
+        /* 5. The Heart-Touching Letter */
+        .letter { 
             background-color: white; 
-            padding: 35px; 
-            border-radius: 20px; 
+            padding: 40px; 
+            border-radius: 0px 50px 0px 50px; 
             max-width: 500px; 
-            margin: 50px auto; 
-            line-height: 1.8; 
-            border: 1px solid #F3E5F5; 
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            margin: 60px auto; 
+            line-height: 2; 
+            border-left: 5px solid #d63384;
+            box-shadow: 10px 10px 30px rgba(0,0,0,0.03);
             text-align: left;
+            font-style: italic;
         }
 
-        .highlight { color: #d63384; font-weight: bold; }
-        
-        hr { width: 30%; margin: 40px auto; opacity: 0.2; }
+        .highlight { color: #d63384; font-weight: bold; font-style: normal; }
 
-        /* Movie Container */
-        .video-container {
-            position: relative;
-            padding-bottom: 56.25%;
-            height: 0;
-            overflow: hidden;
-            max-width: 90%;
-            margin: 20px auto;
-            border-radius: 15px;
+        /* Slow Fade-In Animation */
+        .fade-in {
+            animation: fadeIn 3s;
         }
-        .video-container iframe {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
+        @keyframes fadeIn {
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
 <body>
 
-    <h1>For You, Jhansy 🌿</h1>
-    <p><i>A little digital sanctuary for when the world feels too loud.</i></p>
+    <div class="fade-in">
+        <h1>For You, Jhansy 🌿</h1>
+        <p style="color: #8D6E63; letter-spacing: 2px;"><i>Distance is just a test of how far love can travel.</i></p>
 
-    <h3 class="section-title">🌸 I picked these for you...</h3>
-    <img src="flowers1.jpg" alt="Lilies">
-    <img src="flowers2.jpg" alt="Lilies Close up">
-    <p>I wish I could hand these to you in person today. <br> They are waiting for you.</p>
+        <h3 class="section-title">🌸 Petals of Peace</h3>
+        <div class="media-container">
+            <img src="flowers1.jpg" alt="Lilies">
+        </div>
+        <div class="media-container">
+            <img src="flowers2.jpg" alt="Lilies Close up">
+        </div>
+        <p style="padding: 0 30px;">I chose these lilies because they feel as calm as I want you to feel right now.</p>
 
-    <hr>
+        <hr style="width: 20%; margin: 50px auto; border: 0; border-top: 1px solid #d63384; opacity: 0.2;">
 
-    <h3 class="section-title">🍦 Something Cold for the Headache</h3>
-    <p style="padding: 0 20px;">I know things are physically draining right now. I got your favorite Mocha and Double Chocolate Mochi.</p>
-    
-    <img src="icecream_photo.jpg" alt="Mochi Boxes">
-    
-    <p><i>Since I can't share them with you physically...</i></p>
-    
-    <video controls playsinline preload="metadata" style="width: 100%; max-width: 500px;">
-        <source src="icecream.mov" type="video/quicktime">
-        <source src="icecream.mov" type="video/mp4">
-        Your browser does not support the video tag.
-    </video>
-    
-    <p>I’m having one with you in spirit. I hope the sweetness helps. 🍫</p>
+        <h3 class="section-title">🍦 Sweetness for the Soul</h3>
+        <p>I wish I could hold the spoon for you while you rest.</p>
+        
+        <div class="media-container">
+            <img src="icecream_photo.jpg" alt="Mochi Boxes">
+        </div>
+        
+        <div class="media-container">
+            <video controls playsinline>
+                <source src="icecream.mov" type="video/quicktime">
+                Your browser does not support the video tag.
+            </video>
+        </div>
+        <p>A little Mocha and Chocolate to make the headache go away.🍫</p>
 
-    <hr>
+        <div class="letter">
+            <p>
+                My Dearest Jhansy,<br><br>
+                I know these days are hard. I know your body is tired and your mind is heavy. While I can't be there to rub your temples or bring you tea, I wanted to build this <span class="highlight">sacred space</span> for you.<br><br>
+                Every image here, every flower I picked, and every bite of ice cream was a thought sent your way. This isn't just code; it's <span class="highlight">my heart</span> in digital form.<br><br>
+                Take all the time you need. Don't worry about the world outside. Just stay here in this quiet place as long as you need.<br><br>
+                <span class="highlight">I am right here. Always.</span>
+            </p>
+        </div>
 
-    <h3 class="section-title">🎬 A Moment to Disappear</h3>
-    <p style="padding: 0 20px;">No thinking required. Just press play and let the world fade away for a bit.</p>
-    <div class="video-container">
-        <iframe src="https://www.youtube.com/embed/5WnL9v0V_E8" frameborder="0" allowfullscreen></iframe>
+        <p style="font-family: 'Dancing Script', cursive; font-size: 1.5rem; color: #d63384; margin-bottom: 80px;">With all my love, P.</p>
     </div>
-
-    <div class="note">
-        <p>
-            Jhansy,<br><br>
-            I built this corner of the internet <span class="highlight">just for you</span> because I know how heavy these days feel. <br><br>
-            Between the headache and the physical exhaustion, I wanted you to have a place that is quiet, beautiful, and full of the things I bought to make you smile. <br><br>
-            <span class="highlight">You don't have to reply.</span> You don't have to say a word. I am just holding this space for you until you feel like yourself again. <br><br>
-            Rest well. 🤍
-        </p>
-    </div>
-
-    <p style="font-size: 0.8rem; color: #BDBDBD; margin-bottom: 50px;">Created with care by P.</p>
 
 </body>
 </html>
