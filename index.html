@@ -1,277 +1,163 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Silent Presence</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>A Gift for Jhansy</title>
   <style>
     :root {
       --rose: #c95e8b;
       --rose-deep: #a84871;
-      --blush: #f8dde8;
       --cream: #fffaf6;
-      --paper: #f6efe7;
-      --gold: #f7dca6;
+      --paper: #fcfaf7;
       --text: #5b4a4a;
       --muted: #8b7676;
-      --white-glass: rgba(255,255,255,0.56);
-      --white-line: rgba(255,255,255,0.7);
-      --shadow: 0 24px 80px rgba(156,118,118,0.16);
     }
 
     * { box-sizing: border-box; }
-    html { scroll-behavior: smooth; }
-    body {
-      margin: 0;
-      font-family: Georgia, "Times New Roman", serif;
-      color: var(--text);
-      background: linear-gradient(180deg, #fffaf6 0%, #fff8fb 32%, #f8f0ea 100%);
+    body, html { 
+      margin: 0; padding: 0; 
+      font-family: 'Georgia', serif; 
+      background: var(--cream);
       overflow-x: hidden;
     }
 
-    /* --- Animations --- */
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(20px); filter: blur(5px); }
-      to { opacity: 1; transform: translateY(0); filter: blur(0); }
+    /* --- Phase 1: The Opening Overlay --- */
+    #opening-overlay {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
+      background: var(--cream); z-index: 5000;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      transition: all 1.2s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
-    @keyframes flapL { 0%,100% { transform: rotate(22deg); } 50% { transform: rotate(-12deg); } }
-    @keyframes flapR { 0%,100% { transform: rotate(-22deg); } 50% { transform: rotate(12deg); } }
-
-    /* --- Layout Elements --- */
-    .sun-bloom {
-      position: fixed; right: -8rem; top: -5rem; width: 24rem; height: 24rem;
-      border-radius: 50%; background: radial-gradient(circle, rgba(247,220,166,0.4) 0%, transparent 70%);
-      filter: blur(40px); pointer-events: none; z-index: 0;
+    .envelope-container {
+      position: relative; width: 320px; height: 220px;
+      perspective: 1000px; cursor: pointer;
     }
 
-    .petal {
-      position: fixed; top: -30px; width: 10px; height: 10px;
-      border-radius: 50%; background: rgba(146, 186, 132, 0.4);
-      pointer-events: none; z-index: 1;
-      animation: fall linear infinite;
+    .envelope {
+      position: relative; width: 100%; height: 100%;
+      background: #f4ecd8; border: 1px solid #e0d5ba;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+      transition: transform 0.6s;
     }
 
-    @keyframes fall {
-      to { transform: translate3d(var(--drift), 110vh, 0) rotate(360deg); }
+    .flap {
+      position: absolute; top: 0; left: 0; width: 0; height: 0;
+      border-left: 160px solid transparent; border-right: 160px solid transparent;
+      border-top: 110px solid #decba4;
+      transform-origin: top; transition: transform 0.8s ease; z-index: 3;
     }
 
-    .guardian-butterfly {
-      position: fixed; left: 2rem; top: 5rem; width: 60px; height: 60px;
-      z-index: 100; pointer-events: none; transition: transform 0.1s linear;
+    .letter {
+      position: absolute; top: 5px; left: 10px; width: 300px; height: 200px;
+      background: var(--paper); padding: 25px;
+      z-index: 2; transition: all 0.8s ease;
+      box-shadow: 0 0 15px rgba(0,0,0,0.05);
+      overflow-y: auto; scrollbar-width: none;
     }
 
-    /* --- Butterfly Drawing --- */
-    .butterfly { position: relative; width: 100%; height: 100%; }
-    .wing { position: absolute; border-radius: 50% 20%; background: var(--rose); opacity: 0.8; transform-origin: center; }
-    .wing-l { left: 0; top: 10px; width: 25px; height: 30px; animation: flapL 0.4s infinite; transform-origin: right; }
-    .wing-r { right: 0; top: 10px; width: 25px; height: 30px; animation: flapR 0.4s infinite; transform-origin: left; }
-    .body-line { position: absolute; left: 50%; top: 15px; width: 3px; height: 25px; background: #555; transform: translateX(-50%); border-radius: 5px; }
-
-    /* --- Content Sections --- */
-    .section {
-      padding: 4rem 1rem; max-width: 900px; margin: 0 auto;
-      opacity: 0; transform: translateY(30px); transition: all 1.5s ease;
-    }
-    .section.unlocked { opacity: 1; transform: translateY(0); }
-
-    .card {
-      background: rgba(255, 255, 255, 0.7);
-      backdrop-filter: blur(15px);
-      border-radius: 30px;
-      padding: 2rem;
-      border: 1px solid var(--white-line);
-      box-shadow: var(--shadow);
+    /* Envelope Opening Animation */
+    .open .flap { transform: rotateX(180deg); z-index: 1; }
+    .open .letter { 
+      transform: translateY(-120px); 
+      height: 420px; 
+      z-index: 4; 
+      box-shadow: 0 20px 50px rgba(0,0,0,0.15);
     }
 
-    .media-box {
-      margin-top: 1.5rem; border-radius: 20px; overflow: hidden;
-      display: none; /* Controlled by JS */
-      animation: fadeUp 1s ease forwards;
+    #typed-text {
+      font-size: 1.05rem; line-height: 1.7; color: var(--text);
+      white-space: pre-wrap;
     }
 
-    .media-box img, .media-box video { width: 100%; display: block; }
-
-    .countdown-text {
-      font-style: italic; color: var(--muted); font-size: 0.9rem; margin-top: 10px;
+    .hint-text {
+      margin-top: 40px; color: var(--muted); font-style: italic;
+      font-size: 0.9rem; animation: pulse 2s infinite;
     }
 
-    .locked-overlay {
-      background: rgba(240, 240, 240, 0.4);
-      padding: 2rem; border-radius: 20px; text-align: center;
-      border: 1px dashed #ccc;
+    @keyframes pulse { 0% {opacity: 0.4;} 50% {opacity: 1;} 100% {opacity: 0.4;} }
+
+    /* --- Phase 2: The Main World (Hidden initially) --- */
+    #main-world {
+      opacity: 0; transform: scale(0.98); filter: blur(10px);
+      transition: all 2s ease;
+      padding-top: 20vh;
     }
 
-    /* --- Typography --- */
-    h1 { font-size: 3.5rem; letter-spacing: 5px; color: var(--rose-deep); text-align: center; margin-bottom: 0.5rem; }
-    .subtitle { text-align: center; color: var(--muted); letter-spacing: 2px; margin-bottom: 5rem; }
-    
-    /* --- Evening/Final Styling --- */
-    .ending-text { 
-        white-space: pre-line; line-height: 1.8; margin-top: 2rem; 
-        font-size: 1.1rem; color: #444; display: none;
+    .world-active #main-world { opacity: 1; transform: scale(1); filter: blur(0); }
+    .world-active #opening-overlay { opacity: 0; pointer-events: none; }
+
+    .scroll-hint {
+      text-align: center; margin-top: 30px; font-weight: bold;
+      color: var(--rose-deep); opacity: 0; transition: opacity 1s;
     }
+    .show-scroll { opacity: 1; }
 
   </style>
 </head>
 <body>
 
-  <div class="sun-bloom"></div>
-  <div id="petals"></div>
-
-  <div class="guardian-butterfly" id="guardian">
-    <div class="butterfly">
-      <div class="wing wing-l"></div>
-      <div class="wing wing-r"></div>
-      <div class="body-line"></div>
+  <div id="opening-overlay">
+    <div class="envelope-container" id="envelopeWrapper">
+      <div class="envelope" id="mainEnvelope">
+        <div class="flap"></div>
+        <div class="letter">
+          <div id="typed-text"></div>
+          <div id="final-cta" class="scroll-hint">Scroll down to see the world... ↓</div>
+        </div>
+      </div>
     </div>
+    <p class="hint-text" id="tapPrompt">Click to open your letter...</p>
   </div>
 
-  <header style="padding-top: 10vh;">
-    <h1>JHANSY 🌿</h1>
-    <p class="subtitle">let the day arrive slowly</p>
-  </header>
-
-  <section class="section" id="morningSection" data-hour="9" data-minute="0">
-    <div class="card">
-      <div class="time-pill">🌸 9:00 AM — Morning Bloom</div>
-      <div class="unlocked-content">
-          <p>Good morning, Jhansy. Ee roju sun chudu entha calm ga undo... exactly matching the vibe for today.</p>
-          <div class="media-box"><img src="flowers1.jpg" alt="Flowers"></div>
-      </div>
-      <div class="locked-overlay">
-        <p>Resting... arrives with the morning light.</p>
-        <div class="countdown-text" data-countdown></div>
-      </div>
-    </div>
-  </section>
-
-  <section class="section" id="coffeeSection" data-hour="12" data-minute="0">
-    <div class="card">
-      <div class="time-pill">☕ 12:00 PM — Noon Comfort</div>
-      <div class="unlocked-content">
-          <p>Coffee kavali kada? A simple cold drink can change the whole mood of a day. Enjoy this sip.</p>
-          <div class="media-box"><img src="coffee.jpg" alt="Coffee"></div>
-      </div>
-      <div class="locked-overlay">
-        <p>A mid-day refresh is resting for now.</p>
-        <div class="countdown-text" data-countdown></div>
-      </div>
-    </div>
-  </section>
-
-  <section class="section" id="sweetSection" data-hour="15" data-minute="30">
-    <div class="card">
-      <div class="time-pill">🍫 3:30 PM — Sweet Pause</div>
-      <div class="unlocked-content">
-          <p>Chocolate ice cream tinte baguntundhi kada? Imagine iddaram kurchuni enjoy chestunnam ani.</p>
-          <div class="media-box">
-              <video controls playsinline muted poster="icecream_photo.jpg">
-                <source src="icecream.mov" type="video/quicktime">
-                <source src="icecream.mov" type="video/mp4">
-              </video>
-          </div>
-      </div>
-      <div class="locked-overlay">
-        <p>Something sweet is arriving soon.</p>
-        <div class="countdown-text" data-countdown></div>
-      </div>
-    </div>
-  </section>
-
-  <section class="section" id="movieSection" data-hour="18" data-minute="0">
-    <div class="card" style="background: rgba(30, 30, 35, 0.05);">
-      <div class="time-pill">🎬 6:00 PM — Finale</div>
-      <div class="unlocked-content">
-          <div class="media-box">
-            <iframe width="100%" height="315" src="https://www.youtube.com/embed/ysz5S6PUM-U" frameborder="0" allowfullscreen></iframe>
-          </div>
-          <div class="ending-text">
-            Antha ayipoyaka… peaceful ga nidra po.
-            You deserve days that feel this soft. 🌿
-          </div>
-      </div>
-      <div class="locked-overlay">
-        <p>The finale arrives at sunset.</p>
-        <div class="countdown-text" data-countdown></div>
-      </div>
-    </div>
-  </section>
-
-  <footer style="padding: 5rem; text-align: center; color: #999; font-size: 0.8rem;">
-    one moment at a time
-  </footer>
+  <div id="main-world">
+     <h1 style="text-align:center; color:var(--rose-deep); font-size: 3rem;">JHANSY 🌿</h1>
+     <p style="text-align:center; color:var(--muted);">Today, the world comes to you.</p>
+     <div style="height: 100vh;"></div> 
+  </div>
 
   <script>
-    // --- 1. Petal Generation ---
-    const petalsContainer = document.getElementById('petals');
-    for (let i = 0; i < 15; i++) {
-      const petal = document.createElement('div');
-      petal.className = 'petal';
-      petal.style.left = `${Math.random() * 100}vw`;
-      petal.style.animationDuration = `${10 + Math.random() * 15}s`;
-      petal.style.animationDelay = `${Math.random() * 10}s`;
-      petal.style.setProperty('--drift', `${(Math.random() - 0.5) * 200}px`);
-      petalsContainer.appendChild(petal);
-    }
+    const text = `Hi Jaanu...\n\nChustu chustune 25 days ayipoyindhi kada. Last time when you got this, I was with you.\n\nBefore that, I used to send the flowers, coffee, and ice cream... but this time I can't do any of those.\n\nBut nenu idiot ni kada? Mental fellow ni! Agutanu anukuntunava? NEVER.\n\nSo Jhansy, happy menstrual day! Idi kuda "happy" antunna ani thittoku... ledu le, already tittukune unattu unnav... ninnu chuste telsustundhi le. But its ok.\n\nSo Jhansy, here we go. I made something for you to make your spirit high when your body is down.\n\nOka dialogue cheppi finish chesthe super untundhi kada...\n\nJaanu, nuvvu iroju prapanchanni chudalekapothe enti? Ah prapanchanni nee daggariki teeskuni vasta! 😂😂😍😍\n\nHahaha... Baga navvukunnaava? So roju anta ilane navvukunta undhu.`;
 
-    // --- 2. Smooth Butterfly Follow ---
-    let targetY = 0, currentY = 0;
-    const guardian = document.getElementById('guardian');
-    window.addEventListener('scroll', () => { targetY = window.scrollY; }, { passive: true });
+    const envelope = document.getElementById('envelopeWrapper');
+    const typedTarget = document.getElementById('typed-text');
+    const tapPrompt = document.getElementById('tapPrompt');
+    const finalCta = document.getElementById('final-cta');
+    let isTyping = false;
 
-    function lerpButterfly() {
-      currentY += (targetY - currentY) * 0.05;
-      const drift = Math.sin(Date.now() / 1000) * 20;
-      guardian.style.transform = `translateY(${currentY * 0.1}px) translateX(${drift}px)`;
-      requestAnimationFrame(lerpButterfly);
-    }
-    lerpButterfly();
-
-    // --- 3. The Logic (Fixed for a specific date) ---
-    // SET THE DATE HERE (Year, Month [0-11], Day)
-    const EVENT_DATE = new Date(2026, 2, 31); // March 31, 2026
-
-    function updateSystem() {
-      const now = new Date();
+    envelope.addEventListener('click', () => {
+      if (isTyping) return;
+      isTyping = true;
       
-      document.querySelectorAll('.section').forEach(section => {
-        const h = parseInt(section.dataset.hour);
-        const m = parseInt(section.dataset.minute);
-        
-        const unlockTime = new Date(EVENT_DATE);
-        unlockTime.setHours(h, m, 0);
+      envelope.classList.add('open');
+      tapPrompt.style.opacity = '0';
 
-        const diff = unlockTime - now;
-        const isUnlocked = diff <= 0;
-
-        const lockedUI = section.querySelector('.locked-overlay');
-        const unlockedUI = section.querySelector('.unlocked-content');
-        const media = section.querySelector('.media-box');
-        const countdown = section.querySelector('[data-countdown]');
-        const endText = section.querySelector('.ending-text');
-
-        if (isUnlocked) {
-          section.classList.add('unlocked');
-          lockedUI.style.display = 'none';
-          unlockedUI.style.display = 'block';
-          if(media) media.style.display = 'block';
-          if(endText) endText.style.display = 'block';
-        } else {
-          lockedUI.style.display = 'block';
-          unlockedUI.style.display = 'none';
-          
-          // Format Countdown
-          const hrs = Math.floor(diff / 3600000);
-          const mins = Math.floor((diff % 3600000) / 60000);
-          const secs = Math.floor((diff % 60000) / 1000);
-          countdown.innerHTML = `✦ Unfolding in ${hrs}h ${mins}m ${secs}s`;
+      // Start typing after envelope flap opens
+      setTimeout(() => {
+        let i = 0;
+        function typeWriter() {
+          if (i < text.length) {
+            typedTarget.innerHTML += text.charAt(i);
+            i++;
+            // Slowly scrolling the letter down as it types so she sees the new lines
+            document.querySelector('.letter').scrollTop = document.querySelector('.letter').scrollHeight;
+            setTimeout(typeWriter, 45); 
+          } else {
+            finalCta.classList.add('show-scroll');
+          }
         }
-      });
-    }
+        typeWriter();
+      }, 1000);
+    });
 
-    setInterval(updateSystem, 1000);
-    updateSystem();
+    // Detect first scroll to dissolve the opening scene
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 40) {
+        document.body.classList.add('world-active');
+      }
+    }, { passive: true });
+
   </script>
 </body>
 </html>
