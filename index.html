@@ -4,9 +4,11 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>For You, Jhansy 🌿</title>
+  
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet" />
+
   <style>
     :root {
       --bg-1: #fffaf8;
@@ -15,13 +17,16 @@
       --rose: #c95e8b;
       --rose-deep: #a93b67;
       --ink: #5c463f;
-      --paper: rgba(255, 255, 255, 0.82);
-      --shadow: 0 20px 60px rgba(141, 86, 112, 0.18);
-      --radius: 28px;
+      --paper: rgba(255, 255, 255, 0.88);
+      --shadow: 0 20px 60px rgba(141, 86, 112, 0.12);
+      --radius: 32px;
       --safe-bottom: calc(env(safe-area-inset-bottom, 0px) + 88px);
     }
 
-    * { box-sizing: border-box; }
+    * { 
+      box-sizing: border-box; 
+      -webkit-tap-highlight-color: transparent;
+    }
 
     html, body {
       margin: 0;
@@ -31,46 +36,42 @@
       color: var(--ink);
       font-family: 'Lora', serif;
       -webkit-font-smoothing: antialiased;
-      text-rendering: optimizeLegibility;
-      overflow-x: hidden;
       scroll-behavior: smooth;
+      overflow-x: hidden;
     }
 
+    /* Ambient Background Blooms */
     body::before,
     body::after {
       content: "";
       position: fixed;
       pointer-events: none;
       z-index: 0;
-      filter: blur(50px);
-      opacity: 0.7;
+      filter: blur(60px);
+      opacity: 0.6;
     }
 
     body::before {
-      width: 52vw;
-      height: 52vw;
-      min-width: 260px;
-      min-height: 260px;
-      right: -8vw;
-      top: -8vw;
-      background: radial-gradient(circle, rgba(255, 183, 207, 0.45), transparent 65%);
-      animation: bloom 10s ease-in-out infinite alternate;
+      width: 60vw;
+      height: 60vw;
+      right: -10vw;
+      top: -10vw;
+      background: radial-gradient(circle, rgba(255, 183, 207, 0.4), transparent 70%);
+      animation: bloom 12s ease-in-out infinite alternate;
     }
 
     body::after {
-      width: 45vw;
-      height: 45vw;
-      min-width: 220px;
-      min-height: 220px;
-      left: -6vw;
-      bottom: -6vw;
-      background: radial-gradient(circle, rgba(255, 225, 180, 0.38), transparent 65%);
-      animation: bloom 12s ease-in-out infinite alternate-reverse;
+      width: 50vw;
+      height: 50vw;
+      left: -8vw;
+      bottom: -8vw;
+      background: radial-gradient(circle, rgba(255, 225, 180, 0.35), transparent 70%);
+      animation: bloom 15s ease-in-out infinite alternate-reverse;
     }
 
     @keyframes bloom {
       from { transform: translate3d(0, 0, 0) scale(1); }
-      to { transform: translate3d(10px, -8px, 0) scale(1.08); }
+      to { transform: translate3d(20px, -15px, 0) scale(1.1); }
     }
 
     .app {
@@ -79,6 +80,7 @@
       isolation: isolate;
     }
 
+    /* Scene Transitions */
     .scene-stack {
       position: relative;
       z-index: 2;
@@ -89,118 +91,115 @@
       min-height: 100dvh;
       display: grid;
       place-items: center;
-      padding: calc(env(safe-area-inset-top, 0px) + 26px) 20px var(--safe-bottom);
-      opacity: 0.16;
-      transform: translateY(36px) scale(0.985);
-      transition: opacity 0.65s ease, transform 0.8s cubic-bezier(0.22, 1, 0.36, 1), filter 0.65s ease;
-      filter: blur(5px);
+      padding: calc(env(safe-area-inset-top, 0px) + 40px) 24px var(--safe-bottom);
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity 1s ease, transform 1.2s cubic-bezier(0.2, 0.8, 0.2, 1), filter 1s ease;
+      filter: blur(10px);
       pointer-events: none;
     }
 
     .scene.is-active {
       opacity: 1;
-      transform: translateY(0) scale(1);
+      transform: translateY(0);
       filter: blur(0);
       pointer-events: auto;
     }
 
     .scene.is-past {
-      opacity: 0;
-      transform: translateY(-72px) scale(0.97);
-      filter: blur(7px);
-      pointer-events: none;
-    }
-
-    .scene.is-future {
-      opacity: 0;
-      transform: translateY(56px) scale(0.985);
-      filter: blur(7px);
-      pointer-events: none;
+      transform: translateY(-40px);
     }
 
     .content {
-      width: min(100%, 430px);
+      width: min(100%, 450px);
       position: relative;
     }
 
+    /* Card Styling */
     .glass-card,
     .letter,
     .closing-card {
       width: 100%;
       background: var(--paper);
-      border: 1px solid rgba(255,255,255,0.64);
+      border: 1px solid rgba(255, 255, 255, 0.7);
       border-radius: var(--radius);
       box-shadow: var(--shadow);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-    }
-
-    .letter,
-    .closing-card {
-      padding: 28px 24px;
+      backdrop-filter: blur(15px);
+      -webkit-backdrop-filter: blur(15px);
       position: relative;
       overflow: hidden;
     }
 
+    .letter,
+    .closing-card {
+      padding: 40px 32px;
+    }
+
     .letter::before,
-    .closing-card::before {
+    .closing-card::after {
       content: "";
       position: absolute;
-      inset: 0 auto 0 0;
-      width: 5px;
-      background: linear-gradient(180deg, rgba(201,94,139,0.25), rgba(169,59,103,0.95));
+      width: 4px;
+      height: 40px;
+      background: var(--rose);
+      border-radius: 2px;
+      opacity: 0.6;
     }
 
-    .closing-card::before {
-      inset: 0 0 0 auto;
-    }
+    .letter::before { top: 40px; left: 16px; }
+    .closing-card::after { bottom: 40px; right: 16px; }
 
     .section-kicker {
-      margin: 0 0 12px;
-      font-size: 0.72rem;
-      letter-spacing: 0.22em;
+      margin: 0 0 16px;
+      font-size: 0.75rem;
+      letter-spacing: 0.25em;
       text-transform: uppercase;
-      color: rgba(169,59,103,0.72);
+      color: var(--rose-deep);
+      font-weight: 500;
+      opacity: 0.8;
     }
 
     .section-title {
-      margin: 0 0 14px;
+      margin: 0 0 20px;
       font-family: 'Dancing Script', cursive;
       color: var(--rose-deep);
-      font-size: clamp(2rem, 8vw, 2.8rem);
-      line-height: 1.05;
+      font-size: clamp(2.2rem, 9vw, 3rem);
+      line-height: 1.1;
     }
 
     .body-copy {
       margin: 0;
-      font-size: 1rem;
+      font-size: 1.05rem;
       line-height: 1.9;
-      color: rgba(92, 70, 63, 0.95);
+      color: var(--ink);
+      opacity: 0.9;
     }
 
     .signature {
-      margin-top: 16px;
+      margin-top: 24px;
       font-family: 'Dancing Script', cursive;
-      font-size: 1.8rem;
+      font-size: 2rem;
       color: var(--rose-deep);
     }
 
+    /* Polaroid Layout */
     .polaroid-grid {
       display: grid;
-      gap: 16px;
+      gap: 20px;
     }
 
     .polaroid {
-      background: rgba(255,255,255,0.97);
-      padding: 12px 12px 38px;
-      border-radius: 16px;
-      box-shadow: 0 16px 38px rgba(102, 56, 75, 0.15);
-      border: 1px solid rgba(255,255,255,0.76);
+      background: #fff;
+      padding: 12px 12px 40px;
+      border-radius: 4px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.05);
       transform-origin: center;
+      transition: transform 0.4s ease;
     }
 
-    .polaroid:nth-child(1) { transform: rotate(-2.4deg); }
-    .polaroid:nth-child(2) { transform: rotate(2.2deg); }
+    .polaroid:hover {
+      transform: scale(1.02) rotate(0deg) !important;
+    }
 
     .polaroid figure { margin: 0; }
 
@@ -208,509 +207,336 @@
     .polaroid video {
       width: 100%;
       display: block;
-      aspect-ratio: 4 / 5;
+      aspect-ratio: 1 / 1;
       object-fit: cover;
-      border-radius: 8px;
-      background: #f4ecee;
+      background: #fafafa;
     }
 
     .polaroid figcaption {
-      margin-top: 12px;
+      margin-top: 15px;
       text-align: center;
       font-family: 'Dancing Script', cursive;
-      font-size: 1.45rem;
+      font-size: 1.5rem;
       color: #8e5268;
     }
 
-    .scene-note {
-      margin: 14px 6px 0;
-      text-align: center;
-      font-size: 0.96rem;
-      line-height: 1.75;
-      color: rgba(92, 70, 63, 0.86);
-    }
+    /* Media Specifics */
+    .media-stack { display: grid; gap: 20px; }
 
-    .media-stack { display: grid; gap: 16px; }
-    .media-stack .polaroid:first-child { transform: rotate(-1.6deg); }
-    .media-stack .polaroid:last-child { transform: rotate(1.8deg); }
-
+    /* Hero Overlay */
     .hero-overlay {
       position: fixed;
       inset: 0;
       display: grid;
       place-items: center;
-      padding: 24px;
-      z-index: 15;
-      background: linear-gradient(180deg, rgba(255,250,248,0.96), rgba(255,241,244,0.92) 60%, rgba(254,247,239,0.9));
-      opacity: 1;
-      transition: opacity 0.8s ease, visibility 0.8s ease;
+      z-index: 20;
+      background: var(--bg-1);
+      transition: opacity 1.2s ease, visibility 1.2s ease;
     }
 
     .hero-overlay.is-hidden {
       opacity: 0;
       visibility: hidden;
-      pointer-events: none;
     }
 
     .hero-copy {
-      width: min(88vw, 440px);
       text-align: center;
       opacity: 0;
-      transition: opacity 1s ease;
+      transform: translateY(20px);
+      transition: all 1s ease;
     }
 
-    .hero-copy.show { opacity: 1; }
-
-    .eyebrow {
-      margin: 0 0 12px;
-      letter-spacing: 0.22em;
-      text-transform: uppercase;
-      font-size: 0.72rem;
-      color: rgba(92, 70, 63, 0.65);
+    .hero-copy.show {
+      opacity: 1;
+      transform: translateY(0);
     }
 
     .hero-title {
-      margin: 0;
       font-family: 'Dancing Script', cursive;
-      font-size: clamp(2.5rem, 10vw, 4.2rem);
-      line-height: 1.05;
+      font-size: clamp(3rem, 12vw, 5rem);
       color: var(--rose-deep);
-      text-shadow: 0 10px 28px rgba(201, 94, 139, 0.14);
+      margin: 10px 0;
     }
 
-    .hero-subtitle {
-      margin: 14px auto 0;
-      width: min(78vw, 360px);
-      font-size: 0.98rem;
-      line-height: 1.7;
-      color: rgba(92, 70, 63, 0.85);
-    }
-
-    .landing-word { display: inline-block; position: relative; }
-
+    /* Scroll Hint */
     .scroll-hint {
       position: fixed;
+      bottom: 40px;
       left: 50%;
-      bottom: calc(env(safe-area-inset-bottom, 0px) + 28px);
       transform: translateX(-50%);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 8px;
-      color: rgba(169, 59, 103, 0.82);
-      font-size: 0.72rem;
-      letter-spacing: 0.24em;
+      font-size: 0.7rem;
+      letter-spacing: 0.3em;
       text-transform: uppercase;
-      z-index: 12;
+      color: var(--rose-deep);
       opacity: 0;
-      transition: opacity 0.8s ease, transform 0.8s ease;
-      pointer-events: none;
-    }
-
-    .scroll-hint.show {
-      opacity: 0.85;
-      animation: driftHint 2s ease-in-out infinite;
-    }
-
-    .scroll-hint::after {
-      content: "";
-      width: 1px;
-      height: 24px;
-      background: linear-gradient(180deg, rgba(169, 59, 103, 0.1), rgba(169, 59, 103, 0.85));
-    }
-
-    @keyframes driftHint {
-      0%, 100% { transform: translateX(-50%) translateY(0); }
-      50% { transform: translateX(-50%) translateY(4px); }
-    }
-
-    .butterfly {
-      position: fixed;
-      left: 50%;
-      top: 110vh;
-      width: 54px;
-      height: 48px;
-      z-index: 16;
-      pointer-events: none;
-      transform: translate(-50%, -50%);
-      will-change: top, left, transform;
-      filter: drop-shadow(0 10px 16px rgba(169, 59, 103, 0.12));
-    }
-
-    .butterfly .float { position: absolute; inset: 0; animation: hover 2.8s ease-in-out infinite; }
-    .butterfly .flap { position: absolute; inset: 0; animation: tilt 2.4s ease-in-out infinite; }
-
-    .butterfly .body {
-      position: absolute;
-      left: 25px;
-      top: 14px;
-      width: 4px;
-      height: 20px;
-      border-radius: 999px;
-      background: linear-gradient(180deg, #83455f, #c26a8d 60%, #8d4965);
-      box-shadow: 0 0 0 1px rgba(255,255,255,0.18);
-    }
-
-    .butterfly .antenna,
-    .butterfly .antenna::after {
-      position: absolute;
-      width: 1.5px;
-      height: 10px;
-      background: linear-gradient(180deg, #8e5268, transparent);
-      top: 7px;
-      left: 26px;
-      border-radius: 999px;
-      content: "";
-      transform-origin: bottom center;
-    }
-
-    .butterfly .antenna { transform: translateX(-4px) rotate(-28deg); }
-    .butterfly .antenna::after { transform: translateX(8px) rotate(28deg); }
-
-    .wing {
-      position: absolute;
-      border: 1.6px solid rgba(169, 59, 103, 0.55);
-      background:
-        radial-gradient(circle at 34% 35%, rgba(255,255,255,0.92), rgba(255,255,255,0.12) 42%, rgba(255, 194, 214, 0.28) 75%, rgba(255,255,255,0.05)),
-        linear-gradient(145deg, rgba(255, 206, 223, 0.45), rgba(255,255,255,0.08));
-      backdrop-filter: blur(1.5px);
-      box-shadow: inset 0 0 18px rgba(255,255,255,0.14);
-    }
-
-    .wing::after {
-      content: "";
-      position: absolute;
-      inset: 16% 18%;
-      border-radius: inherit;
-      border: 1px solid rgba(255,255,255,0.26);
-      opacity: 0.45;
-    }
-
-    .wing.left.top {
-      width: 24px; height: 24px; left: 2px; top: 6px;
-      border-radius: 72% 28% 65% 35% / 65% 35% 65% 35%;
-      transform-origin: 100% 88%; animation: flapLeftTop 0.2s ease-in-out infinite alternate;
-    }
-    .wing.left.bottom {
-      width: 18px; height: 18px; left: 8px; top: 24px;
-      border-radius: 35% 65% 24% 76% / 40% 68% 32% 60%;
-      transform-origin: 100% 18%; animation: flapLeftBottom 0.2s ease-in-out infinite alternate;
-    }
-    .wing.right.top {
-      width: 24px; height: 24px; right: 2px; top: 6px;
-      border-radius: 28% 72% 35% 65% / 35% 65% 35% 65%;
-      transform-origin: 0% 88%; animation: flapRightTop 0.2s ease-in-out infinite alternate;
-    }
-    .wing.right.bottom {
-      width: 18px; height: 18px; right: 8px; top: 24px;
-      border-radius: 65% 35% 76% 24% / 68% 40% 60% 32%;
-      transform-origin: 0% 18%; animation: flapRightBottom 0.2s ease-in-out infinite alternate;
-    }
-
-    @keyframes hover {
-      0%, 100% { transform: translateY(0) translateX(0); }
-      50% { transform: translateY(-7px) translateX(2px); }
-    }
-    @keyframes tilt {
-      0%, 100% { transform: rotate(-3deg); }
-      50% { transform: rotate(4deg); }
-    }
-    @keyframes flapLeftTop { from { transform: rotateY(0deg) rotate(-4deg); } to { transform: rotateY(70deg) rotate(-12deg); } }
-    @keyframes flapLeftBottom { from { transform: rotateY(0deg) rotate(4deg); } to { transform: rotateY(50deg) rotate(14deg); } }
-    @keyframes flapRightTop { from { transform: rotateY(0deg) rotate(4deg); } to { transform: rotateY(-70deg) rotate(12deg); } }
-    @keyframes flapRightBottom { from { transform: rotateY(0deg) rotate(-4deg); } to { transform: rotateY(-50deg) rotate(-14deg); } }
-
-    .footer-dots {
-      position: fixed;
-      right: 16px;
-      top: 50%;
-      transform: translateY(-50%);
-      display: grid;
-      gap: 10px;
+      transition: opacity 1s ease;
       z-index: 10;
     }
 
+    .scroll-hint.show { opacity: 0.6; animation: bounce 2s infinite; }
+
+    @keyframes bounce {
+      0%, 20%, 50%, 80%, 100% { transform: translateX(-50%) translateY(0); }
+      40% { transform: translateX(-50%) translateY(-10px); }
+      60% { transform: translateX(-50%) translateY(-5px); }
+    }
+
+    /* Butterfly Element */
+    .butterfly {
+      position: fixed;
+      width: 40px;
+      height: 40px;
+      z-index: 100;
+      pointer-events: none;
+      will-change: transform, left, top;
+    }
+
+    .wing {
+      position: absolute;
+      width: 20px;
+      height: 25px;
+      background: rgba(201, 94, 139, 0.4);
+      border: 1px solid rgba(201, 94, 139, 0.6);
+      border-radius: 50% 50% 0 50%;
+    }
+
+    .wing.right {
+      right: 0;
+      border-radius: 50% 50% 50% 0;
+    }
+
+    .wing.left { animation: flapLeft 0.2s infinite alternate; transform-origin: right center; }
+    .wing.right { animation: flapRight 0.2s infinite alternate; transform-origin: left center; }
+
+    @keyframes flapLeft { from { transform: rotateY(0deg); } to { transform: rotateY(70deg); } }
+    @keyframes flapRight { from { transform: rotateY(0deg); } to { transform: rotateY(-70deg); } }
+
+    /* Navigation Dots */
+    .footer-dots {
+      position: fixed;
+      right: 24px;
+      top: 50%;
+      transform: translateY(-50%);
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      z-index: 30;
+    }
+
     .footer-dots button {
-      width: 8px; height: 8px; border: 0; border-radius: 999px;
-      background: rgba(169, 59, 103, 0.18); padding: 0;
-      transition: transform 0.35s ease, background 0.35s ease, box-shadow 0.35s ease;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      border: 2px solid var(--rose);
+      background: transparent;
+      padding: 0;
       cursor: pointer;
+      transition: all 0.3s ease;
     }
 
     .footer-dots button.active {
-      transform: scale(1.8);
-      background: rgba(169, 59, 103, 0.85);
-      box-shadow: 0 0 0 6px rgba(201, 94, 139, 0.08);
+      background: var(--rose);
+      transform: scale(1.3);
     }
 
-    @media (min-width: 700px) {
-      .polaroid-grid { grid-template-columns: 1fr 1fr; align-items: start; }
-      .media-stack { grid-template-columns: 0.95fr 1.05fr; align-items: start; }
-      .footer-dots { right: 24px; }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      *, *::before, *::after {
-        animation: none !important;
-        transition: none !important;
-        scroll-behavior: auto !important;
-      }
+    @media (min-width: 768px) {
+      .polaroid-grid { grid-template-columns: 1fr 1fr; }
+      .media-stack { grid-template-columns: 1fr 1fr; }
     }
   </style>
 </head>
+
 <body>
-  <div class="app" aria-label="A romantic sanctuary for Jhansy">
+  <div class="app">
     <div id="heroOverlay" class="hero-overlay">
       <div id="heroCopy" class="hero-copy">
-        <p class="eyebrow">A soft little sanctuary</p>
-        <h1 class="hero-title">For You, <span id="landingWord" class="landing-word">Jhansy 🌿</span></h1>
-        <p class="hero-subtitle">A small place made with calm, sweetness, and all the tenderness I could fit into one page.</p>
+        <p class="section-kicker">Welcome, beautiful</p>
+        <h1 class="hero-title">For Jhansy</h1>
+        <p class="body-copy">A quiet place made just for you.</p>
       </div>
     </div>
 
-    <div id="butterfly" class="butterfly" aria-hidden="true">
-      <div class="float">
-        <div class="flap">
-          <div class="antenna"></div>
-          <div class="wing left top"></div>
-          <div class="wing left bottom"></div>
-          <div class="body"></div>
-          <div class="wing right top"></div>
-          <div class="wing right bottom"></div>
-        </div>
-      </div>
+    <div id="butterfly" class="butterfly">
+      <div class="wing left"></div>
+      <div class="wing right"></div>
     </div>
 
     <div class="scene-stack">
       <section class="scene is-active" data-index="0">
-        <div class="content"></div>
-      </section>
-
-      <section class="scene is-future" data-index="1">
         <div class="content">
           <article class="letter">
-            <p class="section-kicker">A note just for you</p>
-            <h2 class="section-title">Breathe here for a while</h2>
-            <p class="body-copy">I made this little space with one hope in mind: that when you open it, the world feels quieter for a moment. No pressure. No noise. Just softness, warmth, and a reminder that you are deeply cherished.</p>
+            <p class="section-kicker">Hello, Jhansy</p>
+            <h2 class="section-title">A soft place to land</h2>
+            <p class="body-copy">
+              I wanted to build something that felt like a deep breath. 
+              In a world that moves too fast, let this be our little 
+              corner of calm and sweetness.
+            </p>
           </article>
         </div>
       </section>
 
-      <section class="scene is-future" data-index="2">
+      <section class="scene" data-index="1">
         <div class="content">
-          <div class="glass-card" style="padding: 22px 18px 20px;">
-            <p class="section-kicker" style="text-align:center; margin-bottom: 10px;">A little bloom</p>
-            <h2 class="section-title" style="text-align:center; margin-bottom: 18px;">Lilies for your day</h2>
+          <div class="glass-card" style="padding: 24px;">
+            <p class="section-kicker" style="text-align: center;">For your peace</p>
+            <h2 class="section-title" style="text-align: center;">Lilies for you</h2>
             <div class="polaroid-grid">
-              <article class="polaroid">
+              <div class="polaroid" style="transform: rotate(-3deg);">
                 <figure>
-                  <img src="flowers1.jpg" alt="A delicate lily arrangement" loading="eager" />
-                  <figcaption>for your peace</figcaption>
+                  <img src="flowers1.jpg" alt="Lilies">
+                  <figcaption>Pure calm</figcaption>
                 </figure>
-              </article>
-              <article class="polaroid">
+              </div>
+              <div class="polaroid" style="transform: rotate(3deg);">
                 <figure>
-                  <img src="flowers2.jpg" alt="Lilies arranged softly in the light" loading="eager" />
-                  <figcaption>for your smile</figcaption>
+                  <img src="flowers2.jpg" alt="Lilies">
+                  <figcaption>Just because</figcaption>
                 </figure>
-              </article>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      <section class="scene is-future" data-index="3">
+      <section class="scene" data-index="2">
         <div class="content">
-          <div class="glass-card" style="padding: 22px 18px 18px;">
-            <p class="section-kicker" style="text-align:center; margin-bottom: 10px;">A sweet pause</p>
-            <h2 class="section-title" style="text-align:center; margin-bottom: 18px;">Something soft and lovely</h2>
+          <div class="glass-card" style="padding: 24px;">
+            <p class="section-kicker" style="text-align: center;">Sweet moments</p>
+            <h2 class="section-title" style="text-align: center;">A little treat</h2>
             <div class="media-stack">
-              <article class="polaroid">
+              <div class="polaroid" style="transform: rotate(-2deg);">
                 <figure>
-                  <img src="icecream_photo.jpg" alt="A sweet ice cream box in soft light" loading="eager" />
-                  <figcaption>for a tiny craving</figcaption>
+                  <img src="icecream_photo.jpg" alt="Ice Cream">
+                  <figcaption>Sweetness</figcaption>
                 </figure>
-              </article>
-
-              <article class="polaroid">
+              </div>
+              <div class="polaroid" style="transform: rotate(2deg);">
                 <figure>
-                  <video id="icecreamVideo" playsinline muted loop preload="metadata" poster="icecream_photo.jpg">
-                    <source src="icecream.mov" type="video/quicktime" />
-                    <source src="icecream.mov" type="video/mp4" />
+                  <video id="icecreamVideo" playsinline muted loop>
+                    <source src="icecream.mov" type="video/quicktime">
+                    <source src="icecream.mov" type="video/mp4">
                   </video>
-                  <figcaption>and a little magic</figcaption>
+                  <figcaption>Magic</figcaption>
                 </figure>
-              </article>
+              </div>
             </div>
-            <p class="scene-note">The butterfly stays with you here too, because sweetness should always arrive with a little wonder.</p>
           </div>
         </div>
       </section>
 
-      <section class="scene is-future" data-index="4">
+      <section class="scene" data-index="3">
         <div class="content">
           <article class="closing-card">
-            <p class="section-kicker">Before you go</p>
-            <h2 class="section-title">Keep this feeling with you</h2>
-            <p class="body-copy">If today has been heavy, let this be your reminder that tenderness still exists. Rest your heart. Soften your thoughts. And whenever you need it, come back to this page and let it hold a little peace for you.</p>
-            <div class="signature">With all my love, P.</div>
+            <p class="section-kicker">My Promise</p>
+            <h2 class="section-title">Always here</h2>
+            <p class="body-copy">
+              No matter how the day goes, remember that you are cherished, 
+              valued, and so very loved. Come back here whenever 
+              you need a reminder.
+            </p>
+            <div class="signature">Always, P.</div>
           </article>
         </div>
       </section>
     </div>
 
-    <div id="scrollHint" class="scroll-hint" aria-hidden="true">Scroll Down</div>
+    <div id="scrollHint" class="scroll-hint">Scroll to explore</div>
 
-    <nav class="footer-dots" aria-label="Sanctuary sections">
-      <button type="button" class="active" data-go="0" aria-label="Go to opening"></button>
-      <button type="button" data-go="1" aria-label="Go to message"></button>
-      <button type="button" data-go="2" aria-label="Go to flowers"></button>
-      <button type="button" data-go="3" aria-label="Go to treats"></button>
-      <button type="button" data-go="4" aria-label="Go to closing note"></button>
+    <nav class="footer-dots">
+      <button class="active" data-go="0"></button>
+      <button data-go="1"></button>
+      <button data-go="2"></button>
+      <button data-go="3"></button>
     </nav>
   </div>
 
   <script>
-    const scenes = [...document.querySelectorAll('.scene')];
-    const navDots = [...document.querySelectorAll('.footer-dots button')];
     const butterfly = document.getElementById('butterfly');
-    const landingWord = document.getElementById('landingWord');
-    const scrollHint = document.getElementById('scrollHint');
     const heroOverlay = document.getElementById('heroOverlay');
     const heroCopy = document.getElementById('heroCopy');
+    const scrollHint = document.getElementById('scrollHint');
+    const scenes = document.querySelectorAll('.scene');
+    const dots = document.querySelectorAll('.footer-dots button');
     const video = document.getElementById('icecreamVideo');
 
-    const butterflyTargets = [
-      { x: 50, y: 84 },
-      { x: 24, y: 84 },
-      { x: 77, y: 84 },
-      { x: 28, y: 84 },
-      { x: 73, y: 84 }
-    ];
-
     let currentScene = 0;
-    let introFinished = false;
-    let ticking = false;
+    let isIntroDone = false;
 
-    function moveButterfly(x, y, duration = 900, unit = '%') {
-      butterfly.style.transition = `left ${duration}ms cubic-bezier(0.22, 1, 0.36, 1), top ${duration}ms cubic-bezier(0.22, 1, 0.36, 1), transform ${duration}ms ease`;
-      butterfly.style.left = `${x}${unit}`;
-      butterfly.style.top = `${y}${unit === '%' ? 'vh' : 'px'}`;
-      butterfly.style.transform = 'translate(-50%, -50%)';
-    }
+    // Smooth Butterfly Follow
+    document.addEventListener('mousemove', (e) => {
+      if(!isIntroDone) return;
+      butterfly.style.left = e.clientX + 'px';
+      butterfly.style.top = e.clientY + 'px';
+      butterfly.style.transition = 'left 0.6s cubic-bezier(0.23, 1, 0.32, 1), top 0.6s cubic-bezier(0.23, 1, 0.32, 1)';
+    });
 
-    function landOnWord() {
-      const rect = landingWord.getBoundingClientRect();
-      butterfly.style.transition = 'left 1900ms cubic-bezier(0.22, 1, 0.36, 1), top 1900ms cubic-bezier(0.22, 1, 0.36, 1), transform 1900ms ease';
-      butterfly.style.left = `${rect.right - 10}px`;
-      butterfly.style.top = `${rect.top + rect.height * 0.52}px`;
-      butterfly.style.transform = 'translate(-50%, -50%) scale(1)';
-    }
+    // Touch Support for Butterfly
+    document.addEventListener('touchmove', (e) => {
+      if(!isIntroDone) return;
+      const touch = e.touches[0];
+      butterfly.style.left = touch.clientX + 'px';
+      butterfly.style.top = touch.clientY + 'px';
+    });
 
-    function updateVideo() {
-      if (currentScene === 3) {
-        const p = video.play();
-        if (p && typeof p.catch === 'function') p.catch(() => {});
-      } else {
-        video.pause();
-      }
-    }
-
-    function paintScenes() {
-      scenes.forEach((scene, index) => {
-        scene.classList.remove('is-active', 'is-past', 'is-future');
-        if (index < currentScene) scene.classList.add('is-past');
-        else if (index > currentScene) scene.classList.add('is-future');
-        else scene.classList.add('is-active');
+    // Scene Navigation
+    function updateScenes(index) {
+      scenes.forEach((scene, i) => {
+        scene.classList.remove('is-active', 'is-past');
+        if (i === index) scene.classList.add('is-active');
+        if (i < index) scene.classList.add('is-past');
       });
 
-      navDots.forEach((dot, index) => dot.classList.toggle('active', index === currentScene));
-      updateVideo();
+      dots.forEach((dot, i) => {
+        dot.classList.toggle('active', i === index);
+      });
+
+      // Video Play/Pause Control
+      if (index === 2) video.play();
+      else video.pause();
+
+      currentScene = index;
     }
 
-    function centerForScene(index) {
-      const rect = scenes[index].getBoundingClientRect();
-      const top = window.scrollY + rect.top;
-      const offset = top + rect.height * 0.5 - window.innerHeight * 0.5;
-      return Math.max(0, offset);
-    }
-
-    function goToScene(index, smooth = true) {
-      currentScene = Math.max(0, Math.min(index, scenes.length - 1));
-      paintScenes();
-      const target = butterflyTargets[currentScene];
-      if (introFinished) moveButterfly(target.x, target.y, 900, '%');
-      window.scrollTo({ top: centerForScene(currentScene), behavior: smooth ? 'smooth' : 'auto' });
-      if (currentScene > 0) scrollHint.classList.remove('show');
-    }
-
-    function nearestSceneFromViewport() {
-      const mid = window.innerHeight * 0.5;
-      let bestIndex = 0;
-      let bestDistance = Infinity;
-      scenes.forEach((scene, index) => {
-        const rect = scene.getBoundingClientRect();
-        const center = rect.top + rect.height * 0.5;
-        const distance = Math.abs(center - mid);
-        if (distance < bestDistance) {
-          bestDistance = distance;
-          bestIndex = index;
+    // Scroll Handler
+    window.addEventListener('scroll', () => {
+      if (!isIntroDone) return;
+      
+      const scrollPos = window.scrollY + (window.innerHeight / 2);
+      scenes.forEach((scene, i) => {
+        if (scrollPos > scene.offsetTop && scrollPos < scene.offsetTop + scene.offsetHeight) {
+          if (currentScene !== i) updateScenes(i);
         }
       });
-      return bestIndex;
-    }
 
-    function onScroll() {
-      if (!introFinished || ticking) return;
-      ticking = true;
-      requestAnimationFrame(() => {
-        const nextIndex = nearestSceneFromViewport();
-        if (nextIndex !== currentScene) {
-          currentScene = nextIndex;
-          paintScenes();
-          const target = butterflyTargets[currentScene];
-          moveButterfly(target.x, target.y, 700, '%');
-        }
-        if (window.scrollY > 60) scrollHint.classList.remove('show');
-        ticking = false;
-      });
-    }
+      if(window.scrollY > 100) scrollHint.classList.remove('show');
+    });
 
-    function startIntro() {
-      moveButterfly(50, 112, 1, '%');
-      setTimeout(() => heroCopy.classList.add('show'), 250);
-      setTimeout(() => landOnWord(), 650);
-      setTimeout(() => scrollHint.classList.add('show'), 2700);
-      setTimeout(() => {
-        introFinished = true;
-        heroOverlay.classList.add('is-hidden');
-        goToScene(1, false);
-      }, 3600);
-    }
-
-    navDots.forEach(dot => {
+    // Dot Click Handler
+    dots.forEach(dot => {
       dot.addEventListener('click', () => {
-        if (!introFinished) return;
-        goToScene(Number(dot.dataset.go));
+        const index = parseInt(dot.dataset.go);
+        window.scrollTo({
+          top: scenes[index].offsetTop,
+          behavior: 'smooth'
+        });
       });
     });
 
-    window.addEventListener('load', startIntro, { once: true });
-    window.addEventListener('scroll', onScroll, { passive: true });
-    window.addEventListener('resize', () => {
-      if (!introFinished) landOnWord();
-      else goToScene(currentScene, false);
-    });
-    window.addEventListener('keydown', (e) => {
-      if (!introFinished) return;
-      if (['ArrowDown', 'PageDown', ' '].includes(e.key)) {
-        e.preventDefault();
-        goToScene(currentScene + 1);
-      }
-      if (['ArrowUp', 'PageUp'].includes(e.key)) {
-        e.preventDefault();
-        goToScene(currentScene - 1);
-      }
+    // Intro Animation
+    window.addEventListener('DOMContentLoaded', () => {
+      setTimeout(() => {
+        heroCopy.classList.add('show');
+      }, 500);
+
+      setTimeout(() => {
+        heroOverlay.classList.add('is-hidden');
+        isIntroDone = true;
+        scrollHint.classList.add('show');
+        // Initial butterfly position
+        butterfly.style.left = '50%';
+        butterfly.style.top = '50%';
+      }, 3500);
     });
   </script>
 </body>
