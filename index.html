@@ -1,11 +1,12 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>A Quiet Space for You</title>
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Quiet Space for You</title>
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&family=Lora:ital@1&display=swap" rel="stylesheet">
     <style>
-        /* 1. Soft Romantic Palette */
+        /* Base Styling */
         body { 
             background: linear-gradient(135deg, #fff5f7 0%, #fdfcf0 100%); 
             font-family: 'Lora', serif; 
@@ -15,36 +16,41 @@
             overflow-x: hidden;
         }
 
-        /* 2. Floating Hearts Background Effect */
-        .heart-bg {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            pointer-events: none; z-index: -1; opacity: 0.5;
+        /* Animations */
+        .fade-in { animation: fadeIn 3s ease-in; }
+        @keyframes fadeIn {
+            0% { opacity: 0; transform: translateY(10px); }
+            100% { opacity: 1; transform: translateY(0); }
         }
 
-        /* 3. Typography */
+        /* Header */
         h1 { 
             font-family: 'Dancing Script', cursive; 
-            color: #d63384; font-size: 3rem; 
-            margin-top: 60px; text-shadow: 2px 2px 4px rgba(0,0,0,0.05);
+            color: #d63384; font-size: 3.2rem; 
+            margin-top: 60px; margin-bottom: 10px;
         }
         
         .section-title { 
             font-family: 'Dancing Script', cursive;
-            color: #ad1457; margin-top: 50px; font-size: 2rem; 
+            color: #ad1457; margin-top: 50px; font-size: 2.2rem; 
         }
 
-        /* 4. Soft Media Styling */
+        /* Polaroid Image/Video Containers */
         .media-container {
-            margin: 20px auto; width: 90%; max-width: 500px;
-            border-radius: 30px; overflow: hidden;
-            box-shadow: 0 20px 40px rgba(214, 51, 132, 0.1);
-            border: 8px solid white;
+            margin: 25px auto; width: 85%; max-width: 450px;
+            background: white;
+            padding: 15px 15px 40px 15px; /* Creates the Polaroid look */
+            border-radius: 4px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            transform: rotate(-1deg); /* Slight romantic tilt */
             transition: transform 0.3s ease;
         }
         
-        img, video { width: 100%; display: block; }
+        .media-container:nth-child(even) { transform: rotate(1.5deg); }
 
-        /* 5. The Heart-Touching Letter */
+        img, video { width: 100%; display: block; border-radius: 2px; }
+
+        /* The Heart-Touching Letter */
         .letter { 
             background-color: white; 
             padding: 40px; 
@@ -60,13 +66,19 @@
 
         .highlight { color: #d63384; font-weight: bold; font-style: normal; }
 
-        /* Slow Fade-In Animation */
-        .fade-in {
-            animation: fadeIn 3s;
+        /* Video Fail-Safe Link */
+        .video-link {
+            font-size: 0.9rem; margin-top: 10px; display: block;
+            color: #ad1457; text-decoration: none; font-weight: bold;
         }
-        @keyframes fadeIn {
-            0% { opacity: 0; transform: translateY(20px); }
-            100% { opacity: 1; transform: translateY(0); }
+
+        /* YouTube Container */
+        .video-container {
+            position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;
+            max-width: 90%; margin: 20px auto; border-radius: 15px;
+        }
+        .video-container iframe {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
         }
     </style>
 </head>
@@ -74,46 +86,61 @@
 
     <div class="fade-in">
         <h1>For You, Jhansy 🌿</h1>
-        <p style="color: #8D6E63; letter-spacing: 2px;"><i>Distance is just a test of how far love can travel.</i></p>
+        <p style="color: #8D6E63; letter-spacing: 1px;"><i>A sanctuary for your heart and mind.</i></p>
 
         <h3 class="section-title">🌸 Petals of Peace</h3>
         <div class="media-container">
-            <img src="flowers1.jpg" alt="Lilies">
+            <img src="flowers1.jpg" alt="Lilies for you">
         </div>
         <div class="media-container">
-            <img src="flowers2.jpg" alt="Lilies Close up">
+            <img src="flowers2.jpg" alt="A closer look">
         </div>
-        <p style="padding: 0 30px;">I chose these lilies because they feel as calm as I want you to feel right now.</p>
+        <p style="padding: 0 30px; font-size: 0.9rem;">I wish I could bring the scent of these lilies to you right now.</p>
 
-        <hr style="width: 20%; margin: 50px auto; border: 0; border-top: 1px solid #d63384; opacity: 0.2;">
+        <hr style="width: 20%; margin: 50px auto; border: 0; border-top: 1px solid #d63384; opacity: 0.1;">
 
         <h3 class="section-title">🍦 Sweetness for the Soul</h3>
-        <p>I wish I could hold the spoon for you while you rest.</p>
+        <p style="padding: 0 30px;">I got the Mocha and Double Chocolate Mochi. <br> Imagine the cold sweetness helping your headache fade away.</p>
         
         <div class="media-container">
-            <img src="icecream_photo.jpg" alt="Mochi Boxes">
+            <img src="icecream_photo.jpg" alt="Your favorites">
         </div>
         
         <div class="media-container">
-            <video controls playsinline>
+            <video id="mainVideo" controls playsinline preload="metadata" webkit-playsinline style="width: 100%;">
                 <source src="icecream.mov" type="video/quicktime">
+                <source src="icecream.mov" type="video/mp4">
                 Your browser does not support the video tag.
             </video>
         </div>
-        <p>A little Mocha and Chocolate to make the headache go away.🍫</p>
+        <a href="icecream.mov" class="video-link">Tap here if the video doesn't load 🤍</a>
+
+        <hr style="width: 20%; margin: 50px auto; border: 0; border-top: 1px solid #d63384; opacity: 0.1;">
+
+        <h3 class="section-title">🎬 A Moment to Disappear</h3>
+        <div class="video-container">
+            <iframe src="https://www.youtube.com/embed/5WnL9v0V_E8" frameborder="0" allowfullscreen></iframe>
+        </div>
 
         <div class="letter">
             <p>
                 My Dearest Jhansy,<br><br>
-                I know these days are hard. I know your body is tired and your mind is heavy. While I can't be there to rub your temples or bring you tea, I wanted to build this <span class="highlight">sacred space</span> for you.<br><br>
-                Every image here, every flower I picked, and every bite of ice cream was a thought sent your way. This isn't just code; it's <span class="highlight">my heart</span> in digital form.<br><br>
-                Take all the time you need. Don't worry about the world outside. Just stay here in this quiet place as long as you need.<br><br>
-                <span class="highlight">I am right here. Always.</span>
+                I know these days are heavy. I know your head hurts and your body is exhausted. While I can't be there to take the pain away, I wanted to build this <span class="highlight">digital home</span> for you.<br><br>
+                Every flower I picked and every mochi I bought was a silent message to you: <span class="highlight">"I am here, and I am thinking of you."</span><br><br>
+                Take a deep breath. Rest your eyes. Stay in this quiet place as long as you need.<br><br>
+                <span class="highlight">No pressure to reply. Just be at peace.</span>
             </p>
         </div>
 
-        <p style="font-family: 'Dancing Script', cursive; font-size: 1.5rem; color: #d63384; margin-bottom: 80px;">With all my love, P.</p>
+        <p style="font-family: 'Dancing Script', cursive; font-size: 1.8rem; color: #d63384; margin-bottom: 80px;">With all my love, P.</p>
     </div>
+
+    <script>
+        window.onload = function() {
+            var v = document.getElementById('mainVideo');
+            v.load();
+        };
+    </script>
 
 </body>
 </html>
