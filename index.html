@@ -133,7 +133,7 @@
       width: 10px;
       height: 10px;
       border-radius: 999px;
-      background: rgba(248,221,232,0.56);
+      background: rgba(146, 186, 132, 0.58);
       filter: blur(1px);
       animation-name: fall;
       animation-timing-function: linear;
@@ -338,20 +338,35 @@
     @keyframes flapR { 0%,100% { transform: rotate(-22deg); } 50% { transform: rotate(12deg); } }
     @keyframes flapR2 { 0%,100% { transform: rotate(-12deg); } 50% { transform: rotate(9deg); } }
 
-    .hero-sub,
+    .hero-quote-wrap {
+      margin: 2rem auto 0;
+      max-width: 44rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .hero-quote-line,
     .hero-note {
       opacity: 0;
       transform: translateY(14px);
     }
 
-    .hero-sub {
-      margin: 2rem auto 0;
-      max-width: 42rem;
-      font-size: 1.06rem;
-      line-height: 2;
+    .hero-quote-line {
+      font-size: clamp(1.02rem, 2.2vw, 1.22rem);
+      line-height: 1.9;
       color: #6b5a5a;
-      animation: fadeUp 1.1s ease forwards 2.8s;
+      letter-spacing: 0.02em;
+      text-align: center;
+      text-shadow: 0 8px 24px rgba(255,255,255,0.35);
     }
+
+    .hero-quote-line-1 { animation: fadeUp 1s ease forwards 2.6s; }
+    .hero-quote-line-2 { animation: fadeUp 1s ease forwards 3s; }
+    .hero-quote-line-3 { animation: fadeUp 1s ease forwards 3.4s; }
+    .hero-quote-line-4 { animation: fadeUp 1s ease forwards 3.8s; }
+    .hero-quote-line-5 { animation: fadeUp 1s ease forwards 4.2s; }
 
     .hero-note {
       margin-top: 2rem;
@@ -827,7 +842,13 @@
             <h1 class="hero-name">JHANSY 🌿</h1>
           </div>
 
-          <p class="hero-sub">Morning light... a little wind... a small butterfly nearby... and a day that unfolds softly, one quiet moment at a time.</p>
+          <div class="hero-quote-wrap">
+            <div class="hero-quote-line hero-quote-line-1">Morning light...</div>
+            <div class="hero-quote-line hero-quote-line-2">a little wind...</div>
+            <div class="hero-quote-line hero-quote-line-3">a small butterfly nearby...</div>
+            <div class="hero-quote-line hero-quote-line-4">and a day that unfolds softly,</div>
+            <div class="hero-quote-line hero-quote-line-5">one quiet moment at a time.</div>
+          </div>
           <div class="hero-note">let the day arrive slowly</div>
         </div>
       </section>
