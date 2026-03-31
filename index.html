@@ -2,25 +2,114 @@
 <html>
 <head>
     <title>A Quiet Space for You</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
-        body { background-color: #FDFCF0; font-family: 'Georgia', serif; text-align: center; color: #5D4037; padding: 50px; }
-        h1 { color: #d63384; }
-        img { max-width: 80%; border-radius: 15px; margin: 20px 0; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
-        .note { background-color: #F3E5F5; padding: 30px; border-radius: 15px; border: 1px solid #E1BEE7; max-width: 600px; margin: 40px auto; line-height: 1.6; }
+        /* 1. Soft, Calming Aesthetic */
+        body { 
+            background: linear-gradient(180deg, #FDFCF0 0%, #FFF5F5 100%); 
+            font-family: 'Georgia', serif; 
+            text-align: center; 
+            color: #5D4037; 
+            padding: 20px;
+            margin: 0;
+        }
+        
+        /* 2. Floating Animation for Heart Touching Feel */
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+
+        h1 { color: #d63384; font-size: 2.2rem; margin-top: 40px; animation: float 4s ease-in-out infinite; }
+        
+        .section-title { font-style: italic; color: #8D6E63; margin-top: 30px; }
+
+        /* Images */
+        img { 
+            max-width: 90%; 
+            border-radius: 20px; 
+            margin: 20px 0; 
+            box-shadow: 0 10px 30px rgba(214, 51, 132, 0.15); 
+        }
+
+        /* 3. The Movie/Video Section */
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%; /* 16:9 ratio */
+            height: 0;
+            overflow: hidden;
+            max-width: 90%;
+            margin: 20px auto;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* 4. The Heart-Touching Note */
+        .note { 
+            background-color: rgba(255, 255, 255, 0.7); 
+            padding: 35px; 
+            border-radius: 20px; 
+            border: 1px solid #E1BEE7; 
+            max-width: 500px; 
+            margin: 50px auto; 
+            line-height: 1.8;
+            font-size: 1.1rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        .highlight { color: #d63384; font-weight: bold; }
+
+        /* Music Player Styling */
+        .music-text { font-size: 0.9rem; color: #AD1457; margin-bottom: 10px; }
     </style>
 </head>
 <body>
+
     <h1>For You, Jhansy 🌿</h1>
-    <p>I built this quiet space just for you to rest your eyes and your mind.</p>
+    <p style="font-style: italic;">A little piece of peace, created just for you.</p>
     
-    <hr>
-    <h3>🌸 A Virtual Bouquet</h3>
-    <img src="https://images.unsplash.com/photo-1526047932273-341f2a7631f9?auto=format&fit=crop&w=800&q=80">
-    <p>Flowers that will never wilt.</p>
+    <div style="margin-top: 20px;">
+        <p class="music-text">♫ Play this for a peaceful background</p>
+        <audio controls style="height: 30px; opacity: 0.7;">
+            <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+        </audio>
+    </div>
+
+    <hr style="width: 50%; opacity: 0.2; margin: 40px auto;">
+
+    <h3 class="section-title">🌸 A Bouquet That Never Wilts</h3>
+    <img src="https://images.unsplash.com/photo-1526047932273-341f2a7631f9?auto=format&fit=crop&w=800&q=80" alt="Heart Flowers">
+    <p>I wish I could bring these to your door today.</p>
+
+    <h3 class="section-title">🍦 Something Sweet & Cold</h3>
+    <img src="https://images.unsplash.com/photo-1563805042-7684c019e1cb?auto=format&fit=crop&w=600&q=80" alt="Ice Cream">
+    <p>Imagine the taste. Just a little virtual sweetness for you.</p>
+
+    <h3 class="section-title">🎬 A World to Get Lost In</h3>
+    <p style="padding: 0 20px;">I found this for you. It’s quiet, beautiful, and needs no thinking. Just press play and rest your eyes.</p>
+    <div class="video-container">
+        <iframe src="https://www.youtube.com/embed/5WnL9v0V_E8" frameborder="0" allowfullscreen></iframe>
+    </div>
 
     <div class="note">
-        <p>Jhansy, I know today is heavy. I wish I could hand you these things in person, but for now, I hope this link brings a small smile to your face. <br><br>
-        <b>You don't have to reply. Just breathe and be.</b></p>
+        <p>
+            Jhansy,<br><br>
+            I know the world feels a bit heavy right now, and your head probably hurts more than you're saying. I spent this time building this small corner of the internet <span class="highlight">just for you</span>. <br><br>
+            No matter how busy or tired you are, I want you to know there is always a place where you can just be yourself. <br><br>
+            <span class="highlight">You don't have to reply.</span> You don't have to explain your silence. Just know that you are deeply cared for, and I am right here whenever you're ready to come back. <br><br>
+            Stay strong. 🤍
+        </p>
     </div>
+
+    <p style="font-size: 0.8rem; color: #BDBDBD; margin-bottom: 50px;">Hand-coded with care by P.</p>
+
 </body>
 </html>
