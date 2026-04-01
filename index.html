@@ -18,9 +18,6 @@
       --envelope: #f4ecd8;
       --text: #2f241d;
       --muted: #7b675b;
-      --shadow: 0 20px 60px rgba(0, 0, 0, 0.05);
-      --shadow-lg: 0 30px 90px rgba(112, 79, 57, 0.12);
-      --radius: 30px;
       --rose: #8d3b4c;
       --rose-soft: #efd4da;
       --matcha: #638a57;
@@ -29,11 +26,7 @@
       --ice-soft: #dcecf7;
       --popcorn: #6e4d2f;
       --popcorn-soft: #efe1d2;
-      --accent-gold: #c6a26c;
-      --cinema: #1a1a1a;
-      --cinema-2: #0e0e0e;
       --heart: #bc4d63;
-      --glass-bg: rgba(255, 255, 255, 0.34);
       --glass-stroke: rgba(255, 255, 255, 0.48);
     }
 
@@ -42,8 +35,7 @@
       -webkit-tap-highlight-color: transparent;
     }
 
-    html,
-    body {
+    html, body {
       margin: 0;
       width: 100%;
       height: 100%;
@@ -84,7 +76,6 @@
 
     body.locked {
       overflow: hidden;
-      touch-action: none;
     }
 
     .app {
@@ -259,21 +250,15 @@
       transition: transform 0.9s ease;
     }
 
+    .envelope-btn:hover::before {
+      transform: translateX(120%);
+    }
+
     .envelope-btn:hover {
       transform: translateY(-4px) scale(1.02);
       box-shadow:
         0 28px 80px rgba(113, 83, 54, 0.22),
         inset 0 1px 0 rgba(255,255,255,0.8);
-      filter: saturate(1.05);
-    }
-
-    .envelope-btn:hover::before {
-      transform: translateX(120%);
-    }
-
-    .envelope-btn:focus-visible {
-      outline: 2px solid rgba(47, 36, 29, 0.6);
-      outline-offset: 4px;
     }
 
     .envelope-hint {
@@ -308,7 +293,7 @@
       background:
         radial-gradient(circle at 20% 12%, rgba(255,255,255,0.52), transparent 18%),
         radial-gradient(circle at 80% 18%, rgba(255,248,242,0.45), transparent 20%),
-        linear-gradient(180deg, var(--paper), var(--paper-2));
+        linear-gradient(180deg, var(--paper), #faf6ef);
       border-radius: 26px;
       box-shadow: 0 35px 90px rgba(82, 56, 36, 0.16);
       padding: clamp(26px, 4vw, 48px);
@@ -501,7 +486,7 @@
       background:
         linear-gradient(180deg, rgba(255,255,255,1), rgba(255,251,248,1));
       border: 1px solid var(--glass-stroke);
-      border-radius: var(--radius);
+      border-radius: 30px;
       box-shadow:
         0 30px 90px rgba(112, 79, 57, 0.12),
         inset 0 1px 0 rgba(255,255,255,0.55);
@@ -824,7 +809,7 @@
       background:
         linear-gradient(180deg, rgba(255,255,255,0.88), rgba(255,249,244,0.96));
       border: 1px solid rgba(255,255,255,0.5);
-      border-radius: var(--radius);
+      border-radius: 30px;
       box-shadow: 0 30px 90px rgba(112, 79, 57, 0.12);
       padding: 28px;
       overflow: hidden;
@@ -1052,7 +1037,7 @@
       <section class="section" data-section-index="0">
         <div class="section-accent accent-left" style="background: var(--rose-soft);"></div>
         <div class="section-accent accent-right" style="background: #f7dce1;"></div>
-        <div class="intro-text fade-up" id="flowersIntroText" style="color: var(--rose);">
+        <div class="intro-text fade-up" style="color: var(--rose);">
           Flowers ivvalli kada...
           <span class="intro-sub">So I brought them to you in the only way I can right now.</span>
         </div>
@@ -1145,19 +1130,17 @@
           <div class="media-frame">
             <video
               class="phase-video"
-              id="icecreamVideo"
               muted
               loop
               playsinline
               preload="auto"
               data-phase="7"
-              src="icecream.mov"
             >
               <source src="icecream.mov" type="video/quicktime" />
             </video>
           </div>
           <div class="video-note">
-            If this .mov still does not play in your browser, the issue is usually codec support. Converting the same clip to MP4 is the fallback fix.
+            If this .mov does not play on a phone browser, convert the same clip to MP4 and replace only the source filename.
           </div>
         </div>
       </section>
@@ -1205,8 +1188,18 @@
   </div>
 
   <script>
+    // =========================
+    // TEST MODE
+    // true  = unlock everything now for testing
+    // false = use CST timed unlocks
+    // =========================
     const PREVIEW_MODE = true;
 
+    // =========================
+    // PASTE YOUR YOUTUBE VIDEO ID HERE
+    // Example:
+    // const VIDEO_ID = "dQw4w9WgXcQ";
+    // =========================
     const VIDEO_ID = "PASTE_YOUR_YOUTUBE_VIDEO_ID_HERE";
 
     const TYPEWRITER_TEXT = `Hi Jaanu...
@@ -1267,7 +1260,7 @@ Hahaha... baga navvukunnaava? So, roju antha ilane navvukunta undu.`;
     ];
 
     const STORAGE_KEYS = {
-      envelopeOpened: "jhansy_experience_envelope_opened_v5"
+      envelopeOpened: "jhansy_experience_envelope_opened_v6"
     };
 
     const envelopeScreen = document.getElementById("envelopeScreen");
@@ -1299,6 +1292,7 @@ Hahaha... baga navvukunnaava? So, roju antha ilane navvukunta undu.`;
     let envelopeAvailable = false;
     let typewriterStarted = false;
 
+    // Petals
     const petalCtx = petalCanvas.getContext("2d");
     let petalAnimationId = null;
     let petals = [];
@@ -1318,9 +1312,8 @@ Hahaha... baga navvukunnaava? So, roju antha ilane navvukunta undu.`;
     }
 
     function createPetal(initial = false) {
-      const sideBias = Math.random() * window.innerWidth;
       return {
-        x: sideBias,
+        x: Math.random() * window.innerWidth,
         y: initial ? Math.random() * window.innerHeight : -40 - Math.random() * 120,
         size: 8 + Math.random() * 14,
         speedY: 18 + Math.random() * 26,
@@ -1399,6 +1392,7 @@ Hahaha... baga navvukunnaava? So, roju antha ilane navvukunta undu.`;
       petalLastTime = ts;
 
       petalGlobalOpacity += (petalOpacityTarget - petalGlobalOpacity) * Math.min(1, dt * 2.6);
+
       if (petalOpacityTarget > 0.01 || petalGlobalOpacity > 0.01 || petalsEnabled) {
         petalCtx.clearRect(0, 0, window.innerWidth, window.innerHeight);
         updatePetals(dt);
@@ -1420,13 +1414,6 @@ Hahaha... baga navvukunnaava? So, roju antha ilane navvukunta undu.`;
         petalAnimationId = requestAnimationFrame(petalLoop);
       }
       syncPetalsWithSection();
-    }
-
-    function stopPetals() {
-      petalsEnabled = false;
-      petalOpacityTarget = 0;
-      petalDensityMultiplier = 0;
-      petalCanvas.classList.remove("active");
     }
 
     function syncPetalsWithSection() {
@@ -1458,6 +1445,7 @@ Hahaha... baga navvukunnaava? So, roju antha ilane navvukunta undu.`;
       }
     }
 
+    // Time lock
     function setupYouTube() {
       if (VIDEO_ID && VIDEO_ID !== "PASTE_YOUR_YOUTUBE_VIDEO_ID_HERE") {
         youtubeFrame.src = `https://www.youtube.com/embed/${VIDEO_ID}?rel=0&modestbranding=1`;
@@ -1505,7 +1493,6 @@ Hahaha... baga navvukunnaava? So, roju antha ilane navvukunta undu.`;
 
     function getUnlockedScheduleKeys() {
       if (PREVIEW_MODE) return PHASE_SCHEDULES.map((s) => s.key);
-
       const nowSeconds = getCurrentCSTTotalSeconds();
       return PHASE_SCHEDULES
         .filter((schedule) => nowSeconds >= getScheduleUnlockSeconds(schedule))
@@ -1535,10 +1522,11 @@ Hahaha... baga navvukunnaava? So, roju antha ilane navvukunta undu.`;
 
     function formatDuration(totalSeconds) {
       const safe = Math.max(0, totalSeconds);
-      const hours = Math.floor(safe / 3600);
-      const minutes = Math.floor((safe % 3600) / 60);
-      const seconds = safe % 60;
-      return { hours, minutes, seconds };
+      return {
+        hours: Math.floor(safe / 3600),
+        minutes: Math.floor((safe % 3600) / 60),
+        seconds: safe % 60
+      };
     }
 
     function secondsUntilSchedule(schedule) {
@@ -1571,9 +1559,7 @@ Hahaha... baga navvukunnaava? So, roju antha ilane navvukunta undu.`;
     function showLockBadge(message = "locked for 1.5s") {
       lockBadge.textContent = message;
       lockBadge.classList.add("show");
-      setTimeout(() => {
-        lockBadge.classList.remove("show");
-      }, 1500);
+      setTimeout(() => lockBadge.classList.remove("show"), 1500);
     }
 
     function animateCurrentSection() {
@@ -1590,9 +1576,7 @@ Hahaha... baga navvukunnaava? So, roju antha ilane navvukunta undu.`;
       renderLockedPlaceholders();
       animateCurrentSection();
       syncPetalsWithSection();
-      setTimeout(() => {
-        controlVideos();
-      }, 140);
+      setTimeout(controlVideos, 140);
     }
 
     function stopAndResetVideo(video) {
@@ -1801,7 +1785,6 @@ Hahaha... baga navvukunnaava? So, roju antha ilane navvukunta undu.`;
       sections.forEach((section, index) => {
         const schedule = getScheduleForSection(index);
         cacheOriginalSectionContent(section);
-
         if (!schedule) return;
 
         if (isSectionUnlocked(index)) {
@@ -1842,22 +1825,24 @@ Hahaha... baga navvukunnaava? So, roju antha ilane navvukunta undu.`;
       }
     }
 
-    openBtn.addEventListener("click", () => {
+    function handleEnvelopeOpen(e) {
+      if (e) e.preventDefault();
       if (!envelopeAvailable) {
         showLockBadge("First reveal at 9:00 AM CST");
         return;
       }
       startTypewriterIfNeeded();
-    });
+    }
+
+    openBtn.addEventListener("click", handleEnvelopeOpen);
+    openBtn.addEventListener("touchend", handleEnvelopeOpen, { passive: false });
 
     window.addEventListener(
       "wheel",
       (e) => {
         e.preventDefault();
-
         if (!typingDone) return;
         if (navigationLocked) return;
-
         if (e.deltaY > 0) moveBy(1);
         else if (e.deltaY < 0) moveBy(-1);
       },
@@ -1884,55 +1869,33 @@ Hahaha... baga navvukunnaava? So, roju antha ilane navvukunta undu.`;
       }
     });
 
-    window.addEventListener(
-      "touchstart",
-      (e) => {
-        if (!typingDone) {
-          e.preventDefault();
-          return;
-        }
-        if (e.touches.length > 0) {
-          touchStartY = e.touches[0].clientY;
-          touchStartX = e.touches[0].clientX;
-        }
-      },
-      { passive: false }
-    );
+    window.addEventListener("touchstart", (e) => {
+      if (!typingDone) return;
+      if (e.touches.length > 0) {
+        touchStartY = e.touches[0].clientY;
+        touchStartX = e.touches[0].clientX;
+      }
+    }, { passive: true });
 
-    window.addEventListener(
-      "touchmove",
-      (e) => {
-        e.preventDefault();
-      },
-      { passive: false }
-    );
+    window.addEventListener("touchend", (e) => {
+      if (!typingDone) return;
+      if (navigationLocked) return;
+      if (touchStartY === null || touchStartX === null) return;
 
-    window.addEventListener(
-      "touchend",
-      (e) => {
-        if (!typingDone) return;
-        if (navigationLocked) return;
-        if (touchStartY === null || touchStartX === null) return;
+      const touch = e.changedTouches[0];
+      const endY = touch.clientY;
+      const endX = touch.clientX;
+      const diffY = touchStartY - endY;
+      const diffX = touchStartX - endX;
 
-        const touch = e.changedTouches[0];
-        const endY = touch.clientY;
-        const endX = touch.clientX;
-        const diffY = touchStartY - endY;
-        const diffX = touchStartX - endX;
+      if (Math.abs(diffY) > Math.abs(diffX) && Math.abs(diffY) >= 30) {
+        if (diffY > 0) moveBy(1);     // swipe up -> next
+        else moveBy(-1);              // swipe down -> previous
+      }
 
-        if (Math.abs(diffY) > Math.abs(diffX) && Math.abs(diffY) >= 30) {
-          if (diffY > 0) {
-            moveBy(1);   // swipe up -> next
-          } else {
-            moveBy(-1);  // swipe down -> previous
-          }
-        }
-
-        touchStartY = null;
-        touchStartX = null;
-      },
-      { passive: false }
-    );
+      touchStartY = null;
+      touchStartX = null;
+    }, { passive: true });
 
     window.addEventListener("resize", () => {
       updateJourneyPosition();
