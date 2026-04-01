@@ -6,14 +6,9 @@
   <title>A Gift for Jhansy</title>
   <style>
     :root {
-      --rose: #c95e8b; 
-      --rose-deep: #a84871; 
-      --cream: #fffaf6;
-      --paper: #ffffff; 
-      --text: #4a3f3f; 
-      --muted: #8b7676; 
-      --matcha-deep: #5d7a44; 
-      --ice-blue: #7aa2af;
+      --rose: #c95e8b; --rose-deep: #a84871; --cream: #fffaf6;
+      --paper: #ffffff; --text: #4a3f3f; --muted: #8b7676; 
+      --matcha-deep: #5d7a44; --ice-blue: #7aa2af; --cinema-black: #1a1a1a;
     }
 
     * { box-sizing: border-box; }
@@ -25,7 +20,7 @@
       overflow: hidden; 
     }
 
-    /* Section Management - Ensures only one part shows at a time */
+    /* Section Control */
     .snap-section {
       height: 100vh; width: 100%; 
       position: absolute; top: 0; left: 0;
@@ -38,7 +33,7 @@
 
     .snap-section.active { opacity: 1; visibility: visible; z-index: 20; }
 
-    /* Initial Overlay */
+    /* The Opening Envelope */
     #ceremony-overlay {
       position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
       display: flex; flex-direction: column; align-items: center; justify-content: center;
@@ -68,10 +63,27 @@
       box-shadow: 0 20px 60px rgba(0,0,0,0.05); 
     }
 
+    /* Cinematic Console Styling */
+    .movie-card {
+      background: var(--cinema-black); color: white; border-radius: 20px;
+      padding: 10px; width: 100%; max-width: 500px;
+      box-shadow: 0 0 40px rgba(0,0,0,0.5);
+    }
+
+    .video-wrapper {
+      position: relative; padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+      height: 0; overflow: hidden; border-radius: 12px;
+    }
+
+    .video-wrapper iframe {
+      position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none;
+    }
+
     .media-container { 
       margin-top: 15px; border-radius: 15px; 
       overflow: hidden; border: 3px solid #fff; 
-      background: #eee; width: 100%; 
+      background: #eee; width: 100%; min-height: 200px;
+      display: flex; align-items: center; justify-content: center;
     }
     
     .media-container img, .media-container video { 
@@ -142,10 +154,7 @@
     <section class="snap-section">
       <div class="card">
         <h3 style="color: var(--ice-blue); font-style: italic; margin:0;">The Perfect Treat 🍨</h3>
-        <p style="color: var(--muted); font-size: 0.95rem;">Sugar makes everything better, right?</p>
-        <div class="media-container">
-          <img src="./icecream.jpg" alt="Ice Cream">
-        </div>
+        <div class="media-container"><img src="./icecream.jpg"></div>
       </div>
     </section>
 
@@ -153,15 +162,34 @@
       <div class="card">
         <h3 style="color: var(--ice-blue); font-style: italic; margin:0;">Sweet Happiness...</h3>
         <div class="media-container">
-          <video id="iceCreamVideo" loop muted playsinline controls preload="auto">
-            <source src="./icecream_video.mp4" type="video/mp4">
+          <video id="iceCreamVideo" loop muted playsinline controls poster="./icecream.jpg" preload="auto">
+            <source src="./icecream.mov" type="video/quicktime">
           </video>
         </div>
       </div>
     </section>
 
     <div class="snap-section">
+      <h2 class="hero-text" style="color: var(--muted)">Popcorn ready? 🍿</h2>
+    </div>
+
+    <section class="snap-section">
+      <div class="movie-card">
+        <p style="font-size: 0.9rem; color: #888; margin-bottom: 10px; font-style: italic;">Press play for a little surprise...</p>
+        <div class="video-wrapper">
+          <iframe 
+            src="https://www.youtube.com/embed/YOUR_YOUTUBE_ID?enablejsapi=1" 
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+            allowfullscreen>
+          </iframe>
+        </div>
+        <h4 style="margin-top: 15px; letter-spacing: 2px; color: var(--rose);">THE MOVIE NIGHT</h4>
+      </div>
+    </section>
+
+    <div class="snap-section">
       <h2 class="hero-text">Roju anta ilane navvukunta undhu, Jaanu. ❤️</h2>
+      <p style="color: var(--muted); margin-top: 20px;">Happy Menstrual Day!</p>
     </div>
 
   </div>
@@ -169,7 +197,6 @@
   <script>
     const text = `Hi Jaanu...\n\nChustu chustune 25 days ayipoyindhi kada. Last time when you got this, I was with you.\n\nBefore that, I used to send the flowers, coffee, and ice cream... but this time I can't do any of those.\n\nBut nenu idiot ni kada? Mental fellow ni! Agutanu anukuntunava? NEVER.\n\nSo Jhansy, happy menstrual day!\n\nJaanu, nuvvu iroju prapanchanni chudalekapothe enti? Ah prapanchanni nee daggariki teeskuni vasta! 😂😂\n\nRoju anta ilane navvukunta undhu.`;
 
-    // currentStep = -1 ensures the first scroll lands on Step 0 correctly
     let currentStep = -1; 
     const steps = document.querySelectorAll('.snap-section');
     let canScroll = false;
@@ -196,40 +223,25 @@
     function navigate(direction) {
       if (!canScroll) return;
       const nextStep = (direction === 'down') ? currentStep + 1 : currentStep - 1;
-      
-      // Boundary checks
       if (nextStep < 0 || nextStep >= steps.length) return;
 
-      // Move letter overlay away
       document.getElementById('ceremony-overlay').style.transform = 'translateY(-100vh)';
       
-      // Handle visibility transitions
       if (currentStep >= 0) steps[currentStep].classList.remove('active');
       currentStep = nextStep;
       steps[currentStep].classList.add('active');
 
-      // Video Trigger Logic
+      // Media Logic
       const vMatcha = document.getElementById('matchaVideo');
       const vIceCream = document.getElementById('iceCreamVideo');
       
-      if (currentStep === 4) { 
-          vMatcha.play().catch(e => console.log("Matcha playing")); 
-      } else { 
-          vMatcha.pause(); 
-      }
+      if (currentStep === 4) { vMatcha.play().catch(e=>{}); } else { vMatcha.pause(); }
+      if (currentStep === 7) { vIceCream.play().catch(e=>{}); } else { vIceCream.pause(); }
 
-      if (currentStep === 7) { 
-          vIceCream.play().catch(e => console.log("Ice Cream playing")); 
-      } else { 
-          vIceCream.pause(); 
-      }
-
-      // Scroll Shield to prevent accidental skipping
       canScroll = false;
       setTimeout(() => { canScroll = true; }, 1500); 
     }
 
-    // Input Listeners
     window.addEventListener('wheel', (e) => {
       if (Math.abs(e.deltaY) < 15) return;
       navigate(e.deltaY > 0 ? 'down' : 'up');
