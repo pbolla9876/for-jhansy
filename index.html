@@ -26,7 +26,7 @@
       overflow: hidden; 
     }
 
-    /* Section Management */
+    /* Section Management - Prevents Ghosting */
     .snap-section {
       height: 100vh;
       width: 100%;
@@ -38,7 +38,7 @@
       justify-content: center;
       opacity: 0;
       visibility: hidden;
-      transition: opacity 0.8s ease, transform 1s cubic-bezier(0.65, 0, 0.35, 1);
+      transition: opacity 0.5s ease; 
       z-index: 10;
       padding: 20px;
       text-align: center;
@@ -55,7 +55,7 @@
       position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
       display: flex; flex-direction: column; align-items: center; justify-content: center;
       z-index: 100; background: var(--cream);
-      transition: transform 1.2s cubic-bezier(0.65, 0, 0.35, 1);
+      transition: transform 1s cubic-bezier(0.65, 0, 0.35, 1);
     }
 
     .envelope {
@@ -71,19 +71,31 @@
       background: var(--paper); border: 12px solid white;
       box-shadow: 0 0 50px rgba(0,0,0,0.1);
       overflow-y: auto; padding: 30px;
+      scrollbar-width: none;
     }
 
-    .hero-text { font-size: clamp(1.8rem, 6vw, 3rem); color: var(--rose-deep); font-style: italic; }
+    .hero-text { font-size: clamp(1.8rem, 6vw, 2.5rem); color: var(--rose-deep); font-style: italic; margin: 0; }
 
     .card { 
       background: white; border-radius: 30px; padding: 1.5rem; 
-      width: 100%; max-width: 450px;
+      width: 100%; max-width: 420px;
       box-shadow: 0 20px 60px rgba(0,0,0,0.05);
-      overflow-y: auto; max-height: 80vh;
+      overflow-y: auto; max-height: 85vh;
     }
 
-    .media-container { margin-top: 15px; border-radius: 15px; overflow: hidden; border: 3px solid #fff; background: #f0f0f0; }
-    .media-container img, .media-container video { width: 100%; display: block; }
+    .media-container { 
+      margin-top: 15px; 
+      border-radius: 15px; 
+      overflow: hidden; 
+      border: 3px solid #fff; 
+      background: #eee;
+      width: 100%;
+    }
+    .media-container img, .media-container video { 
+      width: 100%; 
+      display: block; 
+      object-fit: contain; 
+    }
 
     .scroll-hint {
       position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
@@ -102,20 +114,21 @@
     <div id="letter-scene">
       <div id="typed-text" style="font-size: 1rem; line-height: 1.8; color: var(--text); white-space: pre-wrap;"></div>
     </div>
-    <div class="scroll-hint" id="scrollHint">Scroll Down... ↓</div>
+    <div class="scroll-hint" id="scrollHint">Scroll Down slowly... ↓</div>
   </div>
 
   <div id="main-world" style="display: none;">
     
-    <div class="snap-section active">
+    <div class="snap-section">
       <h2 class="hero-text">Flowers ivvalli kada...</h2>
     </div>
 
     <section class="snap-section">
       <div class="card">
         <h3 style="color: var(--rose-deep); font-style: italic; margin-top:0;">Morning Bloom 🌸</h3>
-        <p style="color: var(--muted); font-size: 0.9rem;">Even virtually, they stay with me—my way of saying "I’m right here."</p>
-        <div class="media-container"><img src="./flowers1.jpg"></div>
+        <div class="media-container">
+          <img src="./flowers1.jpg" alt="Flowers">
+        </div>
       </div>
     </section>
 
@@ -133,9 +146,8 @@
         </div>
 
         <div class="media-container">
-          <video id="matchaVideo" loop muted playsinline controls preload="auto" poster="./motcha.png">
+          <video id="matchaVideo" loop muted playsinline controls poster="./motcha.png">
             <source src="./starbucks.mov" type="video/quicktime">
-            <source src="starbucks.mov" type="video/mp4">
             Your browser does not support the video tag.
           </video>
         </div>
@@ -151,7 +163,7 @@
   <script>
     const text = `Hi Jaanu...\n\nChustu chustune 25 days ayipoyindhi kada. Last time when you got this, I was with you.\n\nBefore that, I used to send the flowers, coffee, and ice cream... but this time I can't do any of those.\n\nBut nenu idiot ni kada? Mental fellow ni! Agutanu anukuntunava? NEVER.\n\nSo Jhansy, happy menstrual day!\n\nJaanu, nuvvu iroju prapanchanni chudalekapothe enti? Ah prapanchanni nee daggariki teeskuni vasta! 😂😂\n\nRoju anta ilane navvukunta undhu.`;
 
-    let currentStep = 0;
+    let currentStep = -1; // FIXED: Starts before Step 0 to stop jumping
     const steps = document.querySelectorAll('.snap-section');
     let canScroll = false;
 
@@ -164,7 +176,7 @@
           document.getElementById('typed-text').innerHTML += text.charAt(i);
           i++;
           document.getElementById('letter-scene').scrollTop = document.getElementById('letter-scene').scrollHeight;
-          setTimeout(typeWriter, 35);
+          setTimeout(typeWriter, 30);
         } else {
           document.getElementById('scrollHint').classList.add('show-hint');
           document.getElementById('main-world').style.display = 'block';
@@ -178,33 +190,44 @@
       if (!canScroll) return;
       
       const nextStep = (direction === 'down') ? currentStep + 1 : currentStep - 1;
+      
+      // Stop at bounds
       if (nextStep < 0 || nextStep >= steps.length) return;
 
+      // Move Letter Away
       document.getElementById('ceremony-overlay').style.transform = 'translateY(-100vh)';
       
-      steps[currentStep].classList.remove('active');
+      // Toggle Active States
+      if (currentStep >= 0) steps[currentStep].classList.remove('active');
       currentStep = nextStep;
       steps[currentStep].classList.add('active');
 
       // Video Trigger
       const v = document.getElementById('matchaVideo');
       if (currentStep === 3) {
-        v.play().catch(e => console.log("Video Play Error:", e)); 
+        v.play().catch(e => console.log(e));
       } else {
         v.pause();
       }
 
+      // SCROLL SHIELD: Prevent rapid skipping
       canScroll = false;
-      setTimeout(() => { canScroll = true; }, 1200);
+      setTimeout(() => { canScroll = true; }, 1500); 
     }
 
-    window.addEventListener('wheel', (e) => navigate(e.deltaY > 0 ? 'down' : 'up'));
+    // Wheel Listener
+    window.addEventListener('wheel', (e) => {
+      if (Math.abs(e.deltaY) < 15) return; 
+      navigate(e.deltaY > 0 ? 'down' : 'up');
+    });
+
+    // Touch Listener
     let ts = 0;
     window.addEventListener('touchstart', (e) => ts = e.touches[0].clientY);
     window.addEventListener('touchend', (e) => {
       let te = e.changedTouches[0].clientY;
-      if (ts - te > 50) navigate('down');
-      if (te - ts > 50) navigate('up');
+      if (ts - te > 60) navigate('down');
+      if (te - ts > 60) navigate('up');
     });
   </script>
 </body>
