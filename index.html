@@ -26,7 +26,7 @@
       overflow: hidden; 
     }
 
-    /* --- THE FIX: CLEAN SECTION MANAGEMENT --- */
+    /* Section Management */
     .snap-section {
       height: 100vh;
       width: 100%;
@@ -50,7 +50,7 @@
       z-index: 20;
     }
 
-    /* --- ENVELOPE & LETTER (Z-INDEX 100+) --- */
+    /* Overlay Ceremony */
     #ceremony-overlay {
       position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
       display: flex; flex-direction: column; align-items: center; justify-content: center;
@@ -73,7 +73,6 @@
       overflow-y: auto; padding: 30px;
     }
 
-    /* --- HERO & CARDS --- */
     .hero-text { font-size: clamp(1.8rem, 6vw, 3rem); color: var(--rose-deep); font-style: italic; }
 
     .card { 
@@ -83,7 +82,7 @@
       overflow-y: auto; max-height: 80vh;
     }
 
-    .media-container { margin-top: 15px; border-radius: 15px; overflow: hidden; border: 3px solid #fff; }
+    .media-container { margin-top: 15px; border-radius: 15px; overflow: hidden; border: 3px solid #fff; background: #f0f0f0; }
     .media-container img, .media-container video { width: 100%; display: block; }
 
     .scroll-hint {
@@ -128,12 +127,15 @@
       <div class="card" style="background: #f9fbf2;">
         <h3 style="color: var(--matcha-deep); font-style: italic; margin-top:0;">The Matcha Verdict 🍵</h3>
         <p style="color: var(--muted); font-size: 0.9rem;">I finally tried it! 😂 Check out the video below.</p>
+        
         <div class="media-container">
-          <img src="./motcha.png" alt="Matcha Latte Preview">
+          <img src="./motcha.png" alt="Matcha Latte">
         </div>
+
         <div class="media-container">
-          <video id="matchaVideo" loop muted playsinline controls poster="./motcha.png">
+          <video id="matchaVideo" loop muted playsinline controls preload="auto" poster="./motcha.png">
             <source src="./starbucks.mov" type="video/quicktime">
+            <source src="starbucks.mov" type="video/mp4">
             Your browser does not support the video tag.
           </video>
         </div>
@@ -178,17 +180,19 @@
       const nextStep = (direction === 'down') ? currentStep + 1 : currentStep - 1;
       if (nextStep < 0 || nextStep >= steps.length) return;
 
-      // Move the Overlay
       document.getElementById('ceremony-overlay').style.transform = 'translateY(-100vh)';
       
-      // Toggle Sections
       steps[currentStep].classList.remove('active');
       currentStep = nextStep;
       steps[currentStep].classList.add('active');
 
-      // Video Control
+      // Video Trigger
       const v = document.getElementById('matchaVideo');
-      if (currentStep === 3) v.play().catch(e => {}); else v.pause();
+      if (currentStep === 3) {
+        v.play().catch(e => console.log("Video Play Error:", e)); 
+      } else {
+        v.pause();
+      }
 
       canScroll = false;
       setTimeout(() => { canScroll = true; }, 1200);
