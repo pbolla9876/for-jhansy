@@ -270,6 +270,14 @@
       opacity: 1;
     }
 
+    .video-note {
+      margin-top: 12px;
+      font-size: 14px;
+      line-height: 1.6;
+      color: #8a7467;
+      text-align: center;
+    }
+
     @media (max-width: 640px) {
       .section {
         padding: 18px;
@@ -339,7 +347,7 @@
         <div class="card">
           <h2 class="card-title">First Sip Reactions...</h2>
           <div class="media-frame">
-            <video class="phase-video" muted loop playsinline preload="metadata">
+            <video class="phase-video" muted loop playsinline preload="auto" data-phase="4">
               <source src="starbucks.mp4" type="video/mp4" />
             </video>
           </div>
@@ -368,9 +376,21 @@
         <div class="card">
           <h2 class="card-title">Sweet Happiness...</h2>
           <div class="media-frame">
-            <video class="phase-video" muted loop playsinline preload="metadata">
+            <video
+              class="phase-video"
+              id="icecreamVideo"
+              muted
+              loop
+              playsinline
+              preload="auto"
+              data-phase="7"
+              src="icecream.mov"
+            >
               <source src="icecream.mov" type="video/quicktime" />
             </video>
+          </div>
+          <div class="video-note">
+            If this .mov still does not play in your browser after this fix, the issue is browser codec support. In that case, convert the same file to MP4 and replace only the filename here.
           </div>
         </div>
       </section>
@@ -440,13 +460,14 @@ Hahaha... baga navvukunnaava? So, roju antha ilane navvukunta undu.`;
     const lockBadge = document.getElementById("lockBadge");
     const youtubeFrame = document.getElementById("youtubeFrame");
     const videos = Array.from(document.querySelectorAll(".phase-video"));
+    const sections = Array.from(document.querySelectorAll(".section"));
 
     let currentSection = 0;
     let typingDone = false;
     let navigationLocked = false;
     let typeIndex = 0;
     let touchStartY = null;
-    const totalSections = document.querySelectorAll(".section").length;
+    let typingTimer = null;
 
     function setupYouTube() {
       if (VIDEO_ID && VIDEO_ID !== "PASTE_YOUR_YOUTUBE_VIDEO_ID_HERE") {
@@ -465,27 +486,52 @@ Hahaha... baga navvukunnaava? So, roju antha ilane navvukunta undu.`;
 
     function updateJourneyPosition() {
       journey.style.transform = `translateY(-${currentSection * window.innerHeight}px)`;
-      controlVideos();
+      setTimeout(() => {
+        controlVideos();
+      }, 120);
+    }
+
+    function stopAndResetVideo(video) {
+      try {
+        video.pause();
+      } catch (e) {}
+
+      try {
+        video.currentTime = 0;
+      } catch (e) {}
+    }
+
+    function tryPlayVideo(video) {
+      if (!video) return;
+
+      const playPromise = video.play();
+      if (playPromise && typeof playPromise.catch === "function") {
+        playPromise.catch(() => {
+          video.muted = true;
+          video.setAttribute("muted", "");
+          video.load();
+          const secondTry = video.play();
+          if (secondTry && typeof secondTry.catch === "function") {
+            secondTry.catch(() => {});
+          }
+        });
+      }
     }
 
     function controlVideos() {
-      videos.forEach((video, index) => {
-        const parentSectionIndex = getVideoSectionIndex(video);
-        if (parentSectionIndex === currentSection) {
-          const playAttempt = video.play();
-          if (playAttempt && typeof playAttempt.catch === "function") {
-            playAttempt.catch(() => {});
-          }
+      videos.forEach((video) => {
+        const phaseIndex = Number(video.dataset.phase);
+
+        if (phaseIndex === currentSection) {
+          video.muted = true;
+          video.setAttribute("muted", "");
+          video.loop = true;
+          video.setAttribute("playsinline", "");
+          tryPlayVideo(video);
         } else {
-          video.pause();
+          stopAndResetVideo(video);
         }
       });
-    }
-
-    function getVideoSectionIndex(videoEl) {
-      const section = videoEl.closest(".section");
-      const sections = Array.from(document.querySelectorAll(".section"));
-      return sections.indexOf(section);
     }
 
     function lockNavigation() {
@@ -497,7 +543,7 @@ Hahaha... baga navvukunnaava? So, roju antha ilane navvukunta undu.`;
     }
 
     function goToSection(nextIndex) {
-      if (nextIndex < 0 || nextIndex >= totalSections) return;
+      if (nextIndex < 0 || nextIndex >= sections.length) return;
       if (nextIndex === currentSection) return;
       if (navigationLocked) return;
 
@@ -516,13 +562,14 @@ Hahaha... baga navvukunnaava? So, roju antha ilane navvukunta undu.`;
           TYPEWRITER_TEXT.slice(0, typeIndex + 1).replace(/\n/g, "<br>") +
           '<span class="caret">|</span>';
         typeIndex++;
-        setTimeout(typeWriter, 28);
+        typingTimer = setTimeout(typeWriter, 28);
       } else {
         paperText.innerHTML =
           TYPEWRITER_TEXT.replace(/\n/g, "<br>") + '<span class="caret">|</span>';
         typingDone = true;
         journey.style.display = "block";
         typewriterScreen.style.display = "none";
+        currentSection = 0;
         updateJourneyPosition();
       }
     }
@@ -620,6 +667,10 @@ Hahaha... baga navvukunnaava? So, roju antha ilane navvukunta undu.`;
 
     window.addEventListener("resize", () => {
       updateJourneyPosition();
+    });
+
+    window.addEventListener("beforeunload", () => {
+      if (typingTimer) clearTimeout(typingTimer);
     });
 
     setupYouTube();
