@@ -1,6 +1,424 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+  />
+  <title>The Jhansy Experience</title>
+  <style>
+    :root {
+      --bg: #fffaf6;
+      --paper: #ffffff;
+      --envelope: #f4ecd8;
+      --text: #2f241d;
+      --shadow: 0 20px 60px rgba(0, 0, 0, 0.05);
+      --radius: 30px;
+      --rose: #8d3b4c;
+      --matcha: #638a57;
+      --ice: #8db9d7;
+      --popcorn: #6e4d2f;
+    }
 
-const TYPEWRITER_TEXT = `Hi Jaanu...
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html,
+    body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: var(--bg);
+      font-family: Georgia, serif;
+      color: var(--text);
+    }
+
+    body.locked {
+      overflow: hidden;
+      touch-action: none;
+    }
+
+    .app {
+      width: 100%;
+      height: 100vh;
+      position: relative;
+      overflow: hidden;
+      background: var(--bg);
+    }
+
+    .envelope-screen,
+    .typewriter-screen {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .envelope-screen {
+      background: var(--envelope);
+    }
+
+    .envelope-btn {
+      width: min(82vw, 340px);
+      height: min(24vw, 120px);
+      min-height: 84px;
+      border: 1px solid rgba(47, 36, 29, 0.22);
+      border-radius: 6px;
+      background: transparent;
+      color: var(--text);
+      font-family: Georgia, serif;
+      font-size: clamp(22px, 4vw, 36px);
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      cursor: pointer;
+      box-shadow: 0 12px 36px rgba(0, 0, 0, 0.06);
+    }
+
+    .envelope-btn:focus-visible {
+      outline: 2px solid rgba(47, 36, 29, 0.6);
+      outline-offset: 4px;
+    }
+
+    .typewriter-screen {
+      background: var(--bg);
+    }
+
+    .paper-card {
+      width: min(92vw, 760px);
+      min-height: min(72vh, 680px);
+      background: var(--paper);
+      border-radius: 28px;
+      box-shadow: var(--shadow);
+      padding: clamp(22px, 4vw, 42px);
+      border: 1px solid rgba(0, 0, 0, 0.04);
+      display: flex;
+      align-items: flex-start;
+      justify-content: flex-start;
+    }
+
+    .paper-text {
+      white-space: pre-wrap;
+      line-height: 1.9;
+      font-size: clamp(17px, 2.2vw, 22px);
+      color: #3e3026;
+      width: 100%;
+    }
+
+    .caret {
+      display: inline-block;
+      width: 10px;
+      margin-left: 2px;
+      animation: blink 1s step-end infinite;
+    }
+
+    @keyframes blink {
+      0%,
+      50% {
+        opacity: 1;
+      }
+      50.01%,
+      100% {
+        opacity: 0;
+      }
+    }
+
+    .journey {
+      width: 100%;
+      height: 100vh;
+      position: relative;
+      transform: translateY(0);
+      transition: transform 0.9s ease;
+      will-change: transform;
+    }
+
+    .section {
+      width: 100%;
+      height: 100vh;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      position: relative;
+    }
+
+    .intro-text {
+      text-align: center;
+      font-size: clamp(34px, 7vw, 68px);
+      line-height: 1.18;
+      padding: 12px;
+      max-width: 900px;
+    }
+
+    .card {
+      width: min(92vw, 760px);
+      background: #ffffff;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 28px;
+    }
+
+    .card.dark {
+      background: #1a1a1a;
+      color: #f7efe6;
+    }
+
+    .card-title {
+      margin: 0 0 10px;
+      font-size: clamp(28px, 4vw, 40px);
+      color: #30241d;
+      line-height: 1.2;
+    }
+
+    .card.dark .card-title {
+      color: #f7efe6;
+    }
+
+    .card-caption {
+      margin: 0 0 20px;
+      font-size: clamp(16px, 2vw, 20px);
+      line-height: 1.7;
+      color: #6c5b50;
+    }
+
+    .card.dark .card-caption {
+      color: rgba(247, 239, 230, 0.78);
+    }
+
+    .media-frame {
+      width: 100%;
+      height: clamp(300px, 48vh, 400px);
+      border-radius: 24px;
+      overflow: hidden;
+      background: #f8f3ee;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .media-frame img,
+    .media-frame video {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+
+    .media-frame video {
+      background: #000;
+    }
+
+    .cinema-frame {
+      position: relative;
+      width: 100%;
+      padding-top: 56.25%;
+      border-radius: 24px;
+      overflow: hidden;
+      background: #000;
+    }
+
+    .cinema-frame iframe {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+
+    .final-card {
+      text-align: center;
+      padding: 44px 28px;
+    }
+
+    .final-main {
+      font-size: clamp(30px, 4.4vw, 52px);
+      line-height: 1.25;
+      color: #422d33;
+    }
+
+    .final-sub {
+      margin: 18px 0 0;
+      color: #7a5b64;
+      font-size: clamp(17px, 2.1vw, 22px);
+      line-height: 1.7;
+    }
+
+    .lock-badge {
+      position: fixed;
+      right: 18px;
+      bottom: 18px;
+      z-index: 80;
+      background: rgba(255, 255, 255, 0.92);
+      color: #5a4b41;
+      padding: 10px 14px;
+      border-radius: 999px;
+      font-size: 13px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+    }
+
+    .lock-badge.show {
+      opacity: 1;
+    }
+
+    @media (max-width: 640px) {
+      .section {
+        padding: 18px;
+      }
+
+      .card,
+      .paper-card {
+        padding: 20px;
+      }
+
+      .media-frame {
+        height: clamp(300px, 42vh, 360px);
+      }
+    }
+  </style>
+</head>
+<body class="locked">
+  <div class="app">
+    <div class="envelope-screen" id="envelopeScreen">
+      <button class="envelope-btn" id="openBtn">JHANSY</button>
+    </div>
+
+    <div class="typewriter-screen" id="typewriterScreen" style="display: none;">
+      <div class="paper-card">
+        <div class="paper-text" id="paperText"></div>
+      </div>
+    </div>
+
+    <div class="journey" id="journey" style="display: none;">
+      <!-- PHASE 0 -->
+      <section class="section">
+        <div class="intro-text" style="color: var(--rose);">
+          Flowers ivvalli kada...
+        </div>
+      </section>
+
+      <!-- PHASE 1 -->
+      <section class="section">
+        <div class="card">
+          <h2 class="card-title">Morning Bloom 🌸</h2>
+          <div class="media-frame">
+            <img src="flowers1.jpg" alt="Morning Bloom" />
+          </div>
+        </div>
+      </section>
+
+      <!-- PHASE 2 -->
+      <section class="section">
+        <div class="intro-text" style="color: var(--matcha);">
+          Starbucks for the first time... 🌿
+        </div>
+      </section>
+
+      <!-- PHASE 3 -->
+      <section class="section">
+        <div class="card">
+          <h2 class="card-title">The Matcha Review 🍵</h2>
+          <p class="card-caption">I finally tried it! It’s definitely... green. 😂</p>
+          <div class="media-frame">
+            <img src="motcha.png" alt="The Matcha Review" />
+          </div>
+        </div>
+      </section>
+
+      <!-- PHASE 4 -->
+      <section class="section">
+        <div class="card">
+          <h2 class="card-title">First Sip Reactions...</h2>
+          <div class="media-frame">
+            <video class="phase-video" muted loop playsinline preload="metadata">
+              <source src="starbucks.mp4" type="video/mp4" />
+            </video>
+          </div>
+        </div>
+      </section>
+
+      <!-- PHASE 5 -->
+      <section class="section">
+        <div class="intro-text" style="color: var(--ice);">
+          And now for the best part... 🍦
+        </div>
+      </section>
+
+      <!-- PHASE 6 -->
+      <section class="section">
+        <div class="card">
+          <h2 class="card-title">The Perfect Treat 🍨</h2>
+          <div class="media-frame">
+            <img src="icecream_photo.jpg" alt="The Perfect Treat" />
+          </div>
+        </div>
+      </section>
+
+      <!-- PHASE 7 -->
+      <section class="section">
+        <div class="card">
+          <h2 class="card-title">Sweet Happiness...</h2>
+          <div class="media-frame">
+            <video class="phase-video" muted loop playsinline preload="metadata">
+              <source src="icecream.mov" type="video/quicktime" />
+            </video>
+          </div>
+        </div>
+      </section>
+
+      <!-- PHASE 8 -->
+      <section class="section">
+        <div class="intro-text" style="color: var(--popcorn);">
+          Popcorn ready? 🍿
+        </div>
+      </section>
+
+      <!-- PHASE 9 -->
+      <section class="section">
+        <div class="card dark">
+          <h2 class="card-title">Movie Night Console 🎬</h2>
+          <p class="card-caption">A little theatre made just for you.</p>
+          <div class="cinema-frame">
+            <iframe
+              id="youtubeFrame"
+              title="Movie Night"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowfullscreen
+            ></iframe>
+          </div>
+        </div>
+      </section>
+
+      <!-- PHASE 10 -->
+      <section class="section">
+        <div class="card final-card">
+          <div class="final-main">Roju anta ilane navvukunta undhu, Jaanu. ❤️</div>
+          <p class="final-sub">Happy Menstrual Day, my mental fellow! 😂</p>
+        </div>
+      </section>
+    </div>
+
+    <div class="lock-badge" id="lockBadge">locked for 1.5s</div>
+  </div>
+
+  <script>
+    // =========================
+    // PASTE YOUR YOUTUBE VIDEO ID HERE
+    // Example: If your URL is https://www.youtube.com/watch?v=abc123XYZ
+    // then VIDEO_ID should be: abc123XYZ
+    // =========================
+    const VIDEO_ID = "PASTE_YOUR_YOUTUBE_VIDEO_ID_HERE";
+
+    const TYPEWRITER_TEXT = `Hi Jaanu...
 
 Chustu chustune 25 days ayipoyindhi kada. Last time when you got this, I was with you. Before that, I used to send the flowers, coffee, and ice cream... but this time I can't do any of those.
 
@@ -14,605 +432,197 @@ Jaanu, nuvvu iroju prapanchanni chudalekapothe enti? Aa prapanchanni nee daggari
 
 Hahaha... baga navvukunnaava? So, roju antha ilane navvukunta undu.`;
 
-const sections = [
-  {
-    id: 0,
-    type: "intro",
-    text: "Flowers ivvalli kada...",
-    accent: "#8d3b4c",
-  },
-  {
-    id: 1,
-    type: "media",
-    title: "Morning Bloom 🌸",
-    mediaType: "image",
-    src: "./flowers1.jpg",
-  },
-  {
-    id: 2,
-    type: "intro",
-    text: "Starbucks for the first time... 🌿",
-    accent: "#638a57",
-  },
-  {
-    id: 3,
-    type: "media",
-    title: "The Matcha Review 🍵",
-    caption: "I finally tried it! It’s definitely... green. 😂",
-    mediaType: "image",
-    src: "./motcha.png",
-  },
-  {
-    id: 4,
-    type: "video",
-    title: "First Sip Reactions...",
-    src: "./starbucks.mp4",
-    mimeType: "video/mp4",
-  },
-  {
-    id: 5,
-    type: "intro",
-    text: "And now for the best part... 🍦",
-    accent: "#8db9d7",
-  },
-  {
-    id: 6,
-    type: "media",
-    title: "The Perfect Treat 🍨",
-    mediaType: "image",
-    src: "./icecream_photo.jpg",
-  },
-  {
-    id: 7,
-    type: "video",
-    title: "Sweet Happiness...",
-    src: "./icecream.mov",
-    mimeType: "video/quicktime",
-  },
-  {
-    id: 8,
-    type: "intro",
-    text: "Popcorn ready? 🍿",
-    accent: "#6e4d2f",
-  },
-  {
-    id: 9,
-    type: "cinema",
-    title: "Movie Night Console 🎬",
-    caption: "A little theatre made just for you.",
-    youtubeEmbed:
-      "https://www.youtube.com/embed/dQw4w9WgXcQ?rel=0&modestbranding=1",
-  },
-  {
-    id: 10,
-    type: "final",
-    text: "Roju anta ilane navvukunta undhu, Jaanu. ❤️",
-    caption: "Happy Menstrual Day, my mental fellow! 😂",
-  },
-];
+    const envelopeScreen = document.getElementById("envelopeScreen");
+    const typewriterScreen = document.getElementById("typewriterScreen");
+    const journey = document.getElementById("journey");
+    const openBtn = document.getElementById("openBtn");
+    const paperText = document.getElementById("paperText");
+    const lockBadge = document.getElementById("lockBadge");
+    const youtubeFrame = document.getElementById("youtubeFrame");
+    const videos = Array.from(document.querySelectorAll(".phase-video"));
 
-const sectionBaseStyle = {
-  minHeight: "100vh",
-  height: "100vh",
-  width: "100%",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  padding: "24px",
-  boxSizing: "border-box",
-  scrollSnapAlign: "start",
-  scrollSnapStop: "always",
-};
+    let currentSection = 0;
+    let typingDone = false;
+    let navigationLocked = false;
+    let typeIndex = 0;
+    let touchStartY = null;
+    const totalSections = document.querySelectorAll(".section").length;
 
-const cardStyle = {
-  width: "min(92vw, 760px)",
-  background: "#ffffff",
-  borderRadius: "30px",
-  boxShadow: "0 20px 60px rgba(0,0,0,0.05)",
-  padding: "28px",
-  boxSizing: "border-box",
-};
-
-function MediaFrame({ children }) {
-  return (
-    <div
-      style={{
-        width: "100%",
-        height: "clamp(300px, 48vh, 400px)",
-        borderRadius: "24px",
-        overflow: "hidden",
-        background: "#f8f3ee",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-      }}
-    >
-      {children}
-    </div>
-  );
-}
-
-export default function JhansyExperienceSite() {
-  const [opened, setOpened] = useState(false);
-  const [typedText, setTypedText] = useState("");
-  const [typingDone, setTypingDone] = useState(false);
-  const [activeIndex, setActiveIndex] = useState(0);
-  const [lockScroll, setLockScroll] = useState(false);
-  const [touchStartY, setTouchStartY] = useState(null);
-
-  const scrollerRef = useRef(null);
-  const videoRefs = useRef({});
-  const lockRef = useRef(false);
-  const typingIntervalRef = useRef(null);
-
-  const reducedMotion = useMemo(() => {
-    if (typeof window === "undefined") return false;
-    return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  }, []);
-
-  useEffect(() => {
-    document.body.style.margin = "0";
-    document.body.style.fontFamily = 'Georgia, serif';
-    document.body.style.background = "#fffaf6";
-    document.body.style.overflow = opened && typingDone ? "hidden" : "hidden";
-    return () => {
-      document.body.style.overflow = "auto";
-      if (typingIntervalRef.current) clearInterval(typingIntervalRef.current);
-    };
-  }, [opened, typingDone]);
-
-  useEffect(() => {
-    if (!opened) return;
-
-    setTypedText("");
-    setTypingDone(false);
-
-    const chars = TYPEWRITER_TEXT.split("");
-    let i = 0;
-    const speed = reducedMotion ? 5 : 28;
-
-    typingIntervalRef.current = window.setInterval(() => {
-      i += 1;
-      setTypedText(chars.slice(0, i).join(""));
-      if (i >= chars.length) {
-        clearInterval(typingIntervalRef.current);
-        setTypingDone(true);
-      }
-    }, speed);
-
-    return () => {
-      if (typingIntervalRef.current) clearInterval(typingIntervalRef.current);
-    };
-  }, [opened, reducedMotion]);
-
-  useEffect(() => {
-    Object.entries(videoRefs.current).forEach(([key, video]) => {
-      if (!video) return;
-      const idx = Number(key);
-      if (idx === activeIndex) {
-        const playPromise = video.play();
-        if (playPromise?.catch) playPromise.catch(() => {});
+    function setupYouTube() {
+      if (VIDEO_ID && VIDEO_ID !== "PASTE_YOUR_YOUTUBE_VIDEO_ID_HERE") {
+        youtubeFrame.src = `https://www.youtube.com/embed/${VIDEO_ID}?rel=0&modestbranding=1`;
       } else {
-        video.pause();
+        youtubeFrame.src = "";
       }
+    }
+
+    function showLockBadge() {
+      lockBadge.classList.add("show");
+      setTimeout(() => {
+        lockBadge.classList.remove("show");
+      }, 1500);
+    }
+
+    function updateJourneyPosition() {
+      journey.style.transform = `translateY(-${currentSection * window.innerHeight}px)`;
+      controlVideos();
+    }
+
+    function controlVideos() {
+      videos.forEach((video, index) => {
+        const parentSectionIndex = getVideoSectionIndex(video);
+        if (parentSectionIndex === currentSection) {
+          const playAttempt = video.play();
+          if (playAttempt && typeof playAttempt.catch === "function") {
+            playAttempt.catch(() => {});
+          }
+        } else {
+          video.pause();
+        }
+      });
+    }
+
+    function getVideoSectionIndex(videoEl) {
+      const section = videoEl.closest(".section");
+      const sections = Array.from(document.querySelectorAll(".section"));
+      return sections.indexOf(section);
+    }
+
+    function lockNavigation() {
+      navigationLocked = true;
+      showLockBadge();
+      setTimeout(() => {
+        navigationLocked = false;
+      }, 1500);
+    }
+
+    function goToSection(nextIndex) {
+      if (nextIndex < 0 || nextIndex >= totalSections) return;
+      if (nextIndex === currentSection) return;
+      if (navigationLocked) return;
+
+      currentSection = nextIndex;
+      lockNavigation();
+      updateJourneyPosition();
+    }
+
+    function moveBy(direction) {
+      goToSection(currentSection + direction);
+    }
+
+    function typeWriter() {
+      if (typeIndex < TYPEWRITER_TEXT.length) {
+        paperText.innerHTML =
+          TYPEWRITER_TEXT.slice(0, typeIndex + 1).replace(/\n/g, "<br>") +
+          '<span class="caret">|</span>';
+        typeIndex++;
+        setTimeout(typeWriter, 28);
+      } else {
+        paperText.innerHTML =
+          TYPEWRITER_TEXT.replace(/\n/g, "<br>") + '<span class="caret">|</span>';
+        typingDone = true;
+        journey.style.display = "block";
+        typewriterScreen.style.display = "none";
+        updateJourneyPosition();
+      }
+    }
+
+    openBtn.addEventListener("click", () => {
+      envelopeScreen.style.display = "none";
+      typewriterScreen.style.display = "flex";
+      typeWriter();
     });
-  }, [activeIndex]);
 
-  useEffect(() => {
-    const wheelHandler = (e) => {
-      if (!opened || !typingDone) {
+    window.addEventListener(
+      "wheel",
+      (e) => {
         e.preventDefault();
-        return;
-      }
-      if (lockRef.current) {
-        e.preventDefault();
-        return;
-      }
-      const direction = e.deltaY > 0 ? 1 : -1;
-      if (direction === 0) return;
-      e.preventDefault();
-      moveSection(direction);
-    };
 
-    const keyHandler = (e) => {
-      if (!opened || !typingDone) {
-        if (["ArrowDown", "ArrowUp", "PageDown", "PageUp", "Space"].includes(e.code)) {
+        if (!typingDone) return;
+        if (navigationLocked) return;
+
+        if (e.deltaY > 0) {
+          moveBy(1);
+        } else if (e.deltaY < 0) {
+          moveBy(-1);
+        }
+      },
+      { passive: false }
+    );
+
+    window.addEventListener("keydown", (e) => {
+      const keysDown = ["ArrowDown", "PageDown", "Space"];
+      const keysUp = ["ArrowUp", "PageUp"];
+
+      if (!typingDone) {
+        if (keysDown.includes(e.code) || keysUp.includes(e.code)) {
           e.preventDefault();
         }
         return;
       }
-      if (lockRef.current) {
-        if (["ArrowDown", "ArrowUp", "PageDown", "PageUp", "Space"].includes(e.code)) {
-          e.preventDefault();
-        }
-        return;
-      }
 
-      if (["ArrowDown", "PageDown", "Space"].includes(e.code)) {
+      if (keysDown.includes(e.code)) {
         e.preventDefault();
-        moveSection(1);
+        if (!navigationLocked) moveBy(1);
       }
-      if (["ArrowUp", "PageUp"].includes(e.code)) {
+
+      if (keysUp.includes(e.code)) {
         e.preventDefault();
-        moveSection(-1);
+        if (!navigationLocked) moveBy(-1);
       }
-    };
-
-    const touchMoveHandler = (e) => {
-      if (!opened || !typingDone || lockRef.current) {
-        e.preventDefault();
-      }
-    };
-
-    window.addEventListener("wheel", wheelHandler, { passive: false });
-    window.addEventListener("keydown", keyHandler, { passive: false });
-    window.addEventListener("touchmove", touchMoveHandler, { passive: false });
-
-    return () => {
-      window.removeEventListener("wheel", wheelHandler);
-      window.removeEventListener("keydown", keyHandler);
-      window.removeEventListener("touchmove", touchMoveHandler);
-    };
-  }, [opened, typingDone, activeIndex]);
-
-  const moveSection = (direction) => {
-    if (!scrollerRef.current) return;
-    const nextIndex = Math.max(0, Math.min(sections.length - 1, activeIndex + direction));
-    if (nextIndex === activeIndex) return;
-
-    lockRef.current = true;
-    setLockScroll(true);
-    setActiveIndex(nextIndex);
-
-    scrollerRef.current.scrollTo({
-      top: nextIndex * window.innerHeight,
-      behavior: "smooth",
     });
 
-    window.setTimeout(() => {
-      lockRef.current = false;
-      setLockScroll(false);
-    }, 1500);
-  };
+    window.addEventListener(
+      "touchstart",
+      (e) => {
+        if (!typingDone) {
+          e.preventDefault();
+          return;
+        }
+        if (e.touches.length > 0) {
+          touchStartY = e.touches[0].clientY;
+        }
+      },
+      { passive: false }
+    );
 
-  const handleTouchStart = (e) => {
-    if (!typingDone) return;
-    setTouchStartY(e.touches[0].clientY);
-  };
+    window.addEventListener(
+      "touchmove",
+      (e) => {
+        e.preventDefault();
+      },
+      { passive: false }
+    );
 
-  const handleTouchEnd = (e) => {
-    if (!typingDone || touchStartY === null || lockRef.current) return;
-    const endY = e.changedTouches[0].clientY;
-    const diff = touchStartY - endY;
-    if (Math.abs(diff) < 35) return;
-    moveSection(diff > 0 ? 1 : -1);
-    setTouchStartY(null);
-  };
+    window.addEventListener(
+      "touchend",
+      (e) => {
+        if (!typingDone) return;
+        if (navigationLocked) return;
+        if (touchStartY === null) return;
 
-  return (
-    <div
-      style={{
-        minHeight: "100vh",
-        background: "#fffaf6",
-        color: "#2f241d",
-        fontFamily: "Georgia, serif",
-        overflow: "hidden",
-      }}
-    >
-      {!opened && (
-        <div
-          style={{
-            position: "fixed",
-            inset: 0,
-            zIndex: 50,
-            background: "#f4ecd8",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            padding: "24px",
-          }}
-        >
-          <button
-            onClick={() => setOpened(true)}
-            style={{
-              appearance: "none",
-              border: "1px solid rgba(47,36,29,0.22)",
-              background: "transparent",
-              color: "#2f241d",
-              borderRadius: "6px",
-              width: "min(82vw, 340px)",
-              height: "min(24vw, 120px)",
-              fontFamily: "Georgia, serif",
-              fontSize: "clamp(22px, 4vw, 36px)",
-              letterSpacing: "4px",
-              textTransform: "uppercase",
-              cursor: "pointer",
-              boxShadow: "0 12px 36px rgba(0,0,0,0.06)",
-            }}
-          >
-            JHANSY
-          </button>
-        </div>
-      )}
+        const touch = e.changedTouches[0];
+        const endY = touch.clientY;
+        const diff = touchStartY - endY;
 
-      {opened && !typingDone && (
-        <div
-          style={{
-            position: "fixed",
-            inset: 0,
-            zIndex: 40,
-            background: "#fffaf6",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            padding: "20px",
-          }}
-        >
-          <div
-            style={{
-              width: "min(92vw, 760px)",
-              minHeight: "min(72vh, 680px)",
-              background: "#ffffff",
-              borderRadius: "28px",
-              boxShadow: "0 20px 60px rgba(0,0,0,0.05)",
-              padding: "clamp(22px, 4vw, 42px)",
-              boxSizing: "border-box",
-              border: "1px solid rgba(0,0,0,0.04)",
-            }}
-          >
-            <div
-              style={{
-                whiteSpace: "pre-wrap",
-                lineHeight: 1.9,
-                fontSize: "clamp(17px, 2.2vw, 22px)",
-                color: "#3e3026",
-              }}
-            >
-              {typedText}
-              <span
-                style={{
-                  display: "inline-block",
-                  width: "10px",
-                  marginLeft: "2px",
-                  animation: "blink 1s step-end infinite",
-                }}
-              >
-                |
-              </span>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {opened && typingDone && (
-        <div
-          ref={scrollerRef}
-          onTouchStart={handleTouchStart}
-          onTouchEnd={handleTouchEnd}
-          style={{
-            height: "100vh",
-            overflow: "hidden",
-            scrollSnapType: "y mandatory",
-          }}
-        >
-          {sections.map((section, index) => {
-            if (section.type === "intro") {
-              return (
-                <section key={section.id} style={sectionBaseStyle}>
-                  <div
-                    style={{
-                      textAlign: "center",
-                      fontSize: "clamp(34px, 7vw, 68px)",
-                      lineHeight: 1.18,
-                      color: section.accent,
-                      padding: "12px",
-                    }}
-                  >
-                    {section.text}
-                  </div>
-                </section>
-              );
-            }
-
-            if (section.type === "media") {
-              return (
-                <section key={section.id} style={sectionBaseStyle}>
-                  <div style={cardStyle}>
-                    <h2
-                      style={{
-                        margin: "0 0 10px",
-                        fontSize: "clamp(28px, 4vw, 40px)",
-                        color: "#30241d",
-                      }}
-                    >
-                      {section.title}
-                    </h2>
-                    {section.caption && (
-                      <p
-                        style={{
-                          margin: "0 0 20px",
-                          fontSize: "clamp(16px, 2vw, 20px)",
-                          color: "#6c5b50",
-                          lineHeight: 1.7,
-                        }}
-                      >
-                        {section.caption}
-                      </p>
-                    )}
-                    <MediaFrame>
-                      <img
-                        src={section.src}
-                        alt={section.title}
-                        style={{
-                          width: "100%",
-                          height: "100%",
-                          objectFit: "contain",
-                        }}
-                      />
-                    </MediaFrame>
-                  </div>
-                </section>
-              );
-            }
-
-            if (section.type === "video") {
-              return (
-                <section key={section.id} style={sectionBaseStyle}>
-                  <div style={cardStyle}>
-                    <h2
-                      style={{
-                        margin: "0 0 20px",
-                        fontSize: "clamp(28px, 4vw, 40px)",
-                        color: "#30241d",
-                      }}
-                    >
-                      {section.title}
-                    </h2>
-                    <MediaFrame>
-                      <video
-                        ref={(el) => {
-                          videoRefs.current[index] = el;
-                        }}
-                        muted
-                        loop
-                        playsInline
-                        preload="metadata"
-                        controls={false}
-                        style={{
-                          width: "100%",
-                          height: "100%",
-                          objectFit: "contain",
-                          background: "#000",
-                        }}
-                      >
-                        <source src={section.src} type={section.mimeType} />
-                      </video>
-                    </MediaFrame>
-                  </div>
-                </section>
-              );
-            }
-
-            if (section.type === "cinema") {
-              return (
-                <section key={section.id} style={sectionBaseStyle}>
-                  <div
-                    style={{
-                      ...cardStyle,
-                      background: "#1a1a1a",
-                      color: "#f7efe6",
-                    }}
-                  >
-                    <h2
-                      style={{
-                        margin: "0 0 10px",
-                        fontSize: "clamp(28px, 4vw, 40px)",
-                      }}
-                    >
-                      {section.title}
-                    </h2>
-                    <p
-                      style={{
-                        margin: "0 0 20px",
-                        color: "rgba(247,239,230,0.78)",
-                        lineHeight: 1.7,
-                        fontSize: "clamp(16px, 2vw, 20px)",
-                      }}
-                    >
-                      {section.caption}
-                    </p>
-                    <div
-                      style={{
-                        position: "relative",
-                        width: "100%",
-                        paddingTop: "56.25%",
-                        borderRadius: "24px",
-                        overflow: "hidden",
-                        background: "#000",
-                      }}
-                    >
-                      <iframe
-                        src={section.youtubeEmbed}
-                        title="Movie Night"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                        allowFullScreen
-                        style={{
-                          position: "absolute",
-                          inset: 0,
-                          width: "100%",
-                          height: "100%",
-                          border: 0,
-                        }}
-                      />
-                    </div>
-                  </div>
-                </section>
-              );
-            }
-
-            return (
-              <section key={section.id} style={sectionBaseStyle}>
-                <div style={{ ...cardStyle, textAlign: "center", padding: "44px 28px" }}>
-                  <div
-                    style={{
-                      fontSize: "clamp(30px, 4.4vw, 52px)",
-                      lineHeight: 1.25,
-                      color: "#422d33",
-                    }}
-                  >
-                    {section.text}
-                  </div>
-                  <p
-                    style={{
-                      margin: "18px 0 0",
-                      color: "#7a5b64",
-                      fontSize: "clamp(17px, 2.1vw, 22px)",
-                      lineHeight: 1.7,
-                    }}
-                  >
-                    {section.caption}
-                  </p>
-                </div>
-              </section>
-            );
-          })}
-        </div>
-      )}
-
-      {opened && typingDone && lockScroll && (
-        <div
-          style={{
-            position: "fixed",
-            right: 18,
-            bottom: 18,
-            zIndex: 60,
-            background: "rgba(255,255,255,0.92)",
-            color: "#5a4b41",
-            padding: "10px 14px",
-            borderRadius: "999px",
-            fontSize: "13px",
-            boxShadow: "0 10px 30px rgba(0,0,0,0.06)",
-          }}
-        >
-          locked for 1.5s
-        </div>
-      )}
-
-      <style>{`
-        @keyframes blink {
-          0%, 50% { opacity: 1; }
-          50.01%, 100% { opacity: 0; }
+        if (Math.abs(diff) >= 35) {
+          if (diff > 0) {
+            moveBy(1);
+          } else {
+            moveBy(-1);
+          }
         }
 
-        * {
-          box-sizing: border-box;
-        }
+        touchStartY = null;
+      },
+      { passive: false }
+    );
 
-        button:focus-visible {
-          outline: 2px solid rgba(47,36,29,0.6);
-          outline-offset: 4px;
-        }
-      `}</style>
-    </div>
-  );
-}
+    window.addEventListener("resize", () => {
+      updateJourneyPosition();
+    });
+
+    setupYouTube();
+  </script>
+</body>
+</html>
