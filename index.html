@@ -16,15 +16,34 @@
     }
 
     * { box-sizing: border-box; }
+    
+    /* --- Fix: Smooth Scroll Snapping --- */
+    html {
+      scroll-snap-type: y mandatory;
+      scroll-behavior: smooth;
+    }
+
     body, html { 
       margin: 0; padding: 0; 
       background: var(--cream);
       font-family: 'Georgia', serif;
-      overflow-x: hidden;
-      scroll-behavior: smooth;
+      height: 100%;
     }
 
-    /* --- PHASE 1: THE CEREMONY (Envelope & Letter) --- */
+    /* Each major part is now a "Snap Point" */
+    .snap-section {
+      height: 100vh;
+      width: 100%;
+      scroll-snap-align: start;
+      scroll-snap-stop: always;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* --- PHASE 1: THE CEREMONY --- */
     #ceremony-overlay {
       position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
       display: flex; flex-direction: column; align-items: center; justify-content: center;
@@ -38,133 +57,67 @@
     }
 
     .envelope {
-      width: 320px; height: 220px;
+      width: 300px; height: 200px;
       background: #f4ecd8; border: 1px solid #e0d5ba;
       box-shadow: 0 20px 50px rgba(0,0,0,0.1);
       display: flex; align-items: center; justify-content: center;
       cursor: pointer; animation: envelopeLand 2s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
-      transition: transform 0.4s ease;
     }
-    .envelope:hover { transform: scale(1.05); }
-    .envelope-name { font-size: 2rem; color: var(--rose-deep); letter-spacing: 5px; text-transform: uppercase; border-bottom: 2px solid var(--rose); padding-bottom: 5px; }
+    .envelope-name { font-size: 1.8rem; color: var(--rose-deep); letter-spacing: 5px; text-transform: uppercase; border-bottom: 2px solid var(--rose); }
 
     #letter-scene {
       display: none; position: fixed; top: 50%; left: 50%;
       transform: translate(-50%, -50%);
-      width: 90%; max-width: 550px; height: 80vh;
+      width: 90%; max-width: 500px; height: 80vh;
       background: var(--paper); border: 15px solid white;
       box-shadow: 0 0 60px rgba(0,0,0,0.15);
       z-index: 6000; overflow-y: auto; scrollbar-width: none;
       padding: 40px 20px;
     }
 
-    .letter-header { text-align: center; margin-bottom: 30px; border-bottom: 1px double #eee; padding-bottom: 20px; }
-    .letterhead-name { font-size: 2.2rem; color: var(--rose-deep); letter-spacing: 6px; text-transform: uppercase; margin: 0; }
-    .letterhead-sub { font-size: 0.75rem; color: #999; letter-spacing: 3px; margin-top: 10px; }
-    #typed-text { font-size: 1.15rem; line-height: 2; color: var(--text); white-space: pre-wrap; padding: 0 15px; }
+    .letter-header { text-align: center; margin-bottom: 20px; border-bottom: 1px double #eee; padding-bottom: 15px; }
+    .letterhead-name { font-size: 2rem; color: var(--rose-deep); letter-spacing: 6px; text-transform: uppercase; margin: 0; }
+    #typed-text { font-size: 1.1rem; line-height: 1.8; color: var(--text); white-space: pre-wrap; }
 
     /* --- PHASE 2: THE FLOWERS ENTRANCE --- */
-    .flower-hero {
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      background: radial-gradient(circle at center, #fff0f5 0%, #fffaf6 100%);
-      padding: 0 20px;
-    }
-
     .flower-hero h2 {
-      font-size: clamp(2.5rem, 10vw, 4.5rem);
+      font-size: clamp(2.2rem, 8vw, 4rem);
       color: var(--rose-deep);
       font-style: italic;
-      font-weight: 400;
-      margin: 0;
-      opacity: 0;
-      transform: scale(0.95);
-      filter: blur(10px);
-      transition: all 2.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+      opacity: 0; transform: scale(0.9); filter: blur(10px);
+      transition: all 2s cubic-bezier(0.2, 0.8, 0.2, 1);
     }
-
     .flower-hero.reveal h2 { opacity: 1; transform: scale(1); filter: blur(0); }
-    .flower-sub { margin-top: 20px; color: var(--muted); letter-spacing: 3px; font-size: 0.9rem; opacity: 0; transition: opacity 2s ease 1.5s; }
-    .flower-hero.reveal .flower-sub { opacity: 1; }
 
-    /* --- PHASE 3: CINEMATIC IMAGE REVEAL --- */
-    #main-world { opacity: 0; filter: blur(20px); transition: all 2.5s ease; }
-    .world-active #main-world { opacity: 1; filter: blur(0); }
-    .world-active #ceremony-overlay { opacity: 0; pointer-events: none; }
-
-    .section { 
-      padding: 10vh 1rem; 
-      max-width: 700px; 
-      margin: 0 auto; 
-      perspective: 1000px; 
-    }
-
+    /* --- PHASE 3: CINEMATIC CARD --- */
     .card { 
-      background: white; 
-      border-radius: 40px; 
-      padding: 3rem; 
-      box-shadow: 0 30px 100px rgba(150,120,120,0.12);
-      opacity: 0;
-      transform: translateY(100px) rotateX(-10deg);
-      filter: blur(10px);
-      transition: all 2.5s cubic-bezier(0.16, 1, 0.3, 1);
+      background: white; border-radius: 40px; padding: 2.5rem; 
+      width: 90%; max-width: 600px;
+      box-shadow: 0 30px 100px rgba(150,120,120,0.1);
+      opacity: 0; transform: translateY(50px);
+      transition: all 2s ease;
     }
-
-    .section.visible .card { 
-      opacity: 1; 
-      transform: translateY(0) rotateX(0deg); 
-      filter: blur(0);
-    }
+    .visible .card { opacity: 1; transform: translateY(0); }
 
     .media-reveal {
-      margin-top: 2.5rem;
-      border-radius: 25px;
-      overflow: hidden;
-      position: relative;
-      background: #fdfdfd;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+      margin-top: 20px; border-radius: 20px; overflow: hidden;
+      position: relative; background: white;
     }
-
     .media-reveal img {
-      width: 100%;
-      display: block;
-      opacity: 0;
-      transform: scale(1.15); /* Zoomed in start */
-      transition: all 3.5s cubic-bezier(0.1, 0.5, 0.1, 1) 0.5s;
+      width: 100%; display: block; opacity: 0; transform: scale(1.1);
+      transition: all 3s ease 0.5s;
     }
+    .visible .media-reveal img { opacity: 1; transform: scale(1); }
 
-    .section.visible .media-reveal img {
-      opacity: 1;
-      transform: scale(1); /* Zoom to normal */
-    }
-
-    /* Soft light overlay that fades as photo "develops" */
-    .media-reveal::after {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; width: 100%; height: 100%;
-      background: white;
-      opacity: 1;
-      transition: opacity 3s ease 0.5s;
-    }
-
-    .section.visible .media-reveal::after {
-      opacity: 0;
-    }
-
-    /* --- UI PROMPTS --- */
+    /* UI PROMPT */
     .scroll-hint {
       position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
-      color: var(--rose-deep); font-weight: bold; opacity: 0;
-      transition: opacity 1s; z-index: 7000; text-align: center;
+      color: var(--rose-deep); opacity: 0; z-index: 7000;
     }
     .show-hint { opacity: 1; animation: bounce 2s infinite; }
     @keyframes bounce { 0%, 100% {transform:translate(-50%, 0);} 50% {transform:translate(-50%, -10px);} }
 
+    #main-world { display: none; } /* Hidden until letter is open */
   </style>
 </head>
 <body>
@@ -177,40 +130,34 @@
     <div id="letter-scene">
       <div class="letter-header">
         <h1 class="letterhead-name">JHANSY <span style="color:var(--green)">🌿</span></h1>
-        <p class="letterhead-sub">STRICTLY PRIVATE</p>
       </div>
       <div id="typed-text"></div>
     </div>
 
-    <div class="scroll-hint" id="scrollHint">
-      Scroll down to see the world...<br>↓
-    </div>
+    <div class="scroll-hint" id="scrollHint">Scroll down... ↓</div>
   </div>
 
   <div id="main-world">
     
-    <div class="flower-hero" id="flowerHero">
+    <div class="snap-section flower-hero" id="flowerHero">
       <h2>Flowers ivvalli kada...</h2>
-      <p class="flower-sub">SO I BROUGHT THE GARDEN TO YOU.</p>
     </div>
 
-    <section class="section" id="morningSection">
+    <section class="snap-section" id="morningSection">
       <div class="card">
-        <span style="color: var(--rose-deep); font-weight: bold; letter-spacing: 2px;">🌸 9:00 AM — Morning Bloom</span>
-        <h3 style="font-family: Georgia; font-style: italic; color: var(--text); margin-top: 10px;">Refreshing start</h3>
-        
-        <p style="margin-top: 1.5rem; line-height: 1.8; color: var(--muted);">
-          Good morning, Jaanu. Nuvvu bayataki vellalenu ante emi parvaledu... 
-          ee flowers chustu refresh avvu. If you can't see the world today, I'll bring it right here.
+        <span style="color: var(--rose-deep); font-weight: bold;">🌸 9:00 AM — Morning Bloom</span>
+        <p style="margin-top: 15px; color: var(--muted); line-height: 1.6;">
+          Good morning, Jaanu. Nuvvu bayataki vellalenu ante emi parvaledu... ee flowers chustu refresh avvu.
         </p>
-
         <div class="media-reveal">
           <img src="flowers1.jpg" alt="Morning Flowers">
         </div>
       </div>
     </section>
 
-    <div style="height: 100vh;"></div>
+    <div class="snap-section" style="background:#fffaf6;">
+      <p style="color:#ccc;">More surprises coming as you scroll...</p>
+    </div>
   </div>
 
   <script>
@@ -221,9 +168,9 @@
       const scene = document.getElementById('letter-scene');
       const typedTarget = document.getElementById('typed-text');
       const scrollHint = document.getElementById('scrollHint');
+      const world = document.getElementById('main-world');
 
       env.style.opacity = '0';
-      env.style.transform = 'translateY(50px) scale(0.9)';
       
       setTimeout(() => {
         env.style.display = 'none';
@@ -235,9 +182,10 @@
             typedTarget.innerHTML += text.charAt(i);
             i++;
             scene.scrollTop = scene.scrollHeight;
-            setTimeout(typeWriter, 40);
+            setTimeout(typeWriter, 35);
           } else {
             scrollHint.classList.add('show-hint');
+            world.style.display = 'block'; // Prepare world
             document.body.style.overflow = 'auto'; 
           }
         }
@@ -245,25 +193,20 @@
       }, 800);
     }
 
-    function updateAnimations() {
-      if (window.scrollY > 50) document.body.classList.add('world-active');
-
+    // Auto-reveal on scroll
+    window.addEventListener('scroll', () => {
+      const overlay = document.getElementById('ceremony-overlay');
       const hero = document.getElementById('flowerHero');
-      const section = document.getElementById('morningSection');
+      const morning = document.getElementById('morningSection');
 
-      // Trigger "ivvalli kada" reveal
-      if (hero.getBoundingClientRect().top < window.innerHeight * 0.7) {
-        hero.classList.add('reveal');
-      }
-      
-      // Trigger Cinematic Card & Photo reveal
-      if (section.getBoundingClientRect().top < window.innerHeight * 0.75) {
-        section.classList.add('visible');
-      }
-    }
+      if (window.scrollY > 50) overlay.style.opacity = '0';
 
-    window.addEventListener('scroll', updateAnimations);
-    document.body.style.overflow = 'hidden'; // Locked until letter is opened
+      const heroTop = hero.getBoundingClientRect().top;
+      const morningTop = morning.getBoundingClientRect().top;
+
+      if (heroTop < window.innerHeight * 0.5) hero.classList.add('reveal');
+      if (morningTop < window.innerHeight * 0.5) morning.classList.add('visible');
+    });
   </script>
 </body>
 </html>
