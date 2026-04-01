@@ -1154,7 +1154,7 @@ I know physical ga teeskolekapothunnav, kani I hope you can feel the soul of the
 
 Nuvvu smile chesthene ee flower ki value. So Good Morning, my psycho! Focus on your work, but don't forget to keep that smile. 😊
 
-I’ll see you at 2:30 PM CST for the next one</div>
+I’ll see you at 2:30 PM CT for the next one</div>
         </div>
       </section>
 
@@ -1906,13 +1906,26 @@ Hahaha... baga navvukunnaava? So, roju antha ilane navvukunta undu.`;
       envelopeAvailable = PREVIEW_MODE ? true : isScheduleUnlocked("opening");
       const openedBefore = getEnvelopeOpenedState();
 
+      if (!typewriterStarted && !typingDone) {
+        envelopeScreen.style.display = "flex";
+        envelopeScreen.classList.remove("open-fade");
+
+        typewriterScreen.style.display = "none";
+        journey.style.display = "none";
+        progressRail.style.display = "none";
+        phaseTag.style.display = "none";
+        swipeHint.style.display = "none";
+        backToLetterBtn.classList.remove("show");
+      }
+
       if (!envelopeAvailable) {
         openBtn.disabled = true;
         openBtn.style.opacity = "0.7";
         openBtn.style.cursor = "not-allowed";
         envelopeHint.style.display = "none";
         envelopeLockedNote.style.display = "block";
-        envelopeLockedNote.textContent = "Patience, Jaanu... Your first surprise arrives at 9:00 AM. ❤️";
+        envelopeLockedNote.textContent =
+          "Patience, Jaanu... Your first surprise arrives at 9:00 AM. ❤️";
         return;
       }
 
@@ -1921,7 +1934,9 @@ Hahaha... baga navvukunnaava? So, roju antha ilane navvukunta undu.`;
       openBtn.style.cursor = "pointer";
       envelopeLockedNote.style.display = "none";
       envelopeHint.style.display = "block";
-      envelopeHint.textContent = openedBefore ? "welcome back, jaanu" : "tap to open your letter";
+      envelopeHint.textContent = openedBefore
+        ? "tap to open your letter again"
+        : "tap to open your letter";
     }
 
     function buildLockedCardHtml(schedule, remaining) {
@@ -2003,7 +2018,8 @@ Hahaha... baga navvukunnaava? So, roju antha ilane navvukunta undu.`;
       }
 
       if (!typingDone && envelopeAvailable && getEnvelopeOpenedState()) {
-        skipTypewriterAndShowJourney();
+        // Intentionally do nothing here.
+        // We always start from the envelope and wait for a manual tap.
       }
     }
 
@@ -2184,9 +2200,8 @@ Hahaha... baga navvukunnaava? So, roju antha ilane navvukunta undu.`;
 
     if (PREVIEW_MODE) previewRibbon.style.display = "block";
 
-    if ((PREVIEW_MODE || isScheduleUnlocked("opening")) && getEnvelopeOpenedState()) {
-      skipTypewriterAndShowJourney();
-    }
+    // Always start from envelope screen.
+    // No auto-skip to typewriter or journey, even if opened before.
 
     countdownInterval = setInterval(() => {
       if (!PREVIEW_MODE) refreshTimeLocks();
