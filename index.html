@@ -10,15 +10,27 @@
   <style>
     :root {
       --bg: #fffaf6;
+      --bg-2: #fdf4ea;
       --paper: #ffffff;
+      --paper-line: rgba(123, 93, 74, 0.08);
       --envelope: #f4ecd8;
       --text: #2f241d;
+      --muted: #7a675d;
       --shadow: 0 20px 60px rgba(0, 0, 0, 0.05);
+      --shadow-lg: 0 30px 90px rgba(112, 79, 57, 0.12);
       --radius: 30px;
       --rose: #8d3b4c;
+      --rose-soft: #e9ccd3;
       --matcha: #638a57;
+      --matcha-soft: #dfe9d8;
       --ice: #8db9d7;
+      --ice-soft: #dcecf7;
       --popcorn: #6e4d2f;
+      --popcorn-soft: #efe1d2;
+      --accent-gold: #c6a26c;
+      --cinema: #1a1a1a;
+      --cinema-2: #0e0e0e;
+      --heart: #bc4d63;
     }
 
     * {
@@ -32,7 +44,9 @@
       width: 100%;
       height: 100%;
       overflow: hidden;
-      background: var(--bg);
+      background:
+        radial-gradient(circle at top, rgba(255, 233, 214, 0.55), transparent 35%),
+        linear-gradient(180deg, var(--bg), var(--bg-2));
       font-family: Georgia, serif;
       color: var(--text);
     }
@@ -42,12 +56,68 @@
       touch-action: none;
     }
 
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background:
+        radial-gradient(circle at 10% 15%, rgba(255,255,255,0.55), transparent 18%),
+        radial-gradient(circle at 85% 12%, rgba(255,238,224,0.5), transparent 16%),
+        radial-gradient(circle at 20% 80%, rgba(255,247,240,0.6), transparent 20%);
+      z-index: 0;
+    }
+
     .app {
       width: 100%;
       height: 100vh;
       position: relative;
       overflow: hidden;
-      background: var(--bg);
+      isolation: isolate;
+    }
+
+    .ambient {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 1;
+      opacity: 0.65;
+    }
+
+    .ambient span {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.75);
+      filter: blur(1px);
+      animation: floatUp linear infinite;
+    }
+
+    .ambient span:nth-child(1) { left: 8%; bottom: -10px; animation-duration: 14s; animation-delay: 0s; transform: scale(0.9); }
+    .ambient span:nth-child(2) { left: 18%; bottom: -20px; animation-duration: 18s; animation-delay: 2s; transform: scale(1.2); }
+    .ambient span:nth-child(3) { left: 28%; bottom: -15px; animation-duration: 16s; animation-delay: 5s; transform: scale(0.8); }
+    .ambient span:nth-child(4) { left: 40%; bottom: -12px; animation-duration: 20s; animation-delay: 1s; transform: scale(1.1); }
+    .ambient span:nth-child(5) { left: 55%; bottom: -18px; animation-duration: 17s; animation-delay: 3s; transform: scale(0.95); }
+    .ambient span:nth-child(6) { left: 68%; bottom: -20px; animation-duration: 19s; animation-delay: 6s; transform: scale(1.25); }
+    .ambient span:nth-child(7) { left: 79%; bottom: -10px; animation-duration: 15s; animation-delay: 4s; transform: scale(0.9); }
+    .ambient span:nth-child(8) { left: 89%; bottom: -14px; animation-duration: 18s; animation-delay: 8s; transform: scale(1.15); }
+
+    @keyframes floatUp {
+      0% {
+        transform: translateY(0) scale(1);
+        opacity: 0;
+      }
+      10% {
+        opacity: 0.9;
+      }
+      80% {
+        opacity: 0.55;
+      }
+      100% {
+        transform: translateY(-110vh) scale(1.8);
+        opacity: 0;
+      }
     }
 
     .envelope-screen,
@@ -62,23 +132,74 @@
     }
 
     .envelope-screen {
-      background: var(--envelope);
+      background:
+        radial-gradient(circle at top, rgba(255,255,255,0.42), transparent 30%),
+        linear-gradient(180deg, #f6eddc, #efe2c8);
+    }
+
+    .envelope-wrap {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .envelope-glow {
+      position: absolute;
+      width: min(92vw, 420px);
+      height: min(40vw, 180px);
+      border-radius: 18px;
+      background: radial-gradient(circle, rgba(255,255,255,0.75), rgba(255,255,255,0));
+      filter: blur(30px);
+      transform: scale(1.1);
+      opacity: 0.7;
+      pointer-events: none;
     }
 
     .envelope-btn {
+      position: relative;
       width: min(82vw, 340px);
       height: min(24vw, 120px);
       min-height: 84px;
-      border: 1px solid rgba(47, 36, 29, 0.22);
-      border-radius: 6px;
-      background: transparent;
+      border: 1px solid rgba(47, 36, 29, 0.18);
+      border-radius: 10px;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.55), rgba(255,255,255,0.1)),
+        linear-gradient(180deg, #f6eedc, #ecd8b7);
       color: var(--text);
       font-family: Georgia, serif;
       font-size: clamp(22px, 4vw, 36px);
       letter-spacing: 4px;
       text-transform: uppercase;
       cursor: pointer;
-      box-shadow: 0 12px 36px rgba(0, 0, 0, 0.06);
+      box-shadow:
+        0 20px 60px rgba(113, 83, 54, 0.18),
+        inset 0 1px 0 rgba(255,255,255,0.7);
+      transition: transform 0.35s ease, box-shadow 0.35s ease, filter 0.35s ease;
+      overflow: hidden;
+    }
+
+    .envelope-btn::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(120deg, transparent 20%, rgba(255,255,255,0.45) 50%, transparent 80%);
+      transform: translateX(-120%);
+      transition: transform 0.9s ease;
+    }
+
+    .envelope-btn:hover {
+      transform: translateY(-4px) scale(1.02);
+      box-shadow:
+        0 28px 80px rgba(113, 83, 54, 0.22),
+        inset 0 1px 0 rgba(255,255,255,0.8);
+      filter: saturate(1.05);
+    }
+
+    .envelope-btn:hover::before {
+      transform: translateX(120%);
     }
 
     .envelope-btn:focus-visible {
@@ -86,29 +207,92 @@
       outline-offset: 4px;
     }
 
+    .envelope-hint {
+      font-size: 14px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgba(47, 36, 29, 0.66);
+    }
+
     .typewriter-screen {
-      background: var(--bg);
+      background:
+        radial-gradient(circle at top, rgba(255,255,255,0.65), transparent 32%),
+        linear-gradient(180deg, var(--bg), #fcf5ee);
+      opacity: 1;
+      transition: opacity 0.8s ease;
     }
 
     .paper-card {
-      width: min(92vw, 760px);
-      min-height: min(72vh, 680px);
-      background: var(--paper);
+      position: relative;
+      width: min(92vw, 780px);
+      min-height: min(74vh, 700px);
+      background:
+        linear-gradient(180deg, rgba(255,255,255,1), rgba(255,250,246,1));
       border-radius: 28px;
-      box-shadow: var(--shadow);
-      padding: clamp(22px, 4vw, 42px);
+      box-shadow: var(--shadow-lg);
+      padding: clamp(24px, 4vw, 44px);
       border: 1px solid rgba(0, 0, 0, 0.04);
       display: flex;
       align-items: flex-start;
       justify-content: flex-start;
+      overflow: hidden;
+    }
+
+    .paper-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        repeating-linear-gradient(
+          to bottom,
+          transparent 0,
+          transparent 31px,
+          var(--paper-line) 32px
+        );
+      opacity: 0.65;
+      pointer-events: none;
+    }
+
+    .paper-card::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 46px;
+      width: 2px;
+      height: 100%;
+      background: rgba(207, 111, 111, 0.14);
+      pointer-events: none;
+    }
+
+    .paper-inner {
+      position: relative;
+      z-index: 2;
+      width: 100%;
+      padding-left: clamp(10px, 2vw, 18px);
+    }
+
+    .paper-title {
+      margin: 0 0 18px;
+      font-size: 13px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: rgba(86, 67, 56, 0.58);
     }
 
     .paper-text {
       white-space: pre-wrap;
-      line-height: 1.9;
+      line-height: 1.95;
       font-size: clamp(17px, 2.2vw, 22px);
       color: #3e3026;
       width: 100%;
+      min-height: 280px;
+    }
+
+    .paper-footer {
+      margin-top: 20px;
+      font-size: 13px;
+      color: rgba(86, 67, 56, 0.55);
+      letter-spacing: 0.04em;
     }
 
     .caret {
@@ -119,22 +303,17 @@
     }
 
     @keyframes blink {
-      0%,
-      50% {
-        opacity: 1;
-      }
-      50.01%,
-      100% {
-        opacity: 0;
-      }
+      0%, 50% { opacity: 1; }
+      50.01%, 100% { opacity: 0; }
     }
 
     .journey {
+      position: relative;
+      z-index: 2;
       width: 100%;
       height: 100vh;
-      position: relative;
       transform: translateY(0);
-      transition: transform 0.9s ease;
+      transition: transform 0.95s cubic-bezier(0.22, 1, 0.36, 1);
       will-change: transform;
     }
 
@@ -147,41 +326,125 @@
       justify-content: center;
       padding: 24px;
       position: relative;
+      overflow: hidden;
     }
 
+    .section::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at center, rgba(255,255,255,0.28), transparent 48%);
+      opacity: 0.65;
+      pointer-events: none;
+    }
+
+    .section-accent {
+      position: absolute;
+      width: min(52vw, 420px);
+      height: min(52vw, 420px);
+      border-radius: 999px;
+      filter: blur(40px);
+      opacity: 0.22;
+      pointer-events: none;
+    }
+
+    .accent-left { left: -8%; top: 12%; }
+    .accent-right { right: -8%; bottom: 8%; }
+
     .intro-text {
+      position: relative;
+      z-index: 2;
       text-align: center;
       font-size: clamp(34px, 7vw, 68px);
-      line-height: 1.18;
-      padding: 12px;
-      max-width: 900px;
+      line-height: 1.14;
+      padding: 18px 20px;
+      max-width: 960px;
+      border-radius: 28px;
+      background: rgba(255,255,255,0.34);
+      backdrop-filter: blur(8px);
+      box-shadow: 0 20px 60px rgba(255,255,255,0.18);
+    }
+
+    .intro-sub {
+      display: block;
+      margin-top: 14px;
+      font-size: clamp(15px, 2vw, 20px);
+      line-height: 1.6;
+      color: rgba(47,36,29,0.62);
     }
 
     .card {
+      position: relative;
+      z-index: 2;
       width: min(92vw, 760px);
-      background: #ffffff;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,1), rgba(255,251,248,1));
+      border: 1px solid rgba(145, 118, 97, 0.08);
       border-radius: var(--radius);
-      box-shadow: var(--shadow);
+      box-shadow: var(--shadow-lg);
       padding: 28px;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at top right, rgba(255,255,255,0.8), transparent 30%);
+      pointer-events: none;
     }
 
     .card.dark {
-      background: #1a1a1a;
+      background:
+        radial-gradient(circle at top right, rgba(255, 209, 102, 0.08), transparent 22%),
+        linear-gradient(180deg, var(--cinema), var(--cinema-2));
       color: #f7efe6;
+      border: 1px solid rgba(255,255,255,0.06);
+      box-shadow: 0 30px 90px rgba(0,0,0,0.35);
+    }
+
+    .card-header {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 18px;
     }
 
     .card-title {
-      margin: 0 0 10px;
+      margin: 0;
       font-size: clamp(28px, 4vw, 40px);
       color: #30241d;
-      line-height: 1.2;
+      line-height: 1.15;
     }
 
     .card.dark .card-title {
-      color: #f7efe6;
+      color: #fff5eb;
+    }
+
+    .card-chip {
+      flex-shrink: 0;
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      background: rgba(198, 162, 108, 0.12);
+      color: #8a6940;
+      border: 1px solid rgba(198, 162, 108, 0.14);
+    }
+
+    .card.dark .card-chip {
+      color: #f0d1a1;
+      background: rgba(255, 209, 102, 0.08);
+      border-color: rgba(255,255,255,0.08);
     }
 
     .card-caption {
+      position: relative;
+      z-index: 2;
       margin: 0 0 20px;
       font-size: clamp(16px, 2vw, 20px);
       line-height: 1.7;
@@ -193,14 +456,35 @@
     }
 
     .media-frame {
+      position: relative;
+      z-index: 2;
       width: 100%;
       height: clamp(300px, 48vh, 400px);
       border-radius: 24px;
       overflow: hidden;
-      background: #f8f3ee;
+      background:
+        radial-gradient(circle at top, rgba(255,255,255,0.55), transparent 35%),
+        linear-gradient(180deg, #faf3ee, #f2e5d9);
       display: flex;
       align-items: center;
       justify-content: center;
+      border: 1px solid rgba(115, 82, 57, 0.06);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.8);
+    }
+
+    .card.dark .media-frame {
+      background:
+        radial-gradient(circle at top, rgba(255,255,255,0.06), transparent 35%),
+        linear-gradient(180deg, #171717, #0b0b0b);
+      border-color: rgba(255,255,255,0.05);
+    }
+
+    .media-frame::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(255,255,255,0.12), transparent 22%, transparent 78%, rgba(0,0,0,0.03));
+      pointer-events: none;
     }
 
     .media-frame img,
@@ -209,6 +493,8 @@
       height: 100%;
       object-fit: contain;
       display: block;
+      position: relative;
+      z-index: 1;
     }
 
     .media-frame video {
@@ -221,7 +507,28 @@
       padding-top: 56.25%;
       border-radius: 24px;
       overflow: hidden;
-      background: #000;
+      background:
+        linear-gradient(180deg, #080808, #000);
+      border: 1px solid rgba(255,255,255,0.06);
+      box-shadow:
+        inset 0 0 0 1px rgba(255,255,255,0.03),
+        0 16px 50px rgba(0,0,0,0.26);
+    }
+
+    .cinema-frame::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        repeating-linear-gradient(
+          to bottom,
+          rgba(255,255,255,0.025) 0,
+          rgba(255,255,255,0.025) 2px,
+          transparent 2px,
+          transparent 5px
+        );
+      z-index: 1;
+      pointer-events: none;
     }
 
     .cinema-frame iframe {
@@ -230,16 +537,33 @@
       width: 100%;
       height: 100%;
       border: 0;
+      z-index: 0;
     }
 
     .final-card {
       text-align: center;
-      padding: 44px 28px;
+      padding: 46px 28px;
+    }
+
+    .final-heart {
+      font-size: clamp(28px, 5vw, 44px);
+      margin-bottom: 12px;
+      animation: heartbeat 2.2s ease-in-out infinite;
+      transform-origin: center;
+      color: var(--heart);
+    }
+
+    @keyframes heartbeat {
+      0%, 100% { transform: scale(1); }
+      8% { transform: scale(1.08); }
+      16% { transform: scale(1); }
+      24% { transform: scale(1.12); }
+      32% { transform: scale(1); }
     }
 
     .final-main {
       font-size: clamp(30px, 4.4vw, 52px);
-      line-height: 1.25;
+      line-height: 1.2;
       color: #422d33;
     }
 
@@ -248,6 +572,60 @@
       color: #7a5b64;
       font-size: clamp(17px, 2.1vw, 22px);
       line-height: 1.7;
+    }
+
+    .final-note {
+      margin-top: 16px;
+      font-size: 14px;
+      line-height: 1.7;
+      color: rgba(66,45,51,0.55);
+      letter-spacing: 0.03em;
+    }
+
+    .progress-rail {
+      position: fixed;
+      right: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 20;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      padding: 10px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.55);
+      backdrop-filter: blur(12px);
+      box-shadow: 0 12px 32px rgba(0,0,0,0.06);
+    }
+
+    .progress-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      background: rgba(120, 99, 84, 0.22);
+      transition: transform 0.35s ease, background 0.35s ease, box-shadow 0.35s ease;
+    }
+
+    .progress-dot.active {
+      background: var(--heart);
+      transform: scale(1.5);
+      box-shadow: 0 0 0 6px rgba(188,77,99,0.12);
+    }
+
+    .phase-tag {
+      position: fixed;
+      left: 18px;
+      bottom: 18px;
+      z-index: 20;
+      background: rgba(255,255,255,0.88);
+      color: #5a4b41;
+      padding: 10px 14px;
+      border-radius: 999px;
+      font-size: 13px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+      backdrop-filter: blur(10px);
     }
 
     .lock-badge {
@@ -272,10 +650,46 @@
 
     .video-note {
       margin-top: 12px;
-      font-size: 14px;
-      line-height: 1.6;
+      font-size: 13px;
+      line-height: 1.65;
       color: #8a7467;
       text-align: center;
+    }
+
+    .open-fade {
+      animation: fadeOutUp 0.85s ease forwards;
+    }
+
+    @keyframes fadeOutUp {
+      0% { opacity: 1; transform: scale(1) translateY(0); }
+      100% { opacity: 0; transform: scale(0.96) translateY(-12px); }
+    }
+
+    .section-enter {
+      animation: sectionBloom 1s ease both;
+    }
+
+    @keyframes sectionBloom {
+      0% {
+        opacity: 0.45;
+        transform: scale(0.985);
+      }
+      100% {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    @media (max-width: 900px) {
+      .progress-rail {
+        right: 10px;
+        gap: 8px;
+      }
+
+      .phase-tag {
+        left: 12px;
+        bottom: 12px;
+      }
     }
 
     @media (max-width: 640px) {
@@ -291,33 +705,94 @@
       .media-frame {
         height: clamp(300px, 42vh, 360px);
       }
+
+      .progress-rail {
+        right: 8px;
+        padding: 8px;
+      }
+
+      .progress-dot {
+        width: 8px;
+        height: 8px;
+      }
+
+      .paper-card::after {
+        left: 28px;
+      }
+
+      .paper-inner {
+        padding-left: 0;
+      }
+
+      .intro-text {
+        padding: 18px 16px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .ambient span,
+      .caret,
+      .final-heart {
+        animation: none !important;
+      }
+
+      .journey,
+      .envelope-btn,
+      .lock-badge,
+      .progress-dot {
+        transition: none !important;
+      }
     }
   </style>
 </head>
 <body class="locked">
   <div class="app">
+    <div class="ambient" aria-hidden="true">
+      <span></span><span></span><span></span><span></span>
+      <span></span><span></span><span></span><span></span>
+    </div>
+
     <div class="envelope-screen" id="envelopeScreen">
-      <button class="envelope-btn" id="openBtn">JHANSY</button>
+      <div class="envelope-wrap">
+        <div class="envelope-glow"></div>
+        <button class="envelope-btn" id="openBtn">JHANSY</button>
+        <div class="envelope-hint">tap to open your letter</div>
+      </div>
     </div>
 
     <div class="typewriter-screen" id="typewriterScreen" style="display: none;">
       <div class="paper-card">
-        <div class="paper-text" id="paperText"></div>
+        <div class="paper-inner">
+          <div class="paper-title">A little something, from your idiot 💌</div>
+          <div class="paper-text" id="paperText"></div>
+          <div class="paper-footer">Read slowly... I made this for you.</div>
+        </div>
       </div>
     </div>
 
+    <div class="progress-rail" id="progressRail" style="display: none;"></div>
+    <div class="phase-tag" id="phaseTag" style="display: none;">Phase 1 / 11</div>
+
     <div class="journey" id="journey" style="display: none;">
       <!-- PHASE 0 -->
-      <section class="section">
+      <section class="section section-enter">
+        <div class="section-accent accent-left" style="background: var(--rose-soft);"></div>
+        <div class="section-accent accent-right" style="background: #f7dce1;"></div>
         <div class="intro-text" style="color: var(--rose);">
           Flowers ivvalli kada...
+          <span class="intro-sub">So I brought them to you in the only way I can right now.</span>
         </div>
       </section>
 
       <!-- PHASE 1 -->
       <section class="section">
+        <div class="section-accent accent-left" style="background: #f6dbe1;"></div>
         <div class="card">
-          <h2 class="card-title">Morning Bloom 🌸</h2>
+          <div class="card-header">
+            <h2 class="card-title">Morning Bloom 🌸</h2>
+            <div class="card-chip">flowers</div>
+          </div>
+          <p class="card-caption">The first thing I wanted to give you... because some days deserve softness first.</p>
           <div class="media-frame">
             <img src="flowers1.jpg" alt="Morning Bloom" />
           </div>
@@ -326,15 +801,22 @@
 
       <!-- PHASE 2 -->
       <section class="section">
+        <div class="section-accent accent-left" style="background: var(--matcha-soft);"></div>
+        <div class="section-accent accent-right" style="background: #edf4e9;"></div>
         <div class="intro-text" style="color: var(--matcha);">
           Starbucks for the first time... 🌿
+          <span class="intro-sub">Nuvvu lekunda try chesina, but still somehow felt like telling you every reaction.</span>
         </div>
       </section>
 
       <!-- PHASE 3 -->
       <section class="section">
+        <div class="section-accent accent-right" style="background: #e6f0df;"></div>
         <div class="card">
-          <h2 class="card-title">The Matcha Review 🍵</h2>
+          <div class="card-header">
+            <h2 class="card-title">The Matcha Review 🍵</h2>
+            <div class="card-chip">coffee date</div>
+          </div>
           <p class="card-caption">I finally tried it! It’s definitely... green. 😂</p>
           <div class="media-frame">
             <img src="motcha.png" alt="The Matcha Review" />
@@ -344,8 +826,13 @@
 
       <!-- PHASE 4 -->
       <section class="section">
+        <div class="section-accent accent-left" style="background: #dfe9d8;"></div>
         <div class="card">
-          <h2 class="card-title">First Sip Reactions...</h2>
+          <div class="card-header">
+            <h2 class="card-title">First Sip Reactions...</h2>
+            <div class="card-chip">live memory</div>
+          </div>
+          <p class="card-caption">Because just sending a photo is not enough... you need the full drama too.</p>
           <div class="media-frame">
             <video class="phase-video" muted loop playsinline preload="auto" data-phase="4">
               <source src="starbucks.mp4" type="video/mp4" />
@@ -356,15 +843,23 @@
 
       <!-- PHASE 5 -->
       <section class="section">
+        <div class="section-accent accent-left" style="background: var(--ice-soft);"></div>
+        <div class="section-accent accent-right" style="background: #eef7fd;"></div>
         <div class="intro-text" style="color: var(--ice);">
           And now for the best part... 🍦
+          <span class="intro-sub">Because healing may not be instant... but ice cream definitely helps.</span>
         </div>
       </section>
 
       <!-- PHASE 6 -->
       <section class="section">
+        <div class="section-accent accent-right" style="background: #edf7fb;"></div>
         <div class="card">
-          <h2 class="card-title">The Perfect Treat 🍨</h2>
+          <div class="card-header">
+            <h2 class="card-title">The Perfect Treat 🍨</h2>
+            <div class="card-chip">sweet fix</div>
+          </div>
+          <p class="card-caption">This is the part where I would usually just hand it to you and wait for that first happy look.</p>
           <div class="media-frame">
             <img src="icecream_photo.jpg" alt="The Perfect Treat" />
           </div>
@@ -373,8 +868,13 @@
 
       <!-- PHASE 7 -->
       <section class="section">
+        <div class="section-accent accent-left" style="background: #dfeef7;"></div>
         <div class="card">
-          <h2 class="card-title">Sweet Happiness...</h2>
+          <div class="card-header">
+            <h2 class="card-title">Sweet Happiness...</h2>
+            <div class="card-chip">living memory</div>
+          </div>
+          <p class="card-caption">Okay, now the full vibe. Not just the treat... the feeling.</p>
           <div class="media-frame">
             <video
               class="phase-video"
@@ -390,23 +890,29 @@
             </video>
           </div>
           <div class="video-note">
-            If this .mov still does not play in your browser after this fix, the issue is browser codec support. In that case, convert the same file to MP4 and replace only the filename here.
+            If this .mov still does not play in your browser, the issue is usually codec support. Converting the same clip to MP4 is the fallback fix.
           </div>
         </div>
       </section>
 
       <!-- PHASE 8 -->
       <section class="section">
+        <div class="section-accent accent-left" style="background: var(--popcorn-soft);"></div>
+        <div class="section-accent accent-right" style="background: #f7ecdf;"></div>
         <div class="intro-text" style="color: var(--popcorn);">
           Popcorn ready? 🍿
+          <span class="intro-sub">Now we stop being cute for one second and become proper cinema people.</span>
         </div>
       </section>
 
       <!-- PHASE 9 -->
       <section class="section">
         <div class="card dark">
-          <h2 class="card-title">Movie Night Console 🎬</h2>
-          <p class="card-caption">A little theatre made just for you.</p>
+          <div class="card-header">
+            <h2 class="card-title">Movie Night Console 🎬</h2>
+            <div class="card-chip">our theatre</div>
+          </div>
+          <p class="card-caption">A little theatre made just for you. Press play, sit back, and imagine I’m right there annoying you throughout the movie.</p>
           <div class="cinema-frame">
             <iframe
               id="youtubeFrame"
@@ -420,9 +926,13 @@
 
       <!-- PHASE 10 -->
       <section class="section">
+        <div class="section-accent accent-left" style="background: #f4d7df;"></div>
+        <div class="section-accent accent-right" style="background: #f7e6ea;"></div>
         <div class="card final-card">
-          <div class="final-main">Roju anta ilane navvukunta undhu, Jaanu. ❤️</div>
+          <div class="final-heart">❤️</div>
+          <div class="final-main">Roju anta ilane navvukunta undhu, Jaanu.</div>
           <p class="final-sub">Happy Menstrual Day, my mental fellow! 😂</p>
+          <div class="final-note">Until I can be there in person again... let this hold my place for a little while.</div>
         </div>
       </section>
     </div>
@@ -433,7 +943,8 @@
   <script>
     // =========================
     // PASTE YOUR YOUTUBE VIDEO ID HERE
-    // Example: If your URL is https://www.youtube.com/watch?v=abc123XYZ
+    // Example:
+    // If your URL is https://www.youtube.com/watch?v=abc123XYZ
     // then VIDEO_ID should be: abc123XYZ
     // =========================
     const VIDEO_ID = "PASTE_YOUR_YOUTUBE_VIDEO_ID_HERE";
@@ -461,6 +972,8 @@ Hahaha... baga navvukunnaava? So, roju antha ilane navvukunta undu.`;
     const youtubeFrame = document.getElementById("youtubeFrame");
     const videos = Array.from(document.querySelectorAll(".phase-video"));
     const sections = Array.from(document.querySelectorAll(".section"));
+    const progressRail = document.getElementById("progressRail");
+    const phaseTag = document.getElementById("phaseTag");
 
     let currentSection = 0;
     let typingDone = false;
@@ -468,6 +981,7 @@ Hahaha... baga navvukunnaava? So, roju antha ilane navvukunta undu.`;
     let typeIndex = 0;
     let touchStartY = null;
     let typingTimer = null;
+    let sectionAnimationTimer = null;
 
     function setupYouTube() {
       if (VIDEO_ID && VIDEO_ID !== "PASTE_YOUR_YOUTUBE_VIDEO_ID_HERE") {
@@ -477,6 +991,24 @@ Hahaha... baga navvukunnaava? So, roju antha ilane navvukunta undu.`;
       }
     }
 
+    function createProgressDots() {
+      progressRail.innerHTML = "";
+      sections.forEach((_, index) => {
+        const dot = document.createElement("div");
+        dot.className = "progress-dot";
+        if (index === 0) dot.classList.add("active");
+        progressRail.appendChild(dot);
+      });
+    }
+
+    function updateProgress() {
+      const dots = Array.from(progressRail.querySelectorAll(".progress-dot"));
+      dots.forEach((dot, index) => {
+        dot.classList.toggle("active", index === currentSection);
+      });
+      phaseTag.textContent = `Phase ${currentSection + 1} / ${sections.length}`;
+    }
+
     function showLockBadge() {
       lockBadge.classList.add("show");
       setTimeout(() => {
@@ -484,11 +1016,21 @@ Hahaha... baga navvukunnaava? So, roju antha ilane navvukunta undu.`;
       }, 1500);
     }
 
+    function animateCurrentSection() {
+      sections.forEach((section) => section.classList.remove("section-enter"));
+      clearTimeout(sectionAnimationTimer);
+      sectionAnimationTimer = setTimeout(() => {
+        sections[currentSection].classList.add("section-enter");
+      }, 60);
+    }
+
     function updateJourneyPosition() {
       journey.style.transform = `translateY(-${currentSection * window.innerHeight}px)`;
+      updateProgress();
+      animateCurrentSection();
       setTimeout(() => {
         controlVideos();
-      }, 120);
+      }, 140);
     }
 
     function stopAndResetVideo(video) {
@@ -504,12 +1046,17 @@ Hahaha... baga navvukunnaava? So, roju antha ilane navvukunta undu.`;
     function tryPlayVideo(video) {
       if (!video) return;
 
+      video.muted = true;
+      video.setAttribute("muted", "");
+      video.setAttribute("playsinline", "");
+      video.loop = true;
+
       const playPromise = video.play();
       if (playPromise && typeof playPromise.catch === "function") {
         playPromise.catch(() => {
-          video.muted = true;
-          video.setAttribute("muted", "");
-          video.load();
+          try {
+            video.load();
+          } catch (e) {}
           const secondTry = video.play();
           if (secondTry && typeof secondTry.catch === "function") {
             secondTry.catch(() => {});
@@ -523,10 +1070,6 @@ Hahaha... baga navvukunnaava? So, roju antha ilane navvukunta undu.`;
         const phaseIndex = Number(video.dataset.phase);
 
         if (phaseIndex === currentSection) {
-          video.muted = true;
-          video.setAttribute("muted", "");
-          video.loop = true;
-          video.setAttribute("playsinline", "");
           tryPlayVideo(video);
         } else {
           stopAndResetVideo(video);
@@ -567,17 +1110,29 @@ Hahaha... baga navvukunnaava? So, roju antha ilane navvukunta undu.`;
         paperText.innerHTML =
           TYPEWRITER_TEXT.replace(/\n/g, "<br>") + '<span class="caret">|</span>';
         typingDone = true;
+        progressRail.style.display = "flex";
+        phaseTag.style.display = "block";
         journey.style.display = "block";
-        typewriterScreen.style.display = "none";
-        currentSection = 0;
-        updateJourneyPosition();
+
+        requestAnimationFrame(() => {
+          typewriterScreen.style.opacity = "0";
+          setTimeout(() => {
+            typewriterScreen.style.display = "none";
+            currentSection = 0;
+            updateJourneyPosition();
+          }, 700);
+        });
       }
     }
 
     openBtn.addEventListener("click", () => {
-      envelopeScreen.style.display = "none";
-      typewriterScreen.style.display = "flex";
-      typeWriter();
+      envelopeScreen.classList.add("open-fade");
+      setTimeout(() => {
+        envelopeScreen.style.display = "none";
+        typewriterScreen.style.display = "flex";
+        createProgressDots();
+        typeWriter();
+      }, 650);
     });
 
     window.addEventListener(
@@ -671,6 +1226,7 @@ Hahaha... baga navvukunnaava? So, roju antha ilane navvukunta undu.`;
 
     window.addEventListener("beforeunload", () => {
       if (typingTimer) clearTimeout(typingTimer);
+      if (sectionAnimationTimer) clearTimeout(sectionAnimationTimer);
     });
 
     setupYouTube();
