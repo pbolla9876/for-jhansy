@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>For Jhansy ❤️</title>
+<title>Jhansy Journey ❤️</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital@1&display=swap" rel="stylesheet">
 
@@ -12,10 +12,8 @@ body{
   margin:0;
   font-family: Georgia, serif;
   background:#fdfbf7;
-  overflow:hidden;
 }
 
-/* Sections */
 .section{
   height:100vh;
   display:flex;
@@ -24,13 +22,12 @@ body{
   padding:20px;
 }
 
-/* Paper Card */
 .card{
   max-width:800px;
   padding:30px;
   background:#fdfbf7;
   border-radius:20px;
-  box-shadow:0 25px 60px rgba(0,0,0,0.1);
+  box-shadow:0 20px 60px rgba(0,0,0,0.1);
   clip-path: polygon(2% 5%, 98% 3%, 97% 97%, 3% 98%);
 }
 
@@ -39,35 +36,14 @@ h2{
   font-style:italic;
 }
 
-/* Locked */
 .locked{
   text-align:center;
-  font-size:20px;
 }
 
-/* Envelope */
-#envelope{
-  position:fixed;
-  inset:0;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  background:#fdfbf7;
-  z-index:10;
-}
-
-button{
-  padding:20px 40px;
-  font-size:20px;
-  cursor:pointer;
-}
-
-/* Canvas petals */
 canvas{
   position:fixed;
   inset:0;
   pointer-events:none;
-  transition:opacity 1s;
 }
 </style>
 </head>
@@ -76,11 +52,7 @@ canvas{
 
 <canvas id="petals"></canvas>
 
-<div id="envelope">
-  <button onclick="openLetter()">Open ❤️</button>
-</div>
-
-<div id="content" style="display:none">
+<div id="content">
 
 <div class="section" id="phase1"></div>
 <div class="section" id="phase2"></div>
@@ -90,39 +62,48 @@ canvas{
 
 </div>
 
+<!-- DEV PANEL -->
+<div style="position:fixed;bottom:10px;left:10px;background:#fff;padding:10px;border-radius:10px;z-index:999;">
+<button onclick="go(0)">Morning</button>
+<button onclick="go(1)">Matcha</button>
+<button onclick="go(2)">IceCream</button>
+<button onclick="go(3)">Movie</button>
+<button onclick="go(4)">Night</button>
+</div>
+
+<div id="clock" style="position:fixed;top:10px;right:10px;background:#fff;padding:8px 12px;border-radius:8px;font-size:12px;"></div>
+
 <script>
 
-/* ================= TIME (CST SAFE) ================= */
+/* 🔥 TEST MODE */
+const DEV_MODE = true;
+
+/* CST TIME */
 function getCST(){
   return new Date(new Date().toLocaleString("en-US",{timeZone:"America/Chicago"}));
 }
 
 function unlocked(h,m){
+  if(DEV_MODE) return true;
   const now=getCST();
   return now.getHours()>h || (now.getHours()==h && now.getMinutes()>=m);
 }
 
-/* ================= SCROLL SHIELD ================= */
-let lock=false;
-window.addEventListener("wheel",(e)=>{
-  if(lock){e.preventDefault();return;}
-  lock=true;
-  setTimeout(()=>lock=false,1500);
-},{passive:false});
-
-/* ================= ENVELOPE ================= */
-function openLetter(){
-  document.getElementById("envelope").style.display="none";
-  document.getElementById("content").style.display="block";
-  render();
+/* NAV */
+function go(i){
+  document.querySelectorAll('.section')[i].scrollIntoView({behavior:"smooth"});
 }
 
-/* ================= RENDER ================= */
+/* CLOCK */
+setInterval(()=>{
+  document.getElementById("clock").innerText =
+    "CST: "+getCST().toLocaleTimeString();
+},1000);
+
+/* RENDER */
 function render(){
 
-// PHASE 1
-document.getElementById("phase1").innerHTML =
-unlocked(9,0)?`
+document.getElementById("phase1").innerHTML = `
 <div class="card">
 <h2>Morning 🌸</h2>
 
@@ -149,129 +130,76 @@ So anduke 4 days mundhu nunchi e plan start chesa.
 
 So here we go, teesko nee flowers... bagunnaya? 😁
 
-I know physical ga teeskolekapothunav, kani I hope you can feel the soul of these flowers.
-
 So Jhansy, Don't take too much stress, okay?
-
-Manchiga oka smile ichi nee work continue chesko ok na...
-
-Nuvvu smile chestene ee flower ki value.
 
 Good Morning, my psycho! 😊
 </p>
 </div>
-`:
-lockedCard("Wait until 9:00 AM 🌸");
+`;
 
-// PHASE 2
-document.getElementById("phase2").innerHTML =
-unlocked(14,30)?`
+document.getElementById("phase2").innerHTML = `
 <div class="card">
 <h2>Matcha Break ☕</h2>
 
 <p>
 Haha, welcome back Jhansy!
 
-Morning nunchi okate calls, meetings valla irritating ga undhi kada...
-
-Ra, velli Ice Matcha Latte thagudaam... let's drink together!
-
-😂😂😂😂 Ledu le raledu tension padaku!
-
-Scroll cheyi! Nenu first time Starbucks try chesa iroju...
+Ra, velli Ice Matcha Latte thagudaam 😂
 </p>
 
 <img src="motcha.png" width="100%">
 <video src="starbucks.mp4" controls width="100%"></video>
 
-<p>Coffee (matcha) marchipoku! 😉</p>
-
 </div>
-`:
-lockedCard("Morning nunchi okate calls... See you at 2:30 PM ☕");
+`;
 
-// PHASE 3
-document.getElementById("phase3").innerHTML =
-unlocked(16,30)?`
+document.getElementById("phase3").innerHTML = `
 <div class="card">
 <h2>Ice Cream 🍦</h2>
 
 <p>
 Hi Jhansy, welcome back again!
 
-Probably neeku work finish ayye time avthundhi...
-
-Anduke now, it's time for ICE CREAM! 🍦
-
-Entha stress lo unna, ice cream lifts mood.
-
-Double Chocolate try chesthunna first time!
-
-Ignore expressions ok na 😂😂😂
+Time for ICE CREAM 🍦
 </p>
 
 <img src="icecream_photo.jpg" width="100%">
 <video src="icecream.mov" controls width="100%"></video>
 
 </div>
-`:
-lockedCard("Matcha energy ayipoyinda? 😂 4:30 PM 🍦");
+`;
 
-// PHASE 4
-document.getElementById("phase4").innerHTML =
-unlocked(19,0)?`
+document.getElementById("phase4").innerHTML = `
 <div class="card">
 <h2>Movie Night 🎬</h2>
 
-<p>
-So finally, relax mode ON! ✨
-
-Ela ayyindhi work?
-
-Dinner chesthu movie chuddam...
-
-Nee favorite hero 🎥 ❤️
-</p>
+<p>Relax mode ON ✨</p>
 
 <iframe width="100%" height="400"
 src="https://www.youtube.com/embed/3FO__vGFYTs"
 allowfullscreen></iframe>
 
 </div>
-`:
-lockedCard("Popcorn ready? 7:00 PM 🍿");
+`;
 
-// PHASE 5
-document.getElementById("phase5").innerHTML =
-unlocked(22,0)?`
+document.getElementById("phase5").innerHTML = `
 <div class="card">
 <h2>Good Night 🌙</h2>
 
 <p>
-Day is done, Jhansy.
+Day is done, Jhansy...
 
-Hope today felt lighter...
-
-Morning dialogue gurtunda?
-
-"Nene prapanchanni teeskuni vasta"
-
-Nuvvu andariki world ivvutav...
-
-Sleep well, psycho! 🌙
+Sleep well, psycho ❤️
 </p>
 
 </div>
-`:
-lockedCard("10:00 PM 🌙");
+`;
 
 }
 
-function lockedCard(msg){
-  return `<div class="card locked">${msg}</div>`;
-}
+render();
 
-/* ================= PETALS ================= */
+/* PETALS */
 const canvas=document.getElementById("petals");
 const ctx=canvas.getContext("2d");
 
@@ -283,37 +211,26 @@ for(let i=0;i<40;i++){
   petals.push({
     x:Math.random()*canvas.width,
     y:Math.random()*canvas.height,
-    size:2+Math.random()*3,
     speed:1+Math.random()*2
   });
 }
 
 function draw(){
   ctx.clearRect(0,0,canvas.width,canvas.height);
-
   petals.forEach(p=>{
     ctx.beginPath();
-    ctx.ellipse(p.x,p.y,p.size,p.size*0.6,Math.PI/4,0,Math.PI*2);
-    ctx.fillStyle="#f7c6d0";
+    ctx.arc(p.x,p.y,3,0,Math.PI*2);
+    ctx.fillStyle="pink";
     ctx.fill();
-
     p.y+=p.speed;
     if(p.y>canvas.height){
       p.y=0;
       p.x=Math.random()*canvas.width;
     }
   });
-
   requestAnimationFrame(draw);
 }
 draw();
-
-/* Fade petals after evening */
-setInterval(()=>{
-  if(unlocked(18,30)){
-    canvas.style.opacity=0;
-  }
-},5000);
 
 </script>
 
