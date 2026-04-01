@@ -132,12 +132,8 @@
         transform: translateY(0) scale(1);
         opacity: 0;
       }
-      10% {
-        opacity: 0.9;
-      }
-      80% {
-        opacity: 0.55;
-      }
+      10% { opacity: 0.9; }
+      80% { opacity: 0.55; }
       100% {
         transform: translateY(-110vh) scale(1.8);
         opacity: 0;
@@ -175,6 +171,32 @@
       backdrop-filter: blur(10px);
       opacity: 0.96;
       pointer-events: none;
+    }
+
+    .back-to-letter {
+      position: fixed;
+      top: 16px;
+      left: 16px;
+      z-index: 120;
+      padding: 10px 14px;
+      border-radius: 999px;
+      border: none;
+      background: rgba(255,255,255,0.85);
+      color: #5a4b41;
+      font-family: Georgia, serif;
+      font-size: 13px;
+      letter-spacing: 0.05em;
+      cursor: pointer;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.4s ease;
+    }
+
+    .back-to-letter.show {
+      opacity: 1;
+      pointer-events: auto;
     }
 
     .envelope-screen,
@@ -234,7 +256,7 @@
       box-shadow:
         0 20px 60px rgba(113, 83, 54, 0.18),
         inset 0 1px 0 rgba(255,255,255,0.7);
-      transition: transform 0.35s ease, box-shadow 0.35s ease, filter 0.35s ease;
+      transition: transform 0.35s ease, box-shadow 0.35s ease;
       overflow: hidden;
     }
 
@@ -281,6 +303,11 @@
       opacity: 1;
       transition: opacity 0.8s ease;
       z-index: 90;
+      cursor: default;
+    }
+
+    .typewriter-screen.reopenable {
+      cursor: pointer;
     }
 
     .paper-card {
@@ -382,6 +409,13 @@
       font-size: 13px;
       color: rgba(86, 67, 56, 0.55);
       letter-spacing: 0.04em;
+    }
+
+    .letter-return-note {
+      margin-top: 14px;
+      font-size: 12px;
+      color: rgba(86, 67, 56, 0.6);
+      letter-spacing: 0.03em;
     }
 
     .caret {
@@ -987,6 +1021,13 @@
         max-width: calc(100% - 30px);
         text-align: center;
       }
+
+      .back-to-letter {
+        top: 12px;
+        left: 12px;
+        font-size: 12px;
+        padding: 9px 12px;
+      }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -1035,6 +1076,7 @@
           <div class="paper-title">A little something, from your idiot 💌</div>
           <div class="paper-text" id="paperText"></div>
           <div class="paper-footer">Read slowly... I made this for you.</div>
+          <div class="letter-return-note" id="letterReturnNote" style="display:none;">Tap anywhere to return to the journey</div>
         </div>
       </div>
     </div>
@@ -1042,6 +1084,8 @@
     <div class="progress-rail" id="progressRail" style="display: none;"></div>
     <div class="phase-tag" id="phaseTag" style="display: none;">Phase 1 / 11</div>
     <div class="swipe-hint" id="swipeHint" style="display:none;">Swipe up for next • Swipe down to go back</div>
+
+    <button id="backToLetterBtn" class="back-to-letter">← Letter</button>
 
     <div class="journey" id="journey" style="display: none;">
       <section class="section" data-section-index="0">
@@ -1209,6 +1253,7 @@
   </div>
 
   <script>
+    // true = test mode, false = CST timed unlocks
     const PREVIEW_MODE = true;
 
     const VIDEO_ID_1 = "3FO__vGFYTs";
@@ -1272,7 +1317,7 @@ Hahaha... baga navvukunnaava? So, roju antha ilane navvukunta undu.`;
     ];
 
     const STORAGE_KEYS = {
-      envelopeOpened: "jhansy_experience_envelope_opened_v8"
+      envelopeOpened: "jhansy_experience_envelope_opened_v10"
     };
 
     const envelopeScreen = document.getElementById("envelopeScreen");
@@ -1292,6 +1337,8 @@ Hahaha... baga navvukunnaava? So, roju antha ilane navvukunta undu.`;
     const previewRibbon = document.getElementById("previewRibbon");
     const petalCanvas = document.getElementById("petalCanvas");
     const swipeHint = document.getElementById("swipeHint");
+    const backToLetterBtn = document.getElementById("backToLetterBtn");
+    const letterReturnNote = document.getElementById("letterReturnNote");
 
     let currentSection = 0;
     let typingDone = false;
@@ -1302,6 +1349,7 @@ Hahaha... baga navvukunnaava? So, roju antha ilane navvukunta undu.`;
     let countdownInterval = null;
     let envelopeAvailable = false;
     let typewriterStarted = false;
+    let showingLetterAgain = false;
 
     let wheelCooldown = false;
 
@@ -1445,7 +1493,7 @@ Hahaha... baga navvukunnaava? So, roju antha ilane navvukunta undu.`;
         return;
       }
 
-      if (!typingDone) {
+      if (!typingDone || typewriterScreen.style.display === "flex") {
         petalOpacityTarget = 0.95;
         petalDensityMultiplier = 0.7;
         petalCanvas.classList.add("active");
@@ -1624,7 +1672,7 @@ Hahaha... baga navvukunnaava? So, roju antha ilane navvukunta undu.`;
     function controlVideos() {
       videos.forEach((video) => {
         const phaseIndex = Number(video.dataset.phase);
-        if (phaseIndex === currentSection && isSectionUnlocked(phaseIndex)) {
+        if (journey.style.display === "block" && phaseIndex === currentSection && isSectionUnlocked(phaseIndex)) {
           tryPlayVideo(video);
         } else {
           stopAndResetVideo(video);
@@ -1691,16 +1739,48 @@ Hahaha... baga navvukunnaava? So, roju antha ilane navvukunta undu.`;
       }, 650);
     }
 
+    function showJourney() {
+      showingLetterAgain = false;
+      typewriterScreen.classList.remove("reopenable");
+      letterReturnNote.style.display = "none";
+
+      progressRail.style.display = "flex";
+      phaseTag.style.display = "block";
+      swipeHint.style.display = "block";
+      journey.style.display = "block";
+      backToLetterBtn.classList.add("show");
+      updateJourneyPosition();
+    }
+
+    function hideJourney() {
+      journey.style.display = "none";
+      progressRail.style.display = "none";
+      phaseTag.style.display = "none";
+      swipeHint.style.display = "none";
+    }
+
+    function openLetterViewFromJourney() {
+      navigationLocked = true;
+      hideJourney();
+      typewriterScreen.style.display = "flex";
+      typewriterScreen.style.opacity = "1";
+      typewriterScreen.classList.add("reopenable");
+      letterReturnNote.style.display = "block";
+      showingLetterAgain = true;
+      startPetals();
+      syncPetalsWithSection();
+
+      setTimeout(() => {
+        navigationLocked = false;
+      }, 400);
+    }
+
     function skipTypewriterAndShowJourney() {
       typingDone = true;
       typewriterStarted = true;
       envelopeScreen.style.display = "none";
       typewriterScreen.style.display = "none";
       if (!progressRail.innerHTML.trim()) createProgressDots();
-      progressRail.style.display = "flex";
-      phaseTag.style.display = "block";
-      swipeHint.style.display = "block";
-      journey.style.display = "block";
 
       const firstLocked = getFirstLockedSectionIndex();
       if (firstLocked === 0) currentSection = 0;
@@ -1708,7 +1788,8 @@ Hahaha... baga navvukunnaava? So, roju antha ilane navvukunta undu.`;
       else currentSection = Math.max(0, firstLocked - 1);
 
       startPetals();
-      updateJourneyPosition();
+      backToLetterBtn.classList.add("show");
+      showJourney();
     }
 
     function typeWriter() {
@@ -1723,17 +1804,14 @@ Hahaha... baga navvukunnaava? So, roju antha ilane navvukunta undu.`;
           TYPEWRITER_TEXT.replace(/\n/g, "<br>") + '<span class="caret">|</span>';
         typingDone = true;
         setEnvelopeOpenedState(true);
-        progressRail.style.display = "flex";
-        phaseTag.style.display = "block";
-        swipeHint.style.display = "block";
-        journey.style.display = "block";
+        backToLetterBtn.classList.add("show");
 
         requestAnimationFrame(() => {
           typewriterScreen.style.opacity = "0";
           setTimeout(() => {
             typewriterScreen.style.display = "none";
             currentSection = 0;
-            updateJourneyPosition();
+            showJourney();
           }, 700);
         });
       }
@@ -1828,7 +1906,7 @@ Hahaha... baga navvukunnaava? So, roju antha ilane navvukunta undu.`;
       renderLockedPlaceholders();
       updateProgress();
 
-      if (typingDone) {
+      if (typingDone && journey.style.display === "block") {
         const firstLocked = getFirstLockedSectionIndex();
         if (firstLocked !== -1 && currentSection >= firstLocked) {
           currentSection = Math.max(0, firstLocked - 1);
@@ -1853,7 +1931,7 @@ Hahaha... baga navvukunnaava? So, roju antha ilane navvukunta undu.`;
     }
 
     function tryWheelNavigate(deltaY) {
-      if (wheelCooldown || navigationLocked || !typingDone) return;
+      if (wheelCooldown || navigationLocked || !typingDone || journey.style.display !== "block") return;
       if (Math.abs(deltaY) < 14) return;
 
       wheelCooldown = true;
@@ -1876,7 +1954,7 @@ Hahaha... baga navvukunnaava? So, roju antha ilane navvukunta undu.`;
     }
 
     function handleGestureEnd() {
-      if (!touchState.active || navigationLocked || !typingDone) {
+      if (!touchState.active || navigationLocked || !typingDone || journey.style.display !== "block") {
         resetTouchState();
         return;
       }
@@ -1904,6 +1982,18 @@ Hahaha... baga navvukunnaava? So, roju antha ilane navvukunta undu.`;
     openBtn.addEventListener("click", handleEnvelopeOpen);
     openBtn.addEventListener("touchend", handleEnvelopeOpen, { passive: false });
 
+    backToLetterBtn.addEventListener("click", () => {
+      if (!typingDone) return;
+      openLetterViewFromJourney();
+    });
+
+    typewriterScreen.addEventListener("click", () => {
+      if (!typingDone) return;
+      if (!showingLetterAgain) return;
+      typewriterScreen.style.display = "none";
+      showJourney();
+    });
+
     window.addEventListener(
       "wheel",
       (e) => {
@@ -1916,11 +2006,21 @@ Hahaha... baga navvukunnaava? So, roju antha ilane navvukunta undu.`;
     window.addEventListener("keydown", (e) => {
       const keysDown = ["ArrowDown", "PageDown", "Space"];
       const keysUp = ["ArrowUp", "PageUp"];
+      const openKeys = ["Enter", "Space"];
+
+      if (typewriterScreen.style.display === "flex" && showingLetterAgain && openKeys.includes(e.code)) {
+        e.preventDefault();
+        typewriterScreen.style.display = "none";
+        showJourney();
+        return;
+      }
 
       if (!typingDone) {
         if (keysDown.includes(e.code) || keysUp.includes(e.code)) e.preventDefault();
         return;
       }
+
+      if (journey.style.display !== "block") return;
 
       if (keysDown.includes(e.code)) {
         e.preventDefault();
@@ -1934,7 +2034,7 @@ Hahaha... baga navvukunnaava? So, roju antha ilane navvukunta undu.`;
     });
 
     window.addEventListener("touchstart", (e) => {
-      if (!typingDone) return;
+      if (!typingDone || journey.style.display !== "block") return;
       if (e.touches.length !== 1) return;
 
       const t = e.touches[0];
@@ -1948,7 +2048,7 @@ Hahaha... baga navvukunnaava? So, roju antha ilane navvukunta undu.`;
     }, { passive: true });
 
     window.addEventListener("touchmove", (e) => {
-      if (!typingDone || !touchState.active) return;
+      if (!typingDone || !touchState.active || journey.style.display !== "block") return;
       if (e.touches.length !== 1) return;
 
       const t = e.touches[0];
