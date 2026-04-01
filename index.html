@@ -1,2107 +1,321 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0, viewport-fit=cover"
-  />
-  <title>The Jhansy Experience</title>
-  <style>
-    :root {
-      --bg: #fbf6ee;
-      --bg-2: #f6efe4;
-      --bg-3: #efe6d8;
-      --paper: #fdfbf7;
-      --paper-line: rgba(120, 95, 70, 0.06);
-      --text: #2f241d;
-      --rose: #8d3b4c;
-      --rose-soft: #efd4da;
-      --matcha: #638a57;
-      --matcha-soft: #dfe9d8;
-      --ice: #8db9d7;
-      --ice-soft: #dcecf7;
-      --popcorn: #6e4d2f;
-      --popcorn-soft: #efe1d2;
-      --heart: #bc4d63;
-      --glass-stroke: rgba(255, 255, 255, 0.48);
-    }
-
-    * {
-      box-sizing: border-box;
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    html, body {
-      margin: 0;
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
-      color: var(--text);
-      font-family: Georgia, "Times New Roman", serif;
-      background:
-        radial-gradient(circle at 20% 15%, rgba(255,255,255,0.45), transparent 14%),
-        radial-gradient(circle at 85% 18%, rgba(255,244,233,0.42), transparent 16%),
-        radial-gradient(circle at 25% 80%, rgba(255,250,244,0.5), transparent 18%),
-        linear-gradient(180deg, var(--bg), var(--bg-2) 54%, var(--bg-3));
-    }
-
-    body::before {
-      content: "";
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      z-index: 0;
-      opacity: 0.75;
-      background:
-        repeating-linear-gradient(
-          90deg,
-          rgba(136, 108, 84, 0.012) 0px,
-          rgba(136, 108, 84, 0.012) 1px,
-          transparent 1px,
-          transparent 3px
-        ),
-        repeating-linear-gradient(
-          180deg,
-          rgba(255,255,255,0.018) 0px,
-          rgba(255,255,255,0.018) 2px,
-          transparent 2px,
-          transparent 4px
-        );
-      mix-blend-mode: multiply;
-    }
-
-    body.locked {
-      overflow: hidden;
-    }
-
-    .app {
-      width: 100%;
-      height: 100vh;
-      position: relative;
-      overflow: hidden;
-      isolation: isolate;
-    }
-
-    .preview-ribbon {
-      position: fixed;
-      top: 14px;
-      left: 50%;
-      transform: translateX(-50%);
-      z-index: 140;
-      padding: 10px 16px;
-      border-radius: 999px;
-      background: rgba(255,255,255,0.9);
-      color: #5c4a3e;
-      font-size: 13px;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-      backdrop-filter: blur(10px);
-    }
-
-    .ambient {
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      z-index: 1;
-      opacity: 0.65;
-    }
-
-    .ambient span {
-      position: absolute;
-      width: 10px;
-      height: 10px;
-      border-radius: 999px;
-      background: rgba(255, 255, 255, 0.7);
-      filter: blur(1px);
-      animation: floatUp linear infinite;
-    }
-
-    .ambient span:nth-child(1) { left: 8%; bottom: -10px; animation-duration: 14s; animation-delay: 0s; transform: scale(0.9); }
-    .ambient span:nth-child(2) { left: 18%; bottom: -20px; animation-duration: 18s; animation-delay: 2s; transform: scale(1.2); }
-    .ambient span:nth-child(3) { left: 28%; bottom: -15px; animation-duration: 16s; animation-delay: 5s; transform: scale(0.8); }
-    .ambient span:nth-child(4) { left: 40%; bottom: -12px; animation-duration: 20s; animation-delay: 1s; transform: scale(1.1); }
-    .ambient span:nth-child(5) { left: 55%; bottom: -18px; animation-duration: 17s; animation-delay: 3s; transform: scale(0.95); }
-    .ambient span:nth-child(6) { left: 68%; bottom: -20px; animation-duration: 19s; animation-delay: 6s; transform: scale(1.25); }
-    .ambient span:nth-child(7) { left: 79%; bottom: -10px; animation-duration: 15s; animation-delay: 4s; transform: scale(0.9); }
-    .ambient span:nth-child(8) { left: 89%; bottom: -14px; animation-duration: 18s; animation-delay: 8s; transform: scale(1.15); }
-
-    @keyframes floatUp {
-      0% {
-        transform: translateY(0) scale(1);
-        opacity: 0;
-      }
-      10% { opacity: 0.9; }
-      80% { opacity: 0.55; }
-      100% {
-        transform: translateY(-110vh) scale(1.8);
-        opacity: 0;
-      }
-    }
-
-    #petalCanvas {
-      position: fixed;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 12;
-      pointer-events: none;
-      opacity: 0;
-      transition: opacity 1s ease;
-    }
-
-    #petalCanvas.active {
-      opacity: 1;
-    }
-
-    .swipe-hint {
-      position: fixed;
-      left: 50%;
-      bottom: 72px;
-      transform: translateX(-50%);
-      z-index: 25;
-      background: rgba(255,255,255,0.88);
-      color: #5b4a40;
-      padding: 10px 14px;
-      border-radius: 999px;
-      font-size: 13px;
-      letter-spacing: 0.03em;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.06);
-      backdrop-filter: blur(10px);
-      opacity: 0.96;
-      pointer-events: none;
-    }
-
-    .back-to-letter {
-      position: fixed;
-      top: 16px;
-      left: 16px;
-      z-index: 120;
-      padding: 10px 14px;
-      border-radius: 999px;
-      border: none;
-      background: rgba(255,255,255,0.85);
-      color: #5a4b41;
-      font-family: Georgia, serif;
-      font-size: 13px;
-      letter-spacing: 0.05em;
-      cursor: pointer;
-      backdrop-filter: blur(10px);
-      box-shadow: 0 10px 25px rgba(0,0,0,0.08);
-      opacity: 0;
-      pointer-events: none;
-      transition: all 0.4s ease;
-    }
-
-    .back-to-letter.show {
-      opacity: 1;
-      pointer-events: auto;
-    }
-
-    .envelope-screen,
-    .typewriter-screen {
-      position: fixed;
-      inset: 0;
-      z-index: 100;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 24px;
-    }
-
-    .envelope-screen {
-      background:
-        radial-gradient(circle at top, rgba(255,255,255,0.42), transparent 30%),
-        linear-gradient(180deg, #f6eddc, #efe2c8);
-    }
-
-    .envelope-wrap {
-      position: relative;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-direction: column;
-      gap: 18px;
-    }
-
-    .envelope-glow {
-      position: absolute;
-      width: min(92vw, 420px);
-      height: min(40vw, 180px);
-      border-radius: 18px;
-      background: radial-gradient(circle, rgba(255,255,255,0.75), rgba(255,255,255,0));
-      filter: blur(30px);
-      transform: scale(1.1);
-      opacity: 0.7;
-      pointer-events: none;
-    }
-
-    .envelope-btn {
-      position: relative;
-      width: min(82vw, 340px);
-      height: min(24vw, 120px);
-      min-height: 84px;
-      border: 1px solid rgba(47, 36, 29, 0.18);
-      border-radius: 10px;
-      background:
-        linear-gradient(180deg, rgba(255,255,255,0.55), rgba(255,255,255,0.1)),
-        linear-gradient(180deg, #f6eedc, #ecd8b7);
-      color: var(--text);
-      font-family: Georgia, serif;
-      font-size: clamp(22px, 4vw, 36px);
-      letter-spacing: 4px;
-      text-transform: uppercase;
-      cursor: pointer;
-      box-shadow:
-        0 20px 60px rgba(113, 83, 54, 0.18),
-        inset 0 1px 0 rgba(255,255,255,0.7);
-      transition: transform 0.35s ease, box-shadow 0.35s ease;
-      overflow: hidden;
-    }
-
-    .envelope-btn::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(120deg, transparent 20%, rgba(255,255,255,0.45) 50%, transparent 80%);
-      transform: translateX(-120%);
-      transition: transform 0.9s ease;
-    }
-
-    .envelope-btn:hover::before {
-      transform: translateX(120%);
-    }
-
-    .envelope-btn:hover {
-      transform: translateY(-4px) scale(1.02);
-      box-shadow:
-        0 28px 80px rgba(113, 83, 54, 0.22),
-        inset 0 1px 0 rgba(255,255,255,0.8);
-    }
-
-    .envelope-hint {
-      font-size: 14px;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: rgba(47, 36, 29, 0.66);
-    }
-
-    .envelope-locked-note {
-      max-width: 520px;
-      text-align: center;
-      line-height: 1.75;
-      color: rgba(47, 36, 29, 0.72);
-      font-size: 17px;
-      padding: 0 10px;
-    }
-
-    .typewriter-screen {
-      background:
-        radial-gradient(circle at top, rgba(255,255,255,0.55), transparent 34%),
-        linear-gradient(180deg, rgba(251,246,238,0.92), rgba(247,239,229,0.94));
-      opacity: 1;
-      transition: opacity 0.8s ease;
-      z-index: 90;
-      cursor: default;
-    }
-
-    .typewriter-screen.reopenable {
-      cursor: pointer;
-    }
-
-    .paper-card {
-      position: relative;
-      width: min(92vw, 820px);
-      min-height: min(74vh, 710px);
-      background:
-        radial-gradient(circle at 20% 12%, rgba(255,255,255,0.52), transparent 18%),
-        radial-gradient(circle at 80% 18%, rgba(255,248,242,0.45), transparent 20%),
-        linear-gradient(180deg, var(--paper), #faf6ef);
-      border-radius: 26px;
-      box-shadow: 0 35px 90px rgba(82, 56, 36, 0.16);
-      padding: clamp(26px, 4vw, 48px);
-      border: 1px solid rgba(120, 95, 70, 0.08);
-      display: flex;
-      align-items: flex-start;
-      justify-content: flex-start;
-      overflow: hidden;
-      clip-path: polygon(
-        1.4% 3.6%, 5.2% 2.6%, 9.2% 4.1%, 13.6% 2.2%, 18.2% 3.9%, 22.8% 2.7%, 28% 4.4%,
-        33.4% 2.4%, 39.2% 4.1%, 45% 2.6%, 51.8% 4.3%, 58.6% 2.5%, 65.2% 3.8%, 71.8% 2.4%,
-        78.4% 4.2%, 84.8% 2.6%, 90.8% 3.7%, 96.8% 2.8%, 98.6% 8.8%, 97.4% 14.6%, 98.7% 21.5%,
-        97.2% 28.1%, 98.8% 34.7%, 97.6% 41.4%, 98.8% 48.2%, 97.4% 55.5%, 98.9% 62.9%, 97.4% 70.4%,
-        98.7% 77.8%, 97.2% 85.6%, 98.4% 92.8%, 94.1% 97.5%, 87.4% 96.1%, 80.6% 97.8%, 73.2% 96.3%,
-        66.1% 98%, 58.8% 96.1%, 51.2% 97.6%, 44.2% 96.4%, 37.1% 97.8%, 29.4% 96.2%, 22.1% 98%,
-        15.3% 96%, 8.8% 97.4%, 3.2% 94%, 1.5% 86.5%, 2.9% 79.2%, 1.2% 72.5%, 2.8% 65.5%, 1.4% 58.1%,
-        2.9% 51.2%, 1.4% 44.1%, 2.8% 36.6%, 1.2% 29.2%, 2.8% 21.4%, 1.1% 13.2%
-      );
-    }
-
-    .paper-card::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background:
-        repeating-linear-gradient(
-          to bottom,
-          transparent 0,
-          transparent 33px,
-          var(--paper-line) 34px
-        );
-      opacity: 0.46;
-      pointer-events: none;
-    }
-
-    .paper-card::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      opacity: 0.18;
-      background-image:
-        radial-gradient(circle at 18% 25%, rgba(125, 94, 70, 0.13) 0.6px, transparent 1.4px),
-        radial-gradient(circle at 72% 63%, rgba(125, 94, 70, 0.10) 0.7px, transparent 1.5px),
-        radial-gradient(circle at 45% 82%, rgba(125, 94, 70, 0.08) 0.8px, transparent 1.7px);
-      background-size: 110px 110px, 130px 130px, 160px 160px;
-      mix-blend-mode: multiply;
-      pointer-events: none;
-    }
-
-    .paper-margin {
-      position: absolute;
-      top: 0;
-      left: 46px;
-      width: 2px;
-      height: 100%;
-      background: rgba(204, 109, 109, 0.13);
-      pointer-events: none;
-      z-index: 1;
-    }
-
-    .paper-inner {
-      position: relative;
-      z-index: 2;
-      width: 100%;
-      padding-left: clamp(12px, 2vw, 20px);
-    }
-
-    .paper-title {
-      margin: 0 0 18px;
-      font-size: 13px;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-      color: rgba(86, 67, 56, 0.58);
-    }
-
-    .paper-text {
-      white-space: pre-wrap;
-      line-height: 1.8;
-      font-size: clamp(18px, 2.15vw, 22px);
-      color: #3b3028;
-      width: 100%;
-      min-height: 280px;
-      font-family: "Courier New", Courier, monospace;
-      letter-spacing: 0.01em;
-    }
-
-    .paper-footer {
-      margin-top: 20px;
-      font-size: 13px;
-      color: rgba(86, 67, 56, 0.55);
-      letter-spacing: 0.04em;
-    }
-
-    .letter-return-note {
-      margin-top: 14px;
-      font-size: 12px;
-      color: rgba(86, 67, 56, 0.6);
-      letter-spacing: 0.03em;
-    }
-
-    .caret {
-      display: inline-block;
-      width: 10px;
-      margin-left: 2px;
-      animation: blink 1s step-end infinite;
-    }
-
-    @keyframes blink {
-      0%, 50% { opacity: 1; }
-      50.01%, 100% { opacity: 0; }
-    }
-
-    .journey {
-      position: relative;
-      z-index: 2;
-      width: 100%;
-      height: 100vh;
-      transform: translate3d(0,0,0);
-      transition: transform 0.78s cubic-bezier(0.22, 1, 0.36, 1);
-      will-change: transform;
-    }
-
-    .section {
-      width: 100%;
-      height: 100vh;
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 24px;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .section::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(circle at center, rgba(255,255,255,0.24), transparent 50%);
-      opacity: 0.7;
-      pointer-events: none;
-    }
-
-    .section-accent {
-      position: absolute;
-      width: min(52vw, 420px);
-      height: min(52vw, 420px);
-      border-radius: 999px;
-      filter: blur(40px);
-      opacity: 0.24;
-      pointer-events: none;
-    }
-
-    .accent-left { left: -8%; top: 12%; }
-    .accent-right { right: -8%; bottom: 8%; }
-
-    .intro-text {
-      position: relative;
-      z-index: 2;
-      text-align: center;
-      font-size: clamp(34px, 7vw, 68px);
-      line-height: 1.14;
-      padding: 18px 20px;
-      max-width: 960px;
-      border-radius: 28px;
-      background: rgba(255,255,255,0.26);
-      backdrop-filter: blur(10px);
-      box-shadow: 0 20px 60px rgba(255,255,255,0.16);
-      border: 1px solid rgba(255,255,255,0.34);
-    }
-
-    .intro-sub {
-      display: block;
-      margin-top: 14px;
-      font-size: clamp(15px, 2vw, 20px);
-      line-height: 1.6;
-      color: rgba(47,36,29,0.62);
-    }
-
-    .fade-up {
-      opacity: 0;
-      transform: translateY(24px);
-      animation: fadeUpIn 1.2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-    }
-
-    @keyframes fadeUpIn {
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    .card {
-      position: relative;
-      z-index: 2;
-      width: min(92vw, 760px);
-      background:
-        linear-gradient(180deg, rgba(255,255,255,1), rgba(255,251,248,1));
-      border: 1px solid var(--glass-stroke);
-      border-radius: 30px;
-      box-shadow:
-        0 30px 90px rgba(112, 79, 57, 0.12),
-        inset 0 1px 0 rgba(255,255,255,0.55);
-      backdrop-filter: blur(14px) saturate(1.04);
-      -webkit-backdrop-filter: blur(14px) saturate(1.04);
-      padding: 28px;
-      overflow: hidden;
-    }
-
-    .card::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background:
-        radial-gradient(circle at top right, rgba(255,255,255,0.62), transparent 28%),
-        linear-gradient(180deg, rgba(255,255,255,0.08), transparent 45%, rgba(255,255,255,0.04));
-      pointer-events: none;
-    }
-
-    .card.dark {
-      background:
-        radial-gradient(circle at top right, rgba(255, 209, 102, 0.08), transparent 22%),
-        linear-gradient(180deg, rgba(26,26,26,0.84), rgba(14,14,14,0.92));
-      color: #f7efe6;
-      border: 1px solid rgba(255,255,255,0.1);
-      box-shadow: 0 30px 90px rgba(0,0,0,0.35);
-    }
-
-    .card-header {
-      position: relative;
-      z-index: 2;
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 12px;
-      margin-bottom: 18px;
-    }
-
-    .card-title {
-      margin: 0;
-      font-size: clamp(28px, 4vw, 40px);
-      color: #30241d;
-      line-height: 1.15;
-    }
-
-    .card.dark .card-title {
-      color: #fff5eb;
-    }
-
-    .card-chip {
-      flex-shrink: 0;
-      padding: 8px 12px;
-      border-radius: 999px;
-      font-size: 12px;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      background: rgba(255,255,255,0.28);
-      color: #8a6940;
-      border: 1px solid rgba(255,255,255,0.36);
-      backdrop-filter: blur(10px);
-    }
-
-    .card.dark .card-chip {
-      color: #f0d1a1;
-      background: rgba(255,255,255,0.08);
-      border-color: rgba(255,255,255,0.08);
-    }
-
-    .card-caption {
-      position: relative;
-      z-index: 2;
-      margin: 0 0 20px;
-      font-size: clamp(16px, 2vw, 20px);
-      line-height: 1.7;
-      color: #6c5b50;
-    }
-
-    .card.dark .card-caption {
-      color: rgba(247, 239, 230, 0.78);
-    }
-
-    .media-frame {
-      position: relative;
-      z-index: 2;
-      width: 100%;
-      height: clamp(300px, 48vh, 400px);
-      border-radius: 24px;
-      overflow: hidden;
-      background:
-        radial-gradient(circle at top, rgba(255,255,255,0.55), transparent 35%),
-        linear-gradient(180deg, rgba(250,243,238,0.85), rgba(242,229,217,0.75));
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border: 1px solid rgba(255,255,255,0.48);
-      box-shadow:
-        inset 0 1px 0 rgba(255,255,255,0.78),
-        0 12px 32px rgba(93, 69, 49, 0.08);
-      backdrop-filter: blur(8px);
-    }
-
-    .card.dark .media-frame {
-      background:
-        radial-gradient(circle at top, rgba(255,255,255,0.06), transparent 35%),
-        linear-gradient(180deg, #171717, #0b0b0b);
-      border-color: rgba(255,255,255,0.07);
-    }
-
-    .media-frame::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(180deg, rgba(255,255,255,0.12), transparent 22%, transparent 78%, rgba(0,0,0,0.03));
-      pointer-events: none;
-    }
-
-    .media-frame img,
-    .media-frame video {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-      display: block;
-      position: relative;
-      z-index: 1;
-    }
-
-    .media-frame video {
-      background: #000;
-    }
-
-    .cinema-stack {
-      display: grid;
-      gap: 22px;
-    }
-
-    .cinema-block-title {
-      margin: 0 0 10px;
-      color: #fff5eb;
-      font-size: clamp(18px, 2.5vw, 24px);
-      line-height: 1.3;
-      letter-spacing: 0.02em;
-    }
-
-    .cinema-frame {
-      position: relative;
-      width: 100%;
-      padding-top: 56.25%;
-      border-radius: 24px;
-      overflow: hidden;
-      background:
-        linear-gradient(180deg, #080808, #000);
-      border: 1px solid rgba(255,255,255,0.06);
-      box-shadow:
-        inset 0 0 0 1px rgba(255,255,255,0.03),
-        0 16px 50px rgba(0,0,0,0.26);
-    }
-
-    .cinema-frame::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background:
-        repeating-linear-gradient(
-          to bottom,
-          rgba(255,255,255,0.025) 0,
-          rgba(255,255,255,0.025) 2px,
-          transparent 2px,
-          transparent 5px
-        );
-      z-index: 1;
-      pointer-events: none;
-    }
-
-    .cinema-frame iframe {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      border: 0;
-      z-index: 0;
-    }
-
-    .final-card {
-      text-align: center;
-      padding: 46px 28px;
-    }
-
-    .final-heart {
-      font-size: clamp(28px, 5vw, 44px);
-      margin-bottom: 12px;
-      animation: heartbeat 2.2s ease-in-out infinite;
-      transform-origin: center;
-      color: var(--heart);
-    }
-
-    @keyframes heartbeat {
-      0%, 100% { transform: scale(1); }
-      8% { transform: scale(1.08); }
-      16% { transform: scale(1); }
-      24% { transform: scale(1.12); }
-      32% { transform: scale(1); }
-    }
-
-    .final-main {
-      font-size: clamp(30px, 4.4vw, 52px);
-      line-height: 1.2;
-      color: #422d33;
-    }
-
-    .final-sub {
-      margin: 18px 0 0;
-      color: #7a5b64;
-      font-size: clamp(17px, 2.1vw, 22px);
-      line-height: 1.7;
-    }
-
-    .final-note {
-      margin-top: 16px;
-      font-size: 14px;
-      line-height: 1.7;
-      color: rgba(66,45,51,0.55);
-      letter-spacing: 0.03em;
-    }
-
-    .progress-rail {
-      position: fixed;
-      right: 16px;
-      top: 50%;
-      transform: translateY(-50%);
-      z-index: 20;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      padding: 10px;
-      border-radius: 999px;
-      background: rgba(255,255,255,0.55);
-      backdrop-filter: blur(12px);
-      box-shadow: 0 12px 32px rgba(0,0,0,0.06);
-    }
-
-    .progress-dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 999px;
-      background: rgba(120, 99, 84, 0.22);
-      transition: transform 0.35s ease, background 0.35s ease, box-shadow 0.35s ease;
-    }
-
-    .progress-dot.active {
-      background: var(--heart);
-      transform: scale(1.5);
-      box-shadow: 0 0 0 6px rgba(188,77,99,0.12);
-    }
-
-    .progress-dot.locked {
-      background: rgba(120, 99, 84, 0.12);
-      box-shadow: none;
-      transform: scale(1);
-    }
-
-    .phase-tag {
-      position: fixed;
-      left: 18px;
-      bottom: 18px;
-      z-index: 20;
-      background: rgba(255,255,255,0.88);
-      color: #5a4b41;
-      padding: 10px 14px;
-      border-radius: 999px;
-      font-size: 13px;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.06);
-      backdrop-filter: blur(10px);
-    }
-
-    .lock-badge {
-      position: fixed;
-      right: 18px;
-      bottom: 18px;
-      z-index: 80;
-      background: rgba(255, 255, 255, 0.92);
-      color: #5a4b41;
-      padding: 10px 14px;
-      border-radius: 999px;
-      font-size: 13px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.2s ease;
-    }
-
-    .lock-badge.show {
-      opacity: 1;
-    }
-
-    .video-note {
-      margin-top: 12px;
-      font-size: 13px;
-      line-height: 1.65;
-      color: #8a7467;
-      text-align: center;
-    }
-
-    .open-fade {
-      animation: fadeOutUp 0.85s ease forwards;
-    }
-
-    @keyframes fadeOutUp {
-      0% { opacity: 1; transform: scale(1) translateY(0); }
-      100% { opacity: 0; transform: scale(0.96) translateY(-12px); }
-    }
-
-    .section-enter {
-      animation: sectionBloom 0.9s ease both;
-    }
-
-    @keyframes sectionBloom {
-      0% {
-        opacity: 0.45;
-        transform: scale(0.988);
-      }
-      100% {
-        opacity: 1;
-        transform: scale(1);
-      }
-    }
-
-    .locked-phase-card {
-      position: relative;
-      z-index: 2;
-      width: min(92vw, 760px);
-      background:
-        linear-gradient(180deg, rgba(255,255,255,0.88), rgba(255,249,244,0.96));
-      border: 1px solid rgba(255,255,255,0.5);
-      border-radius: 30px;
-      box-shadow: 0 30px 90px rgba(112, 79, 57, 0.12);
-      padding: 28px;
-      overflow: hidden;
-      text-align: center;
-      backdrop-filter: blur(14px);
-    }
-
-    .locked-phase-card::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background:
-        radial-gradient(circle at top right, rgba(255,255,255,0.8), transparent 30%);
-      pointer-events: none;
-    }
-
-    .locked-badge {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      padding: 8px 14px;
-      border-radius: 999px;
-      background: rgba(188, 77, 99, 0.08);
-      color: var(--heart);
-      font-size: 12px;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      margin-bottom: 18px;
-      border: 1px solid rgba(188, 77, 99, 0.12);
-    }
-
-    .locked-title {
-      position: relative;
-      z-index: 2;
-      margin: 0;
-      font-size: clamp(30px, 4.5vw, 44px);
-      line-height: 1.15;
-      color: #402f25;
-    }
-
-    .locked-message {
-      position: relative;
-      z-index: 2;
-      margin: 16px auto 0;
-      max-width: 620px;
-      font-size: clamp(17px, 2vw, 21px);
-      line-height: 1.8;
-      color: #6f5d52;
-    }
-
-    .locked-time {
-      position: relative;
-      z-index: 2;
-      margin-top: 20px;
-      font-size: clamp(16px, 2vw, 20px);
-      color: #8a6940;
-      letter-spacing: 0.03em;
-    }
-
-    .countdown {
-      position: relative;
-      z-index: 2;
-      display: inline-flex;
-      gap: 12px;
-      flex-wrap: wrap;
-      justify-content: center;
-      margin-top: 20px;
-    }
-
-    .countdown-item {
-      min-width: 86px;
-      padding: 14px 14px 12px;
-      border-radius: 20px;
-      background: rgba(255,255,255,0.72);
-      box-shadow: inset 0 1px 0 rgba(255,255,255,0.9);
-      border: 1px solid rgba(145,118,97,0.08);
-    }
-
-    .countdown-num {
-      display: block;
-      font-size: clamp(24px, 4vw, 34px);
-      line-height: 1;
-      color: #3d2e25;
-    }
-
-    .countdown-label {
-      display: block;
-      margin-top: 6px;
-      font-size: 12px;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: #8d786b;
-    }
-
-    .locked-subtle {
-      margin-top: 18px;
-      font-size: 13px;
-      line-height: 1.7;
-      color: rgba(111, 93, 82, 0.72);
-    }
-
-    @media (max-width: 900px) {
-      .progress-rail {
-        right: 10px;
-        gap: 8px;
-      }
-
-      .phase-tag {
-        left: 12px;
-        bottom: 12px;
-      }
-    }
-
-    @media (max-width: 640px) {
-      .section {
-        padding: 18px;
-      }
-
-      .card,
-      .paper-card,
-      .locked-phase-card {
-        padding: 20px;
-      }
-
-      .media-frame {
-        height: clamp(300px, 42vh, 360px);
-      }
-
-      .progress-rail {
-        right: 8px;
-        padding: 8px;
-      }
-
-      .progress-dot {
-        width: 8px;
-        height: 8px;
-      }
-
-      .paper-margin {
-        left: 28px;
-      }
-
-      .paper-inner {
-        padding-left: 0;
-      }
-
-      .intro-text {
-        padding: 18px 16px;
-      }
-
-      .countdown-item {
-        min-width: 72px;
-      }
-
-      .preview-ribbon {
-        width: calc(100% - 24px);
-        text-align: center;
-        font-size: 12px;
-      }
-
-      .swipe-hint {
-        bottom: 64px;
-        font-size: 12px;
-        max-width: calc(100% - 30px);
-        text-align: center;
-      }
-
-      .back-to-letter {
-        top: 12px;
-        left: 12px;
-        font-size: 12px;
-        padding: 9px 12px;
-      }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      .ambient span,
-      .caret,
-      .final-heart {
-        animation: none !important;
-      }
-
-      .journey,
-      .envelope-btn,
-      .lock-badge,
-      .progress-dot,
-      #petalCanvas {
-        transition: none !important;
-      }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>For Jhansy ❤️</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital@1&display=swap" rel="stylesheet">
+
+<style>
+body{
+  margin:0;
+  font-family: Georgia, serif;
+  background:#fdfbf7;
+  overflow:hidden;
+}
+
+/* Sections */
+.section{
+  height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+}
+
+/* Paper Card */
+.card{
+  max-width:800px;
+  padding:30px;
+  background:#fdfbf7;
+  border-radius:20px;
+  box-shadow:0 25px 60px rgba(0,0,0,0.1);
+  clip-path: polygon(2% 5%, 98% 3%, 97% 97%, 3% 98%);
+}
+
+h2{
+  font-family:'Playfair Display', serif;
+  font-style:italic;
+}
+
+/* Locked */
+.locked{
+  text-align:center;
+  font-size:20px;
+}
+
+/* Envelope */
+#envelope{
+  position:fixed;
+  inset:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:#fdfbf7;
+  z-index:10;
+}
+
+button{
+  padding:20px 40px;
+  font-size:20px;
+  cursor:pointer;
+}
+
+/* Canvas petals */
+canvas{
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  transition:opacity 1s;
+}
+</style>
 </head>
-<body class="locked">
-  <div class="app">
-    <canvas id="petalCanvas"></canvas>
 
-    <div class="ambient" aria-hidden="true">
-      <span></span><span></span><span></span><span></span>
-      <span></span><span></span><span></span><span></span>
-    </div>
+<body>
 
-    <div class="preview-ribbon" id="previewRibbon" style="display:none;">
-      Preview Mode: all phases unlocked
-    </div>
+<canvas id="petals"></canvas>
 
-    <div class="envelope-screen" id="envelopeScreen">
-      <div class="envelope-wrap">
-        <div class="envelope-glow"></div>
-        <button class="envelope-btn" id="openBtn">JHANSY</button>
-        <div class="envelope-hint" id="envelopeHint">tap to open your letter</div>
-        <div class="envelope-locked-note" id="envelopeLockedNote" style="display:none;"></div>
-      </div>
-    </div>
+<div id="envelope">
+  <button onclick="openLetter()">Open ❤️</button>
+</div>
 
-    <div class="typewriter-screen" id="typewriterScreen" style="display: none;">
-      <div class="paper-card">
-        <div class="paper-margin"></div>
-        <div class="paper-inner">
-          <div class="paper-title">A little something, from your idiot 💌</div>
-          <div class="paper-text" id="paperText"></div>
-          <div class="paper-footer">Read slowly... I made this for you.</div>
-          <div class="letter-return-note" id="letterReturnNote" style="display:none;">Tap anywhere to return to the journey</div>
-        </div>
-      </div>
-    </div>
+<div id="content" style="display:none">
 
-    <div class="progress-rail" id="progressRail" style="display: none;"></div>
-    <div class="phase-tag" id="phaseTag" style="display: none;">Phase 1 / 11</div>
-    <div class="swipe-hint" id="swipeHint" style="display:none;">Swipe up for next • Swipe down to go back</div>
+<div class="section" id="phase1"></div>
+<div class="section" id="phase2"></div>
+<div class="section" id="phase3"></div>
+<div class="section" id="phase4"></div>
+<div class="section" id="phase5"></div>
 
-    <button id="backToLetterBtn" class="back-to-letter">← Letter</button>
+</div>
 
-    <div class="journey" id="journey" style="display: none;">
-      <section class="section" data-section-index="0">
-        <div class="section-accent accent-left" style="background: var(--rose-soft);"></div>
-        <div class="section-accent accent-right" style="background: #f7dce1;"></div>
-        <div class="intro-text fade-up" style="color: var(--rose);">
-          Flowers ivvalli kada...
-          <span class="intro-sub">So I brought them to you in the only way I can right now.</span>
-        </div>
-      </section>
+<script>
 
-      <section class="section" data-section-index="1">
-        <div class="section-accent accent-left" style="background: #f6dbe1;"></div>
-        <div class="card">
-          <div class="card-header">
-            <h2 class="card-title">Morning Bloom 🌸</h2>
-            <div class="card-chip">flowers</div>
-          </div>
-          <p class="card-caption">The first thing I wanted to give you... because some days deserve softness first.</p>
-          <div class="media-frame">
-            <img src="flowers1.jpg" alt="Morning Bloom" />
-          </div>
-        </div>
-      </section>
+/* ================= TIME (CST SAFE) ================= */
+function getCST(){
+  return new Date(new Date().toLocaleString("en-US",{timeZone:"America/Chicago"}));
+}
 
-      <section class="section" data-section-index="2">
-        <div class="section-accent accent-left" style="background: var(--matcha-soft);"></div>
-        <div class="section-accent accent-right" style="background: #edf4e9;"></div>
-        <div class="intro-text" style="color: var(--matcha);">
-          Starbucks for the first time... 🌿
-          <span class="intro-sub">Nuvvu lekunda try chesina, but still somehow felt like telling you every reaction.</span>
-        </div>
-      </section>
+function unlocked(h,m){
+  const now=getCST();
+  return now.getHours()>h || (now.getHours()==h && now.getMinutes()>=m);
+}
 
-      <section class="section" data-section-index="3">
-        <div class="section-accent accent-right" style="background: #e6f0df;"></div>
-        <div class="card">
-          <div class="card-header">
-            <h2 class="card-title">The Matcha Review 🍵</h2>
-            <div class="card-chip">coffee date</div>
-          </div>
-          <p class="card-caption">I finally tried it! It’s definitely... green. 😂</p>
-          <div class="media-frame">
-            <img src="motcha.png" alt="The Matcha Review" />
-          </div>
-        </div>
-      </section>
+/* ================= SCROLL SHIELD ================= */
+let lock=false;
+window.addEventListener("wheel",(e)=>{
+  if(lock){e.preventDefault();return;}
+  lock=true;
+  setTimeout(()=>lock=false,1500);
+},{passive:false});
 
-      <section class="section" data-section-index="4">
-        <div class="section-accent accent-left" style="background: #dfe9d8;"></div>
-        <div class="card">
-          <div class="card-header">
-            <h2 class="card-title">First Sip Reactions...</h2>
-            <div class="card-chip">live memory</div>
-          </div>
-          <p class="card-caption">Because just sending a photo is not enough... you need the full drama too.</p>
-          <div class="media-frame">
-            <video class="phase-video" muted loop playsinline preload="auto" data-phase="4">
-              <source src="starbucks.mp4" type="video/mp4" />
-            </video>
-          </div>
-        </div>
-      </section>
+/* ================= ENVELOPE ================= */
+function openLetter(){
+  document.getElementById("envelope").style.display="none";
+  document.getElementById("content").style.display="block";
+  render();
+}
 
-      <section class="section" data-section-index="5">
-        <div class="section-accent accent-left" style="background: var(--ice-soft);"></div>
-        <div class="section-accent accent-right" style="background: #eef7fd;"></div>
-        <div class="intro-text" style="color: var(--ice);">
-          And now for the best part... 🍦
-          <span class="intro-sub">Because healing may not be instant... but ice cream definitely helps.</span>
-        </div>
-      </section>
+/* ================= RENDER ================= */
+function render(){
 
-      <section class="section" data-section-index="6">
-        <div class="section-accent accent-right" style="background: #edf7fb;"></div>
-        <div class="card">
-          <div class="card-header">
-            <h2 class="card-title">The Perfect Treat 🍨</h2>
-            <div class="card-chip">sweet fix</div>
-          </div>
-          <p class="card-caption">This is the part where I would usually just hand it to you and wait for that first happy look.</p>
-          <div class="media-frame">
-            <img src="icecream_photo.jpg" alt="The Perfect Treat" />
-          </div>
-        </div>
-      </section>
+// PHASE 1
+document.getElementById("phase1").innerHTML =
+unlocked(9,0)?`
+<div class="card">
+<h2>Morning 🌸</h2>
 
-      <section class="section" data-section-index="7">
-        <div class="section-accent accent-left" style="background: #dfeef7;"></div>
-        <div class="card">
-          <div class="card-header">
-            <h2 class="card-title">Sweet Happiness...</h2>
-            <div class="card-chip">living memory</div>
-          </div>
-          <p class="card-caption">Okay, now the full vibe. Not just the treat... the feeling.</p>
-          <div class="media-frame">
-            <video class="phase-video" muted loop playsinline preload="auto" data-phase="7">
-              <source src="icecream.mov" type="video/quicktime" />
-            </video>
-          </div>
-          <div class="video-note">
-            If this .mov does not play on a phone browser, convert the same clip to MP4 and replace only the source filename.
-          </div>
-        </div>
-      </section>
+<p>
+Hi Jhansy...
 
-      <section class="section" data-section-index="8">
-        <div class="section-accent accent-left" style="background: var(--popcorn-soft);"></div>
-        <div class="section-accent accent-right" style="background: #f7ecdf;"></div>
-        <div class="intro-text" style="color: var(--popcorn);">
-          Popcorn ready? 🍿
-          <span class="intro-sub">Now we stop being cute for one second and become proper cinema people.</span>
-        </div>
-      </section>
+Chustu chustune 25 days ayipoyindhi kada...
 
-      <section class="section" data-section-index="9">
-        <div class="card dark">
-          <div class="card-header">
-            <h2 class="card-title">Movie Night Console 🎬</h2>
-            <div class="card-chip">our theatre</div>
-          </div>
-          <p class="card-caption">A little theatre made just for you. Start with Part 1, then continue with Part 2. Full cosy movie-night mode. ❤️</p>
+But nenu idiot ni kada? Mental fellow ni!
 
-          <div class="cinema-stack">
-            <div>
-              <h3 class="cinema-block-title">Part 1</h3>
-              <div class="cinema-frame">
-                <iframe
-                  id="youtubeFrame1"
-                  title="Movie Night Part 1"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                  allowfullscreen
-                ></iframe>
-              </div>
-            </div>
+Jhansy... iroju nuvvu prapanchanni chudalekapothe enti?
 
-            <div>
-              <h3 class="cinema-block-title">Part 2</h3>
-              <div class="cinema-frame">
-                <iframe
-                  id="youtubeFrame2"
-                  title="Movie Night Part 2"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                  allowfullscreen
-                ></iframe>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+Nene prapanchanni teeskuni vasta...
+</p>
 
-      <section class="section" data-section-index="10">
-        <div class="section-accent accent-left" style="background: #f4d7df;"></div>
-        <div class="section-accent accent-right" style="background: #f7e6ea;"></div>
-        <div class="card final-card">
-          <div class="final-heart">❤️</div>
-          <div class="final-main">Roju anta ilane navvukunta undhu, Jaanu.</div>
-          <p class="final-sub">Happy Menstrual Day, my mental fellow! 😂</p>
-          <div class="final-note">Until I can be there in person again... let this hold my place for a little while.</div>
-        </div>
-      </section>
-    </div>
+<p><b>Yeah Jhansy, here is the first surprise for you... your favorite flowers! 🌸</b></p>
 
-    <div class="lock-badge" id="lockBadge">locked for 1.5s</div>
-  </div>
+<img src="flowers1.jpg" width="100%">
 
-  <script>
-    // true = test mode, false = CST timed unlocks
-    const PREVIEW_MODE = true;
+<p>
+Yeah neku esari send cheyalekapothuna... but idiot ni ela silent ga kurchunta chepu?
 
-    const VIDEO_ID_1 = "3FO__vGFYTs";
-    const VIDEO_ID_2 = "NbXxcu5ZMjA";
+So anduke 4 days mundhu nunchi e plan start chesa.
 
-    const TYPEWRITER_TEXT = `Hi Jaanu...
+So here we go, teesko nee flowers... bagunnaya? 😁
 
-Chustu chustune 25 days ayipoyindhi kada. Last time when you got this, I was with you. Before that, I used to send the flowers, coffee, and ice cream... but this time I can't do any of those.
+I know physical ga teeskolekapothunav, kani I hope you can feel the soul of these flowers.
 
-But nenu idiot ni kada? Mental fellow ni! Agutanu anukuntunava? Never.
+So Jhansy, Don't take too much stress, okay?
 
-So... Jhansy, Happy Menstrual Day! Idi kuda "Happy" antunna ani thittoku... ledu le, already thittukune unnattu unnav, ninnu chuste telustundhi le. But it's okay.
+Manchiga oka smile ichi nee work continue chesko ok na...
 
-So Jhansy, here we go. I made something for you to make your spirit high when your body is down. Oka dialogue cheppi finish chesthe super untundhi kada...
+Nuvvu smile chestene ee flower ki value.
 
-Jaanu, nuvvu iroju prapanchanni chudalekapothe enti? Aa prapanchanni nee daggariki teeskuni vasta! 😂😂😂😍
+Good Morning, my psycho! 😊
+</p>
+</div>
+`:
+lockedCard("Wait until 9:00 AM 🌸");
 
-Hahaha... baga navvukunnaava? So, roju antha ilane navvukunta undu.`;
+// PHASE 2
+document.getElementById("phase2").innerHTML =
+unlocked(14,30)?`
+<div class="card">
+<h2>Matcha Break ☕</h2>
 
-    const PHASE_SCHEDULES = [
-      {
-        key: "opening",
-        unlockHour: 9,
-        unlockMinute: 0,
-        sections: [0, 1],
-        lockedMessage: "Patience, Jaanu... Your first surprise arrives at 9:00 AM. ❤️",
-        revealLabel: "9:00 AM CST"
-      },
-      {
-        key: "matcha",
-        unlockHour: 14,
-        unlockMinute: 30,
-        sections: [2, 3, 4],
-        lockedMessage: "Hope the flowers made you smile! Check back at 2:30 PM for a drink. 🌿",
-        revealLabel: "2:30 PM CST"
-      },
-      {
-        key: "icecream",
-        unlockHour: 16,
-        unlockMinute: 30,
-        sections: [5, 6, 7],
-        lockedMessage: "Something sweet is coming at 4:30 PM... 🍦",
-        revealLabel: "4:30 PM CST"
-      },
-      {
-        key: "movie",
-        unlockHour: 19,
-        unlockMinute: 0,
-        sections: [8, 9],
-        lockedMessage: "Popcorn time? Not quite yet. See you at 7:00 PM! 🍿",
-        revealLabel: "7:00 PM CST"
-      },
-      {
-        key: "final",
-        unlockHour: 22,
-        unlockMinute: 0,
-        sections: [10],
-        lockedMessage: "One last message for you at 10:00 PM. Sleep well until then. ❤️",
-        revealLabel: "10:00 PM CST"
-      }
-    ];
+<p>
+Haha, welcome back Jhansy!
 
-    const STORAGE_KEYS = {
-      envelopeOpened: "jhansy_experience_envelope_opened_v10"
-    };
+Morning nunchi okate calls, meetings valla irritating ga undhi kada...
 
-    const envelopeScreen = document.getElementById("envelopeScreen");
-    const typewriterScreen = document.getElementById("typewriterScreen");
-    const journey = document.getElementById("journey");
-    const openBtn = document.getElementById("openBtn");
-    const paperText = document.getElementById("paperText");
-    const lockBadge = document.getElementById("lockBadge");
-    const youtubeFrame1 = document.getElementById("youtubeFrame1");
-    const youtubeFrame2 = document.getElementById("youtubeFrame2");
-    const videos = Array.from(document.querySelectorAll(".phase-video"));
-    const sections = Array.from(document.querySelectorAll(".section"));
-    const progressRail = document.getElementById("progressRail");
-    const phaseTag = document.getElementById("phaseTag");
-    const envelopeHint = document.getElementById("envelopeHint");
-    const envelopeLockedNote = document.getElementById("envelopeLockedNote");
-    const previewRibbon = document.getElementById("previewRibbon");
-    const petalCanvas = document.getElementById("petalCanvas");
-    const swipeHint = document.getElementById("swipeHint");
-    const backToLetterBtn = document.getElementById("backToLetterBtn");
-    const letterReturnNote = document.getElementById("letterReturnNote");
+Ra, velli Ice Matcha Latte thagudaam... let's drink together!
 
-    let currentSection = 0;
-    let typingDone = false;
-    let navigationLocked = false;
-    let typeIndex = 0;
-    let typingTimer = null;
-    let sectionAnimationTimer = null;
-    let countdownInterval = null;
-    let envelopeAvailable = false;
-    let typewriterStarted = false;
-    let showingLetterAgain = false;
+😂😂😂😂 Ledu le raledu tension padaku!
 
-    let wheelCooldown = false;
+Scroll cheyi! Nenu first time Starbucks try chesa iroju...
+</p>
 
-    const touchState = {
-      startX: 0,
-      startY: 0,
-      lastX: 0,
-      lastY: 0,
-      startTime: 0,
-      axis: null,
-      active: false
-    };
+<img src="motcha.png" width="100%">
+<video src="starbucks.mp4" controls width="100%"></video>
 
-    const petalCtx = petalCanvas.getContext("2d");
-    let petalAnimationId = null;
-    let petals = [];
-    let petalsEnabled = false;
-    let petalDensityMultiplier = 0;
-    let petalOpacityTarget = 0;
-    let petalGlobalOpacity = 0;
-    let petalLastTime = 0;
+<p>Coffee (matcha) marchipoku! 😉</p>
 
-    function resizePetalCanvas() {
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
-      petalCanvas.width = Math.floor(window.innerWidth * dpr);
-      petalCanvas.height = Math.floor(window.innerHeight * dpr);
-      petalCanvas.style.width = window.innerWidth + "px";
-      petalCanvas.style.height = window.innerHeight + "px";
-      petalCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+</div>
+`:
+lockedCard("Morning nunchi okate calls... See you at 2:30 PM ☕");
+
+// PHASE 3
+document.getElementById("phase3").innerHTML =
+unlocked(16,30)?`
+<div class="card">
+<h2>Ice Cream 🍦</h2>
+
+<p>
+Hi Jhansy, welcome back again!
+
+Probably neeku work finish ayye time avthundhi...
+
+Anduke now, it's time for ICE CREAM! 🍦
+
+Entha stress lo unna, ice cream lifts mood.
+
+Double Chocolate try chesthunna first time!
+
+Ignore expressions ok na 😂😂😂
+</p>
+
+<img src="icecream_photo.jpg" width="100%">
+<video src="icecream.mov" controls width="100%"></video>
+
+</div>
+`:
+lockedCard("Matcha energy ayipoyinda? 😂 4:30 PM 🍦");
+
+// PHASE 4
+document.getElementById("phase4").innerHTML =
+unlocked(19,0)?`
+<div class="card">
+<h2>Movie Night 🎬</h2>
+
+<p>
+So finally, relax mode ON! ✨
+
+Ela ayyindhi work?
+
+Dinner chesthu movie chuddam...
+
+Nee favorite hero 🎥 ❤️
+</p>
+
+<iframe width="100%" height="400"
+src="https://www.youtube.com/embed/3FO__vGFYTs"
+allowfullscreen></iframe>
+
+</div>
+`:
+lockedCard("Popcorn ready? 7:00 PM 🍿");
+
+// PHASE 5
+document.getElementById("phase5").innerHTML =
+unlocked(22,0)?`
+<div class="card">
+<h2>Good Night 🌙</h2>
+
+<p>
+Day is done, Jhansy.
+
+Hope today felt lighter...
+
+Morning dialogue gurtunda?
+
+"Nene prapanchanni teeskuni vasta"
+
+Nuvvu andariki world ivvutav...
+
+Sleep well, psycho! 🌙
+</p>
+
+</div>
+`:
+lockedCard("10:00 PM 🌙");
+
+}
+
+function lockedCard(msg){
+  return `<div class="card locked">${msg}</div>`;
+}
+
+/* ================= PETALS ================= */
+const canvas=document.getElementById("petals");
+const ctx=canvas.getContext("2d");
+
+canvas.width=innerWidth;
+canvas.height=innerHeight;
+
+let petals=[];
+for(let i=0;i<40;i++){
+  petals.push({
+    x:Math.random()*canvas.width,
+    y:Math.random()*canvas.height,
+    size:2+Math.random()*3,
+    speed:1+Math.random()*2
+  });
+}
+
+function draw(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+
+  petals.forEach(p=>{
+    ctx.beginPath();
+    ctx.ellipse(p.x,p.y,p.size,p.size*0.6,Math.PI/4,0,Math.PI*2);
+    ctx.fillStyle="#f7c6d0";
+    ctx.fill();
+
+    p.y+=p.speed;
+    if(p.y>canvas.height){
+      p.y=0;
+      p.x=Math.random()*canvas.width;
     }
+  });
 
-    function createPetal(initial = false) {
-      return {
-        x: Math.random() * window.innerWidth,
-        y: initial ? Math.random() * window.innerHeight : -40 - Math.random() * 120,
-        size: 8 + Math.random() * 14,
-        speedY: 18 + Math.random() * 26,
-        swayAmp: 10 + Math.random() * 30,
-        swayFreq: 0.6 + Math.random() * 1.4,
-        rot: Math.random() * Math.PI * 2,
-        rotSpeed: (-1 + Math.random() * 2) * 1.2,
-        tiltSpeed: 0.5 + Math.random() * 1.4,
-        opacity: 0.35 + Math.random() * 0.45,
-        colorA: Math.random() > 0.5 ? "rgba(242, 184, 198," : "rgba(245, 201, 214,",
-        drift: (-1 + Math.random() * 2) * 8,
-        phase: Math.random() * Math.PI * 2,
-      };
-    }
+  requestAnimationFrame(draw);
+}
+draw();
 
-    function seedPetals(count) {
-      petals = [];
-      for (let i = 0; i < count; i++) petals.push(createPetal(true));
-    }
+/* Fade petals after evening */
+setInterval(()=>{
+  if(unlocked(18,30)){
+    canvas.style.opacity=0;
+  }
+},5000);
 
-    function drawPetal(petal) {
-      const t = performance.now() * 0.001;
-      const sway = Math.sin(t * petal.swayFreq + petal.phase) * petal.swayAmp;
-      const tiltY = Math.sin(t * petal.tiltSpeed + petal.phase) * 0.55;
-      const width = petal.size * (0.7 + 0.45 * Math.cos(tiltY));
-      const height = petal.size * 1.15;
+</script>
 
-      petalCtx.save();
-      petalCtx.translate(petal.x + sway, petal.y);
-      petalCtx.rotate(petal.rot);
-
-      const g = petalCtx.createLinearGradient(-width / 2, -height / 2, width / 2, height / 2);
-      g.addColorStop(0, `${petal.colorA}${(petal.opacity * petalGlobalOpacity).toFixed(3)})`);
-      g.addColorStop(1, `rgba(215, 132, 157, ${(petal.opacity * 0.88 * petalGlobalOpacity).toFixed(3)})`);
-
-      petalCtx.fillStyle = g;
-      petalCtx.beginPath();
-      petalCtx.moveTo(0, -height * 0.52);
-      petalCtx.bezierCurveTo(width * 0.62, -height * 0.42, width * 0.74, height * 0.14, 0, height * 0.54);
-      petalCtx.bezierCurveTo(-width * 0.74, height * 0.14, -width * 0.62, -height * 0.42, 0, -height * 0.52);
-      petalCtx.fill();
-
-      petalCtx.strokeStyle = `rgba(255,255,255, ${(0.16 * petalGlobalOpacity).toFixed(3)})`;
-      petalCtx.lineWidth = 0.8;
-      petalCtx.beginPath();
-      petalCtx.moveTo(0, -height * 0.4);
-      petalCtx.quadraticCurveTo(width * 0.06, 0, 0, height * 0.34);
-      petalCtx.stroke();
-
-      petalCtx.restore();
-    }
-
-    function updatePetals(dt) {
-      const width = window.innerWidth;
-      const height = window.innerHeight;
-      const desiredCount = Math.floor((18 + 22 * petalDensityMultiplier) * Math.max(1, width / 1200));
-
-      while (petals.length < desiredCount) petals.push(createPetal(false));
-      while (petals.length > desiredCount && petals.length > 0) petals.pop();
-
-      petals.forEach((petal, i) => {
-        petal.y += petal.speedY * dt;
-        petal.x += petal.drift * dt;
-        petal.rot += petal.rotSpeed * dt;
-
-        if (petal.y > height + 70 || petal.x < -80 || petal.x > width + 80) {
-          petals[i] = createPetal(false);
-          petals[i].x = Math.random() * width;
-        }
-      });
-    }
-
-    function petalLoop(ts) {
-      if (!petalLastTime) petalLastTime = ts;
-      const dt = Math.min((ts - petalLastTime) / 1000, 0.033);
-      petalLastTime = ts;
-
-      petalGlobalOpacity += (petalOpacityTarget - petalGlobalOpacity) * Math.min(1, dt * 2.6);
-
-      if (petalOpacityTarget > 0.01 || petalGlobalOpacity > 0.01 || petalsEnabled) {
-        petalCtx.clearRect(0, 0, window.innerWidth, window.innerHeight);
-        updatePetals(dt);
-        petals.forEach(drawPetal);
-      } else {
-        petalCtx.clearRect(0, 0, window.innerWidth, window.innerHeight);
-      }
-
-      petalAnimationId = requestAnimationFrame(petalLoop);
-    }
-
-    function startPetals() {
-      petalsEnabled = true;
-      petalCanvas.classList.add("active");
-      if (!petalAnimationId) {
-        resizePetalCanvas();
-        seedPetals(24);
-        petalLastTime = 0;
-        petalAnimationId = requestAnimationFrame(petalLoop);
-      }
-      syncPetalsWithSection();
-    }
-
-    function syncPetalsWithSection() {
-      if (!petalsEnabled) {
-        petalOpacityTarget = 0;
-        petalDensityMultiplier = 0;
-        return;
-      }
-
-      if (!typingDone || typewriterScreen.style.display === "flex") {
-        petalOpacityTarget = 0.95;
-        petalDensityMultiplier = 0.7;
-        petalCanvas.classList.add("active");
-        return;
-      }
-
-      if (currentSection === 0) {
-        petalOpacityTarget = 0.95;
-        petalDensityMultiplier = 1.25;
-        petalCanvas.classList.add("active");
-      } else if (currentSection === 1) {
-        petalOpacityTarget = 1;
-        petalDensityMultiplier = 1.75;
-        petalCanvas.classList.add("active");
-      } else {
-        petalOpacityTarget = 0;
-        petalDensityMultiplier = 0;
-        petalCanvas.classList.remove("active");
-      }
-    }
-
-    function setupYouTube() {
-      youtubeFrame1.src = `https://www.youtube.com/embed/${VIDEO_ID_1}?rel=0&modestbranding=1`;
-      youtubeFrame2.src = `https://www.youtube.com/embed/${VIDEO_ID_2}?rel=0&modestbranding=1`;
-    }
-
-    function getCSTDateParts() {
-      const formatter = new Intl.DateTimeFormat("en-US", {
-        timeZone: "America/Chicago",
-        year: "numeric",
-        month: "numeric",
-        day: "numeric",
-        hour: "numeric",
-        minute: "numeric",
-        second: "numeric",
-        hour12: false
-      });
-
-      const parts = formatter.formatToParts(new Date());
-      const data = {};
-      parts.forEach((part) => {
-        if (part.type !== "literal") data[part.type] = Number(part.value);
-      });
-
-      return {
-        year: data.year,
-        month: data.month,
-        day: data.day,
-        hour: data.hour,
-        minute: data.minute,
-        second: data.second
-      };
-    }
-
-    function getCurrentCSTTotalSeconds() {
-      const now = getCSTDateParts();
-      return now.hour * 3600 + now.minute * 60 + now.second;
-    }
-
-    function getScheduleUnlockSeconds(schedule) {
-      return schedule.unlockHour * 3600 + schedule.unlockMinute * 60;
-    }
-
-    function getUnlockedScheduleKeys() {
-      if (PREVIEW_MODE) return PHASE_SCHEDULES.map((s) => s.key);
-      const nowSeconds = getCurrentCSTTotalSeconds();
-      return PHASE_SCHEDULES
-        .filter((schedule) => nowSeconds >= getScheduleUnlockSeconds(schedule))
-        .map((schedule) => schedule.key);
-    }
-
-    function isScheduleUnlocked(scheduleKey) {
-      return getUnlockedScheduleKeys().includes(scheduleKey);
-    }
-
-    function getScheduleForSection(sectionIndex) {
-      return PHASE_SCHEDULES.find((schedule) => schedule.sections.includes(sectionIndex));
-    }
-
-    function isSectionUnlocked(sectionIndex) {
-      const schedule = getScheduleForSection(sectionIndex);
-      if (!schedule) return true;
-      return isScheduleUnlocked(schedule.key);
-    }
-
-    function getFirstLockedSectionIndex() {
-      for (let i = 0; i < sections.length; i++) {
-        if (!isSectionUnlocked(i)) return i;
-      }
-      return -1;
-    }
-
-    function formatDuration(totalSeconds) {
-      const safe = Math.max(0, totalSeconds);
-      return {
-        hours: Math.floor(safe / 3600),
-        minutes: Math.floor((safe % 3600) / 60),
-        seconds: safe % 60
-      };
-    }
-
-    function secondsUntilSchedule(schedule) {
-      if (PREVIEW_MODE) return 0;
-      const now = getCurrentCSTTotalSeconds();
-      const unlock = getScheduleUnlockSeconds(schedule);
-      return Math.max(0, unlock - now);
-    }
-
-    function createProgressDots() {
-      progressRail.innerHTML = "";
-      sections.forEach((_, index) => {
-        const dot = document.createElement("div");
-        dot.className = "progress-dot";
-        dot.dataset.index = index;
-        progressRail.appendChild(dot);
-      });
-    }
-
-    function updateProgress() {
-      const dots = Array.from(progressRail.querySelectorAll(".progress-dot"));
-      dots.forEach((dot, index) => {
-        const unlocked = isSectionUnlocked(index);
-        dot.classList.toggle("active", index === currentSection);
-        dot.classList.toggle("locked", !unlocked);
-      });
-      phaseTag.textContent = `Phase ${currentSection + 1} / ${sections.length}`;
-    }
-
-    function showLockBadge(message = "locked for 1.5s") {
-      lockBadge.textContent = message;
-      lockBadge.classList.add("show");
-      setTimeout(() => lockBadge.classList.remove("show"), 1200);
-    }
-
-    function animateCurrentSection() {
-      sections.forEach((section) => section.classList.remove("section-enter"));
-      clearTimeout(sectionAnimationTimer);
-      sectionAnimationTimer = setTimeout(() => {
-        if (sections[currentSection]) sections[currentSection].classList.add("section-enter");
-      }, 50);
-    }
-
-    function updateJourneyPosition() {
-      journey.style.transform = `translate3d(0, -${currentSection * window.innerHeight}px, 0)`;
-      updateProgress();
-      renderLockedPlaceholders();
-      animateCurrentSection();
-      syncPetalsWithSection();
-      setTimeout(controlVideos, 120);
-    }
-
-    function stopAndResetVideo(video) {
-      try { video.pause(); } catch (e) {}
-      try { video.currentTime = 0; } catch (e) {}
-    }
-
-    function tryPlayVideo(video) {
-      if (!video) return;
-      video.muted = true;
-      video.setAttribute("muted", "");
-      video.setAttribute("playsinline", "");
-      video.loop = true;
-
-      const playPromise = video.play();
-      if (playPromise && typeof playPromise.catch === "function") {
-        playPromise.catch(() => {
-          try { video.load(); } catch (e) {}
-          const secondTry = video.play();
-          if (secondTry && typeof secondTry.catch === "function") {
-            secondTry.catch(() => {});
-          }
-        });
-      }
-    }
-
-    function controlVideos() {
-      videos.forEach((video) => {
-        const phaseIndex = Number(video.dataset.phase);
-        if (journey.style.display === "block" && phaseIndex === currentSection && isSectionUnlocked(phaseIndex)) {
-          tryPlayVideo(video);
-        } else {
-          stopAndResetVideo(video);
-        }
-      });
-    }
-
-    function lockNavigation() {
-      navigationLocked = true;
-      showLockBadge();
-      setTimeout(() => {
-        navigationLocked = false;
-      }, 900);
-    }
-
-    function goToSection(nextIndex) {
-      if (nextIndex < 0 || nextIndex >= sections.length) return;
-      if (navigationLocked) return;
-
-      if (!isSectionUnlocked(nextIndex)) {
-        const schedule = getScheduleForSection(nextIndex);
-        if (schedule) showLockBadge(`Next reveal at ${schedule.revealLabel}`);
-        return;
-      }
-
-      if (nextIndex === currentSection) return;
-
-      currentSection = nextIndex;
-      lockNavigation();
-      updateJourneyPosition();
-    }
-
-    function moveBy(direction) {
-      const target = currentSection + direction;
-      if (target < 0 || target >= sections.length) return;
-
-      if (isSectionUnlocked(target)) {
-        goToSection(target);
-        return;
-      }
-
-      const schedule = getScheduleForSection(target);
-      if (schedule) showLockBadge(`Next reveal at ${schedule.revealLabel}`);
-    }
-
-    function getEnvelopeOpenedState() {
-      return localStorage.getItem(STORAGE_KEYS.envelopeOpened) === "true";
-    }
-
-    function setEnvelopeOpenedState(value) {
-      localStorage.setItem(STORAGE_KEYS.envelopeOpened, value ? "true" : "false");
-    }
-
-    function startTypewriterIfNeeded() {
-      if (typewriterStarted || !envelopeAvailable) return;
-      typewriterStarted = true;
-      startPetals();
-      envelopeScreen.classList.add("open-fade");
-      setTimeout(() => {
-        envelopeScreen.style.display = "none";
-        typewriterScreen.style.display = "flex";
-        if (!progressRail.innerHTML.trim()) createProgressDots();
-        typeWriter();
-      }, 650);
-    }
-
-    function showJourney() {
-      showingLetterAgain = false;
-      typewriterScreen.classList.remove("reopenable");
-      letterReturnNote.style.display = "none";
-
-      progressRail.style.display = "flex";
-      phaseTag.style.display = "block";
-      swipeHint.style.display = "block";
-      journey.style.display = "block";
-      backToLetterBtn.classList.add("show");
-      updateJourneyPosition();
-    }
-
-    function hideJourney() {
-      journey.style.display = "none";
-      progressRail.style.display = "none";
-      phaseTag.style.display = "none";
-      swipeHint.style.display = "none";
-    }
-
-    function openLetterViewFromJourney() {
-      navigationLocked = true;
-      hideJourney();
-      typewriterScreen.style.display = "flex";
-      typewriterScreen.style.opacity = "1";
-      typewriterScreen.classList.add("reopenable");
-      letterReturnNote.style.display = "block";
-      showingLetterAgain = true;
-      startPetals();
-      syncPetalsWithSection();
-
-      setTimeout(() => {
-        navigationLocked = false;
-      }, 400);
-    }
-
-    function skipTypewriterAndShowJourney() {
-      typingDone = true;
-      typewriterStarted = true;
-      envelopeScreen.style.display = "none";
-      typewriterScreen.style.display = "none";
-      if (!progressRail.innerHTML.trim()) createProgressDots();
-
-      const firstLocked = getFirstLockedSectionIndex();
-      if (firstLocked === 0) currentSection = 0;
-      else if (firstLocked === -1) currentSection = 0;
-      else currentSection = Math.max(0, firstLocked - 1);
-
-      startPetals();
-      backToLetterBtn.classList.add("show");
-      showJourney();
-    }
-
-    function typeWriter() {
-      if (typeIndex < TYPEWRITER_TEXT.length) {
-        paperText.innerHTML =
-          TYPEWRITER_TEXT.slice(0, typeIndex + 1).replace(/\n/g, "<br>") +
-          '<span class="caret">|</span>';
-        typeIndex++;
-        typingTimer = setTimeout(typeWriter, 28);
-      } else {
-        paperText.innerHTML =
-          TYPEWRITER_TEXT.replace(/\n/g, "<br>") + '<span class="caret">|</span>';
-        typingDone = true;
-        setEnvelopeOpenedState(true);
-        backToLetterBtn.classList.add("show");
-
-        requestAnimationFrame(() => {
-          typewriterScreen.style.opacity = "0";
-          setTimeout(() => {
-            typewriterScreen.style.display = "none";
-            currentSection = 0;
-            showJourney();
-          }, 700);
-        });
-      }
-    }
-
-    function renderEnvelopeState() {
-      envelopeAvailable = PREVIEW_MODE ? true : isScheduleUnlocked("opening");
-      const openedBefore = getEnvelopeOpenedState();
-
-      if (!envelopeAvailable) {
-        openBtn.disabled = true;
-        openBtn.style.opacity = "0.7";
-        openBtn.style.cursor = "not-allowed";
-        envelopeHint.style.display = "none";
-        envelopeLockedNote.style.display = "block";
-        envelopeLockedNote.textContent = "Patience, Jaanu... Your first surprise arrives at 9:00 AM. ❤️";
-        return;
-      }
-
-      openBtn.disabled = false;
-      openBtn.style.opacity = "1";
-      openBtn.style.cursor = "pointer";
-      envelopeLockedNote.style.display = "none";
-      envelopeHint.textContent = openedBefore ? "welcome back, jaanu" : "tap to open your letter";
-    }
-
-    function buildLockedCardHtml(schedule, remaining) {
-      const d = formatDuration(remaining);
-      return `
-        <div class="locked-phase-card">
-          <div class="locked-badge">Coming Soon</div>
-          <h3 class="locked-title">Next Reveal at ${schedule.revealLabel}</h3>
-          <div class="locked-message">${schedule.lockedMessage}</div>
-          <div class="locked-time">Central Time release • ${schedule.revealLabel}</div>
-          <div class="countdown">
-            <div class="countdown-item">
-              <span class="countdown-num">${String(d.hours).padStart(2, "0")}</span>
-              <span class="countdown-label">Hours</span>
-            </div>
-            <div class="countdown-item">
-              <span class="countdown-num">${String(d.minutes).padStart(2, "0")}</span>
-              <span class="countdown-label">Minutes</span>
-            </div>
-            <div class="countdown-item">
-              <span class="countdown-num">${String(d.seconds).padStart(2, "0")}</span>
-              <span class="countdown-label">Seconds</span>
-            </div>
-          </div>
-          <div class="locked-subtle">This gift is unfolding through the day so she always has one more thing to look forward to.</div>
-        </div>
-      `;
-    }
-
-    function cacheOriginalSectionContent(section) {
-      if (!section.dataset.originalHtml) {
-        section.dataset.originalHtml = section.innerHTML;
-      }
-    }
-
-    function restoreOriginalSectionContent(section) {
-      if (section.dataset.originalHtml) {
-        section.innerHTML = section.dataset.originalHtml;
-      }
-    }
-
-    function renderLockedPlaceholders() {
-      sections.forEach((section, index) => {
-        const schedule = getScheduleForSection(index);
-        cacheOriginalSectionContent(section);
-        if (!schedule) return;
-
-        if (isSectionUnlocked(index)) {
-          if (section.dataset.lockedState === "true") {
-            restoreOriginalSectionContent(section);
-            section.dataset.lockedState = "false";
-          }
-          return;
-        }
-
-        const remaining = secondsUntilSchedule(schedule);
-        section.innerHTML = `
-          <div class="section-accent accent-left" style="background: rgba(188,77,99,0.08);"></div>
-          <div class="section-accent accent-right" style="background: rgba(198,162,108,0.12);"></div>
-          ${buildLockedCardHtml(schedule, remaining)}
-        `;
-        section.dataset.lockedState = "true";
-      });
-    }
-
-    function refreshTimeLocks() {
-      renderEnvelopeState();
-      renderLockedPlaceholders();
-      updateProgress();
-
-      if (typingDone && journey.style.display === "block") {
-        const firstLocked = getFirstLockedSectionIndex();
-        if (firstLocked !== -1 && currentSection >= firstLocked) {
-          currentSection = Math.max(0, firstLocked - 1);
-          updateJourneyPosition();
-        } else {
-          controlVideos();
-        }
-      }
-
-      if (!typingDone && envelopeAvailable && getEnvelopeOpenedState()) {
-        skipTypewriterAndShowJourney();
-      }
-    }
-
-    function handleEnvelopeOpen(e) {
-      if (e) e.preventDefault();
-      if (!envelopeAvailable) {
-        showLockBadge("First reveal at 9:00 AM CST");
-        return;
-      }
-      startTypewriterIfNeeded();
-    }
-
-    function tryWheelNavigate(deltaY) {
-      if (wheelCooldown || navigationLocked || !typingDone || journey.style.display !== "block") return;
-      if (Math.abs(deltaY) < 14) return;
-
-      wheelCooldown = true;
-      if (deltaY > 0) moveBy(1);
-      else moveBy(-1);
-
-      setTimeout(() => {
-        wheelCooldown = false;
-      }, 500);
-    }
-
-    function resetTouchState() {
-      touchState.startX = 0;
-      touchState.startY = 0;
-      touchState.lastX = 0;
-      touchState.lastY = 0;
-      touchState.startTime = 0;
-      touchState.axis = null;
-      touchState.active = false;
-    }
-
-    function handleGestureEnd() {
-      if (!touchState.active || navigationLocked || !typingDone || journey.style.display !== "block") {
-        resetTouchState();
-        return;
-      }
-
-      const dx = touchState.lastX - touchState.startX;
-      const dy = touchState.lastY - touchState.startY;
-      const absX = Math.abs(dx);
-      const absY = Math.abs(dy);
-      const elapsed = Math.max(1, Date.now() - touchState.startTime);
-      const velocityY = absY / elapsed;
-
-      if (touchState.axis === "y") {
-        const strongDistance = absY > 52;
-        const quickFlick = absY > 26 && velocityY > 0.35;
-
-        if ((strongDistance || quickFlick) && absY > absX * 1.1) {
-          if (dy < 0) moveBy(1);
-          else moveBy(-1);
-        }
-      }
-
-      resetTouchState();
-    }
-
-    openBtn.addEventListener("click", handleEnvelopeOpen);
-    openBtn.addEventListener("touchend", handleEnvelopeOpen, { passive: false });
-
-    backToLetterBtn.addEventListener("click", () => {
-      if (!typingDone) return;
-      openLetterViewFromJourney();
-    });
-
-    typewriterScreen.addEventListener("click", () => {
-      if (!typingDone) return;
-      if (!showingLetterAgain) return;
-      typewriterScreen.style.display = "none";
-      showJourney();
-    });
-
-    window.addEventListener(
-      "wheel",
-      (e) => {
-        e.preventDefault();
-        tryWheelNavigate(e.deltaY);
-      },
-      { passive: false }
-    );
-
-    window.addEventListener("keydown", (e) => {
-      const keysDown = ["ArrowDown", "PageDown", "Space"];
-      const keysUp = ["ArrowUp", "PageUp"];
-      const openKeys = ["Enter", "Space"];
-
-      if (typewriterScreen.style.display === "flex" && showingLetterAgain && openKeys.includes(e.code)) {
-        e.preventDefault();
-        typewriterScreen.style.display = "none";
-        showJourney();
-        return;
-      }
-
-      if (!typingDone) {
-        if (keysDown.includes(e.code) || keysUp.includes(e.code)) e.preventDefault();
-        return;
-      }
-
-      if (journey.style.display !== "block") return;
-
-      if (keysDown.includes(e.code)) {
-        e.preventDefault();
-        if (!navigationLocked) moveBy(1);
-      }
-
-      if (keysUp.includes(e.code)) {
-        e.preventDefault();
-        if (!navigationLocked) moveBy(-1);
-      }
-    });
-
-    window.addEventListener("touchstart", (e) => {
-      if (!typingDone || journey.style.display !== "block") return;
-      if (e.touches.length !== 1) return;
-
-      const t = e.touches[0];
-      touchState.startX = t.clientX;
-      touchState.startY = t.clientY;
-      touchState.lastX = t.clientX;
-      touchState.lastY = t.clientY;
-      touchState.startTime = Date.now();
-      touchState.axis = null;
-      touchState.active = true;
-    }, { passive: true });
-
-    window.addEventListener("touchmove", (e) => {
-      if (!typingDone || !touchState.active || journey.style.display !== "block") return;
-      if (e.touches.length !== 1) return;
-
-      const t = e.touches[0];
-      touchState.lastX = t.clientX;
-      touchState.lastY = t.clientY;
-
-      const dx = t.clientX - touchState.startX;
-      const dy = t.clientY - touchState.startY;
-      const absX = Math.abs(dx);
-      const absY = Math.abs(dy);
-
-      if (!touchState.axis) {
-        if (absY > 10 || absX > 10) {
-          touchState.axis = absY > absX ? "y" : "x";
-        }
-      }
-    }, { passive: true });
-
-    window.addEventListener("touchend", () => {
-      handleGestureEnd();
-    }, { passive: true });
-
-    window.addEventListener("touchcancel", () => {
-      resetTouchState();
-    }, { passive: true });
-
-    window.addEventListener("resize", () => {
-      updateJourneyPosition();
-      resizePetalCanvas();
-    });
-
-    window.addEventListener("beforeunload", () => {
-      if (typingTimer) clearTimeout(typingTimer);
-      if (sectionAnimationTimer) clearTimeout(sectionAnimationTimer);
-      if (countdownInterval) clearInterval(countdownInterval);
-      if (petalAnimationId) cancelAnimationFrame(petalAnimationId);
-    });
-
-    setupYouTube();
-    resizePetalCanvas();
-    createProgressDots();
-    renderEnvelopeState();
-    renderLockedPlaceholders();
-
-    if (PREVIEW_MODE) previewRibbon.style.display = "block";
-
-    if ((PREVIEW_MODE || isScheduleUnlocked("opening")) && getEnvelopeOpenedState()) {
-      skipTypewriterAndShowJourney();
-    }
-
-    countdownInterval = setInterval(() => {
-      if (!PREVIEW_MODE) refreshTimeLocks();
-    }, 1000);
-  </script>
 </body>
 </html>
