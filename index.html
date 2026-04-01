@@ -17,28 +17,35 @@
 
     * { box-sizing: border-box; }
     
-    html {
-      scroll-snap-type: y mandatory;
-      scroll-behavior: smooth;
-    }
-
-    body, html { 
+    html, body { 
       margin: 0; padding: 0; 
       background: var(--cream);
       font-family: 'Georgia', serif;
-      height: 100%;
+      height: 100vh;
+      width: 100%;
+      overflow: hidden; /* We handle the scroll manually for the 'auto' feel */
     }
 
-    /* Snap Containers */
+    /* Full screen sections for auto-gliding */
     .snap-section {
       height: 100vh;
       width: 100%;
-      scroll-snap-align: start;
-      scroll-snap-stop: always;
-      position: relative;
+      position: absolute;
+      top: 0; left: 0;
       display: flex;
       align-items: center;
       justify-content: center;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 1.2s cubic-bezier(0.65, 0, 0.35, 1);
+      z-index: 10;
+    }
+
+    /* Active section state */
+    .snap-section.active {
+      opacity: 1;
+      visibility: visible;
+      z-index: 20;
     }
 
     /* --- PHASE 1: THE CEREMONY --- */
@@ -46,7 +53,7 @@
       position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
       display: flex; flex-direction: column; align-items: center; justify-content: center;
       z-index: 5000; background: var(--cream);
-      transition: opacity 1.5s ease;
+      transition: transform 1.2s cubic-bezier(0.65, 0, 0.35, 1), opacity 1s;
     }
 
     @keyframes envelopeLand {
@@ -66,7 +73,7 @@
     #letter-scene {
       display: none; position: fixed; top: 50%; left: 50%;
       transform: translate(-50%, -50%);
-      width: 90%; max-width: 500px; height: 85vh;
+      width: 90%; max-width: 500px; height: 80vh;
       background: var(--paper); border: 15px solid white;
       box-shadow: 0 0 60px rgba(0,0,0,0.15);
       z-index: 6000; overflow-y: auto; scrollbar-width: none;
@@ -77,37 +84,34 @@
     .letterhead-name { font-size: 2rem; color: var(--rose-deep); letter-spacing: 6px; text-transform: uppercase; margin: 0; }
     #typed-text { font-size: 1.1rem; line-height: 1.9; color: var(--text); white-space: pre-wrap; }
 
-    /* --- PHASE 2: THE FLOWERS ENTRANCE --- */
+    /* --- PHASE 2: AUTO-TEXT --- */
     .flower-hero h2 {
       font-size: clamp(2.2rem, 8vw, 4rem);
       color: var(--rose-deep);
       font-style: italic; text-align: center;
-      opacity: 0; transform: scale(0.9); filter: blur(10px);
-      transition: all 2.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+      padding: 20px;
     }
-    .flower-hero.reveal h2 { opacity: 1; transform: scale(1); filter: blur(0); }
 
     /* --- PHASE 3: CINEMATIC CARD --- */
     .card { 
       background: white; border-radius: 40px; padding: 2.5rem; 
       width: 90%; max-width: 550px;
       box-shadow: 0 30px 100px rgba(150,120,120,0.1);
-      opacity: 0; transform: translateY(80px);
-      transition: all 2s ease;
+      transform: translateY(50px);
+      transition: transform 1.5s ease;
     }
-    .visible .card { opacity: 1; transform: translateY(0); }
+    .active .card { transform: translateY(0); }
 
     .media-reveal {
       margin-top: 25px; border-radius: 20px; overflow: hidden;
-      position: relative; background: #fafafa;
+      background: #fafafa;
     }
     .media-reveal img {
-      width: 100%; display: block; opacity: 0; transform: scale(1.1);
-      transition: all 3.5s cubic-bezier(0.1, 0.5, 0.1, 1) 0.5s;
+      width: 100%; display: block;
+      transition: transform 3s ease 0.5s;
     }
-    .visible .media-reveal img { opacity: 1; transform: scale(1); }
 
-    /* UI PROMPT */
+    /* SCROLL HINT */
     .scroll-hint {
       position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
       color: var(--rose-deep); font-weight: bold; opacity: 0; z-index: 7000;
@@ -115,7 +119,6 @@
     .show-hint { opacity: 1; animation: bounce 2s infinite; }
     @keyframes bounce { 0%, 100% {transform:translate(-50%, 0);} 50% {transform:translate(-50%, -10px);} }
 
-    #main-world { display: none; }
   </style>
 </head>
 <body>
@@ -128,21 +131,20 @@
     <div id="letter-scene">
       <div class="letter-header">
         <h1 class="letterhead-name">JHANSY <span style="color:var(--green)">🌿</span></h1>
-        <p style="font-size: 0.7rem; color: #bbb; letter-spacing: 2px;">PRIVATE STATIONERY</p>
       </div>
       <div id="typed-text"></div>
     </div>
 
-    <div class="scroll-hint" id="scrollHint">Scroll down to see the world... ↓</div>
+    <div class="scroll-hint" id="scrollHint">Swipe or Scroll Up to See... ↓</div>
   </div>
 
   <div id="main-world">
     
-    <div class="snap-section flower-hero" id="flowerHero">
+    <div class="snap-section flower-hero" id="step1">
       <h2>Flowers ivvalli kada...</h2>
     </div>
 
-    <section class="snap-section" id="morningSection">
+    <section class="snap-section" id="step2">
       <div class="card">
         <span style="color: var(--rose-deep); font-weight: bold; font-size: 0.85rem; letter-spacing: 2px;">🌸 9:00 AM — MORNING BLOOM</span>
         
@@ -150,40 +152,39 @@
           <h3 style="font-family: Georgia; font-style: italic; color: var(--text); font-size: 1.4rem; margin-bottom: 12px; line-height: 1.4;">
             Every month, a bouquet is a must kada?
           </h3>
-          <p style="color: var(--muted); line-height: 1.8; font-size: 1rem;">
-            I know you don't like me spending on these, and you have your reasons... but I have mine too. No matter what happens, I always want to.
+          <p style="color: var(--muted); line-height: 1.7; font-size: 0.95rem;">
+            I know you don't like me spending on these, but I have my reasons too. No matter what happens, I always want to.
             <br><br>
-            I bought these flowers for you today. Even if I can only send them virtually, they are staying right here with me—my way of saying <b>"I’m right here with you."</b>
+            I bought these flowers for you. Even virtually, they stay with me—my way of saying <b>"I’m right here with you."</b>
           </p>
         </div>
 
         <div class="media-reveal">
           <img src="flowers1.jpg" alt="Morning Flowers">
         </div>
-        
-        <p style="text-align: center; font-style: italic; color: var(--rose); margin-top: 15px; font-size: 0.9rem;">
-          Bloom bright today, Jaanu.
-        </p>
       </div>
     </section>
 
-    <div class="snap-section" style="background:var(--cream);">
-        <p style="color: #ddd;">The day continues as you scroll...</p>
+    <div class="snap-section" id="step3">
+      <h2 style="color: var(--muted); font-style: italic;">Wait for the coffee... ☕</h2>
     </div>
+
   </div>
 
   <script>
     const text = `Hi Jaanu...\n\nChustu chustune 25 days ayipoyindhi kada. Last time when you got this, I was with you.\n\nBefore that, I used to send the flowers, coffee, and ice cream... but this time I can't do any of those.\n\nBut nenu idiot ni kada? Mental fellow ni! Agutanu anukuntunava? NEVER.\n\nSo Jhansy, happy menstrual day! Idi kuda "happy" antunna ani thittoku... ledu le, already tittukune unattu unnav... ninnu chuste telsustundhi le. But its ok.\n\nSo Jhansy, here we go. I made something for you to make your spirit high when your body is down.\n\nOka dialogue cheppi finish chesthe super untundhi kada...\n\nJaanu, nuvvu iroju prapanchanni chudalekapothe enti? Ah prapanchanni nee daggariki teeskuni vasta! 😂😂😍😍\n\nHahaha... Baga navvukunnaava? So roju anta ilane navvukunta undhu.`;
+
+    let currentStep = -1; // -1 means Letter is open
+    const steps = document.querySelectorAll('.snap-section');
+    let canScroll = false;
 
     function openLetter() {
       const env = document.getElementById('envelope');
       const scene = document.getElementById('letter-scene');
       const typedTarget = document.getElementById('typed-text');
       const scrollHint = document.getElementById('scrollHint');
-      const world = document.getElementById('main-world');
 
       env.style.opacity = '0';
-      env.style.transform = 'translateY(30px)';
       
       setTimeout(() => {
         env.style.display = 'none';
@@ -195,34 +196,61 @@
             typedTarget.innerHTML += text.charAt(i);
             i++;
             scene.scrollTop = scene.scrollHeight;
-            setTimeout(typeWriter, 35);
+            setTimeout(typeWriter, 30);
           } else {
             scrollHint.classList.add('show-hint');
-            world.style.display = 'block'; 
-            document.body.style.overflow = 'auto'; 
+            canScroll = true; // Unlock the auto-gliding
           }
         }
         typeWriter();
       }, 800);
     }
 
-    window.addEventListener('scroll', () => {
-      const overlay = document.getElementById('ceremony-overlay');
-      const hero = document.getElementById('flowerHero');
-      const morning = document.getElementById('morningSection');
+    // --- The Auto-Glide Engine ---
+    function navigate(direction) {
+      if (!canScroll) return;
+      
+      if (direction === 'down' && currentStep < steps.length - 1) {
+        currentStep++;
+      } else if (direction === 'up' && currentStep > 0) {
+        currentStep--;
+      }
 
-      // Fade out ceremony as she scrolls
-      if (window.scrollY > 100) overlay.style.opacity = '0';
-      else overlay.style.opacity = '1';
+      // Hide the overlay when we move to step 0
+      if (currentStep >= 0) {
+        document.getElementById('ceremony-overlay').style.transform = 'translateY(-100vh)';
+      } else {
+        document.getElementById('ceremony-overlay').style.transform = 'translateY(0)';
+      }
 
-      const heroPos = hero.getBoundingClientRect();
-      const morningPos = morning.getBoundingClientRect();
+      // Update active sections
+      steps.forEach((step, idx) => {
+        if (idx === currentStep) {
+          step.classList.add('active');
+        } else {
+          step.classList.remove('active');
+        }
+      });
 
-      if (heroPos.top < window.innerHeight * 0.5) hero.classList.add('reveal');
-      if (morningPos.top < window.innerHeight * 0.5) morning.classList.add('visible');
+      // Cool down to prevent rapid skipping
+      canScroll = false;
+      setTimeout(() => { canScroll = true; }, 1500);
+    }
+
+    // Listen for mouse wheel and touch swipes
+    window.addEventListener('wheel', (e) => {
+      if (e.deltaY > 0) navigate('down');
+      else navigate('up');
     });
 
-    document.body.style.overflow = 'hidden';
+    let touchStart = 0;
+    window.addEventListener('touchstart', (e) => { touchStart = e.touches[0].clientY; });
+    window.addEventListener('touchend', (e) => {
+      let touchEnd = e.changedTouches[0].clientY;
+      if (touchStart - touchEnd > 50) navigate('down');
+      if (touchEnd - touchStart > 50) navigate('up');
+    });
+
   </script>
 </body>
 </html>
