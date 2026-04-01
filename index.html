@@ -14,6 +14,7 @@
       --muted: #8b7676;
       --matcha: #8fb96b;
       --matcha-deep: #5d7a44;
+      --green: #3ba35e;
     }
 
     * { box-sizing: border-box; }
@@ -24,9 +25,10 @@
       font-family: 'Georgia', serif;
       height: 100vh;
       width: 100%;
-      overflow: hidden;
+      overflow: hidden; /* Locks the page for the auto-glide feel */
     }
 
+    /* --- AUTO-GLIDE SECTIONS --- */
     .snap-section {
       height: 100vh;
       width: 100%;
@@ -48,11 +50,12 @@
       z-index: 20;
     }
 
-    /* --- PHASE 1: THE CEREMONY --- */
+    /* --- PHASE 1: THE CEREMONY (GHOSTING FIX) --- */
     #ceremony-overlay {
       position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
       display: flex; flex-direction: column; align-items: center; justify-content: center;
-      z-index: 5000; background: var(--cream);
+      z-index: 9999; /* Higher than everything else */
+      background: var(--cream);
       transition: transform 1.2s cubic-bezier(0.65, 0, 0.35, 1);
     }
 
@@ -66,13 +69,13 @@
     .envelope-name { font-size: 1.8rem; color: var(--rose-deep); letter-spacing: 5px; text-transform: uppercase; border-bottom: 2px solid var(--rose); }
 
     #letter-scene {
-      display: none; position: fixed; top: 50%; left: 50%;
-      transform: translate(-50%, -50%);
-      width: 90%; max-width: 500px; height: 80vh;
+      display: none; 
+      width: 90%; max-width: 500px; height: 75vh;
       background: var(--paper); border: 15px solid white;
       box-shadow: 0 0 60px rgba(0,0,0,0.15);
-      z-index: 6000; overflow-y: auto; scrollbar-width: none;
-      padding: 40px 25px;
+      overflow-y: auto; padding: 40px 25px;
+      z-index: 10000;
+      scrollbar-width: none;
     }
 
     #typed-text { font-size: 1.1rem; line-height: 1.9; color: var(--text); white-space: pre-wrap; }
@@ -86,29 +89,33 @@
     }
 
     .card { 
-      background: white; border-radius: 40px; padding: 2rem; 
+      background: white; border-radius: 40px; padding: 2.2rem; 
       width: 100%; max-width: 500px;
       box-shadow: 0 30px 100px rgba(150,120,120,0.1);
+      overflow-y: auto; 
+      max-height: 85vh;
       transform: translateY(50px);
       transition: transform 1.5s ease;
-      overflow-y: auto;
-      max-height: 85vh;
     }
     .active .card { transform: translateY(0); }
 
-    .card-time { font-weight: bold; font-size: 0.75rem; letter-spacing: 2px; text-transform: uppercase; }
-    .card-title { font-family: Georgia; font-style: italic; color: var(--text); font-size: 1.3rem; margin: 10px 0; }
-    .card-body { color: var(--muted); line-height: 1.6; font-size: 0.9rem; }
+    .card-time { font-weight: bold; font-size: 0.8rem; letter-spacing: 2px; text-transform: uppercase; }
+    .card-title { font-family: Georgia; font-style: italic; color: var(--text); font-size: 1.4rem; margin: 12px 0; }
+    .card-body { color: var(--muted); line-height: 1.7; font-size: 0.95rem; }
 
-    .media-container { margin-top: 20px; border-radius: 20px; overflow: hidden; background: #fff; border: 4px solid #fff; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+    .media-container { 
+      margin-top: 20px; border-radius: 20px; overflow: hidden; 
+      background: #fdfdfd; border: 4px solid #fff; box-shadow: 0 10px 30px rgba(0,0,0,0.05); 
+    }
     .media-container img, .media-container video { width: 100%; display: block; }
 
-    #matchaCard { background: #f9fbf2; }
+    #matchaCard { background: #f9fbf2; border: 1px solid #eef2e1; }
 
-    /* UI PROMPT */
+    /* --- UI PROMPT --- */
     .scroll-hint {
       position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
-      color: var(--rose-deep); font-weight: bold; opacity: 0; z-index: 7000;
+      color: var(--rose-deep); font-weight: bold; opacity: 0; z-index: 10001;
+      transition: opacity 1s;
     }
     .show-hint { opacity: 1; animation: bounce 2s infinite; }
     @keyframes bounce { 0%, 100% {transform:translate(-50%, 0);} 50% {transform:translate(-50%, -10px);} }
@@ -121,9 +128,14 @@
     <div class="envelope" id="envelope" onclick="openLetter()">
       <div class="envelope-name">Jhansy</div>
     </div>
+
     <div id="letter-scene">
+      <div style="text-align: center; margin-bottom: 20px; border-bottom: 1px double #eee; padding-bottom: 15px;">
+        <h1 style="font-size: 2rem; color: var(--rose-deep); letter-spacing: 6px; text-transform: uppercase; margin: 0;">JHANSY <span style="color:var(--green)">🌿</span></h1>
+      </div>
       <div id="typed-text"></div>
     </div>
+
     <div class="scroll-hint" id="scrollHint">Swipe up to See... ↓</div>
   </div>
 
@@ -138,9 +150,13 @@
         <span class="card-time" style="color: var(--rose-deep)">🌸 9:00 AM — MORNING BLOOM</span>
         <h3 class="card-title">Every month, a bouquet is a must kada?</h3>
         <p class="card-body">
-          I know you don't like me spending on these... but for me, I want to. No matter what happens, I bought these for you. Even virtually, they stay with me—my way of saying <b>"I’m right here with you."</b>
+          I know you don't like me spending on these, and you have your reasons... but for me, I want to. 
+          <br><br>
+          I bought these flowers for you today. Even if I can only send them virtually, they stay with me—my way of saying <b>"I’m right here with you."</b>
         </p>
-        <div class="media-container"><img src="flowers1.jpg"></div>
+        <div class="media-container">
+          <img src="./flowers1.jpg" alt="Morning Flowers">
+        </div>
       </div>
     </section>
 
@@ -156,12 +172,12 @@
           I know how much you love Matcha, so I finally tried it. It’s definitely... an experience. 😂 Check out the video below!
         </p>
         <div class="media-container">
-          <img src="matcha.png" alt="Matcha Latte">
+          <img src="./motcha.png" alt="Matcha Latte Photo">
         </div>
         <div class="media-container">
-          <video id="matchaVideo" loop muted playsinline>
-            <source src="starbucks.mov" type="video/quicktime">
-            <source src="starbucks.mp4" type="video/mp4">
+          <video id="matchaVideo" loop muted playsinline controls poster="./motcha.png">
+            <source src="./starbucks.mov" type="video/quicktime">
+            <source src="./starbucks.mp4" type="video/mp4">
             Your browser does not support the video tag.
           </video>
         </div>
@@ -169,7 +185,8 @@
     </section>
 
     <div class="snap-section hero-text-section">
-      <h2 style="color: var(--muted)">Ready for something sweet? 🍫</h2>
+      <h2 style="color: var(--rose-deep)">Ready for something sweet? 🍫</h2>
+      <p style="color: var(--muted); font-size: 1.2rem; margin-top: 20px;">Roju anta ilane navvukunta undhu, Jaanu.</p>
     </div>
 
   </div>
@@ -181,54 +198,76 @@
     const steps = document.querySelectorAll('.snap-section');
     let canScroll = false;
 
+    // 1. OPEN LETTER LOGIC
     function openLetter() {
-      document.getElementById('envelope').style.opacity = '0';
-      setTimeout(() => {
-        document.getElementById('envelope').style.display = 'none';
-        document.getElementById('letter-scene').style.display = 'block';
-        let i = 0;
-        function typeWriter() {
-          if (i < text.length) {
-            document.getElementById('typed-text').innerHTML += text.charAt(i);
-            i++;
-            document.getElementById('letter-scene').scrollTop = document.getElementById('letter-scene').scrollHeight;
-            setTimeout(typeWriter, 30);
-          } else {
-            document.getElementById('scrollHint').classList.add('show-hint');
-            document.getElementById('main-world').style.display = 'block';
-            canScroll = true;
-          }
+      document.getElementById('envelope').style.display = 'none';
+      document.getElementById('letter-scene').style.display = 'block';
+      
+      let i = 0;
+      function typeWriter() {
+        if (i < text.length) {
+          document.getElementById('typed-text').innerHTML += text.charAt(i);
+          i++;
+          document.getElementById('letter-scene').scrollTop = document.getElementById('letter-scene').scrollHeight;
+          setTimeout(typeWriter, 30);
+        } else {
+          document.getElementById('scrollHint').classList.add('show-hint');
+          document.getElementById('main-world').style.display = 'block';
+          canScroll = true; 
         }
-        typeWriter();
-      }, 800);
+      }
+      typeWriter();
     }
 
+    // 2. THE AUTO-GLIDE ENGINE
     function navigate(direction) {
       if (!canScroll) return;
-      if (direction === 'down' && currentStep < steps.length - 1) currentStep++;
-      else if (direction === 'up' && currentStep > -1) currentStep--;
-
-      document.getElementById('ceremony-overlay').style.transform = (currentStep >= 0) ? 'translateY(-100vh)' : 'translateY(0)';
       
-      const video = document.getElementById('matchaVideo');
-      if (currentStep === 3) video.play().catch(e => console.log(e));
-      else video.pause();
+      let overlay = document.getElementById('ceremony-overlay');
+      let video = document.getElementById('matchaVideo');
 
+      if (direction === 'down' && currentStep < steps.length - 1) {
+        currentStep++;
+      } else if (direction === 'up' && currentStep > -1) {
+        currentStep--;
+      }
+
+      // Logic to move the Letter Overlay out of the way
+      if (currentStep >= 0) {
+        overlay.style.transform = 'translateY(-100vh)';
+      } else {
+        overlay.style.transform = 'translateY(0)';
+      }
+
+      // Autoplay Video on Step 3 (Matcha Card)
+      if (currentStep === 3) {
+        video.play().catch(e => console.log(e));
+      } else {
+        video.pause();
+      }
+
+      // Update active sections
       steps.forEach((step, idx) => {
         step.classList.toggle('active', idx === currentStep);
       });
 
+      // Cooldown to prevent rapid skipping
       canScroll = false;
       setTimeout(() => { canScroll = true; }, 1400);
     }
 
-    window.addEventListener('wheel', (e) => navigate(e.deltaY > 0 ? 'down' : 'up'));
+    // 3. INPUT LISTENERS
+    window.addEventListener('wheel', (e) => {
+      if (e.deltaY > 0) navigate('down');
+      else navigate('up');
+    });
+
     let touchStart = 0;
-    window.addEventListener('touchstart', (e) => touchStart = e.touches[0].clientY);
+    window.addEventListener('touchstart', (e) => { touchStart = e.touches[0].clientY; });
     window.addEventListener('touchend', (e) => {
       let touchEnd = e.changedTouches[0].clientY;
-      if (touchStart - touchEnd > 60) navigate('down');
-      if (touchEnd - touchStart > 60) navigate('up');
+      if (touchStart - touchEnd > 60) navigate('down'); // Swipe up
+      if (touchEnd - touchStart > 60) navigate('up'); // Swipe down
     });
   </script>
 </body>
