@@ -20,7 +20,6 @@
       overflow: hidden; 
     }
 
-    /* Section Control - Ensures clean transitions */
     .snap-section {
       height: 100vh; width: 100%; 
       position: absolute; top: 0; left: 0;
@@ -33,7 +32,6 @@
 
     .snap-section.active { opacity: 1; visibility: visible; z-index: 20; }
 
-    /* The Opening Envelope Ceremony */
     #ceremony-overlay {
       position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
       display: flex; flex-direction: column; align-items: center; justify-content: center;
@@ -74,7 +72,6 @@
       width: 100%; display: block; object-fit: contain; 
     }
 
-    /* YouTube Console Styling */
     .movie-card {
       background: var(--cinema-black); color: white; border-radius: 20px;
       padding: 15px; width: 100%; max-width: 500px;
@@ -152,7 +149,7 @@
       <div class="card">
         <h3 style="color: var(--ice-blue); font-style: italic; margin:0;">The Perfect Treat 🍨</h3>
         <div class="media-container">
-          <img src="./icecream.jpg" alt="Ice Cream">
+          <img src="./icecream_photo.jpg" alt="Ice Cream">
         </div>
       </div>
     </section>
@@ -161,7 +158,7 @@
       <div class="card">
         <h3 style="color: var(--ice-blue); font-style: italic; margin:0;">Sweet Happiness...</h3>
         <div class="media-container">
-          <video id="iceCreamVideo" loop muted playsinline controls poster="./icecream.jpg" preload="auto">
+          <video id="iceCreamVideo" loop muted playsinline controls poster="./icecream_photo.jpg" preload="auto">
             <source src="./icecream.mov" type="video/quicktime">
           </video>
         </div>
@@ -189,7 +186,6 @@
   </div>
 
   <script>
-    // FULL RESTORED TEXT
     const text = `Hi Jaanu...\n\nChustu chustune 25 days ayipoyindhi kada. Last time when you got this, I was with you.\n\nBefore that, I used to send the flowers, coffee, and ice cream... but this time I can't do any of those.\n\nBut nenu idiot ni kada? Mental fellow ni! Agutanu anukuntunava? NEVER.\n\nSo Jhansy, happy menstrual day!\n\nJaanu, nuvvu iroju prapanchanni chudalekapothe enti? Ah prapanchanni nee daggariki teeskuni vasta! 😂😂\n\nRoju anta ilane navvukunta undhu.`;
 
     let currentStep = -1; 
@@ -218,7 +214,6 @@
     function navigate(direction) {
       if (!canScroll) return;
       const nextStep = (direction === 'down') ? currentStep + 1 : currentStep - 1;
-      
       if (nextStep < 0 || nextStep >= steps.length) return;
 
       document.getElementById('ceremony-overlay').style.transform = 'translateY(-100vh)';
@@ -227,14 +222,12 @@
       currentStep = nextStep;
       steps[currentStep].classList.add('active');
 
-      // Video Controls
       const vMatcha = document.getElementById('matchaVideo');
       const vIceCream = document.getElementById('iceCreamVideo');
       
       if (currentStep === 4) { vMatcha.play().catch(e=>{}); } else { vMatcha.pause(); }
       if (currentStep === 7) { vIceCream.play().catch(e=>{}); } else { vIceCream.pause(); }
 
-      // Scroll Shield: Restored the 1.5s delay
       canScroll = false;
       setTimeout(() => { canScroll = true; }, 1500); 
     }
