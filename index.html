@@ -12,7 +12,8 @@
       --paper: #ffffff;
       --text: #4a3f3f;
       --muted: #8b7676;
-      --green: #3ba35e;
+      --matcha: #8fb96b;
+      --matcha-deep: #5d7a44;
     }
 
     * { box-sizing: border-box; }
@@ -23,10 +24,9 @@
       font-family: 'Georgia', serif;
       height: 100vh;
       width: 100%;
-      overflow: hidden; /* We handle the scroll manually for the 'auto' feel */
+      overflow: hidden;
     }
 
-    /* Full screen sections for auto-gliding */
     .snap-section {
       height: 100vh;
       width: 100%;
@@ -39,9 +39,9 @@
       visibility: hidden;
       transition: all 1.2s cubic-bezier(0.65, 0, 0.35, 1);
       z-index: 10;
+      padding: 0 20px;
     }
 
-    /* Active section state */
     .snap-section.active {
       opacity: 1;
       visibility: visible;
@@ -53,12 +53,7 @@
       position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
       display: flex; flex-direction: column; align-items: center; justify-content: center;
       z-index: 5000; background: var(--cream);
-      transition: transform 1.2s cubic-bezier(0.65, 0, 0.35, 1), opacity 1s;
-    }
-
-    @keyframes envelopeLand {
-      0% { transform: translateY(-300px) rotate(-10deg); opacity: 0; filter: blur(10px); }
-      100% { transform: translateY(0) rotate(0deg); opacity: 1; filter: blur(0); }
+      transition: transform 1.2s cubic-bezier(0.65, 0, 0.35, 1);
     }
 
     .envelope {
@@ -66,7 +61,7 @@
       background: #f4ecd8; border: 1px solid #dcd0b8;
       box-shadow: 0 20px 50px rgba(0,0,0,0.1);
       display: flex; align-items: center; justify-content: center;
-      cursor: pointer; animation: envelopeLand 2s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+      cursor: pointer;
     }
     .envelope-name { font-size: 1.8rem; color: var(--rose-deep); letter-spacing: 5px; text-transform: uppercase; border-bottom: 2px solid var(--rose); }
 
@@ -80,38 +75,37 @@
       padding: 40px 25px;
     }
 
-    .letter-header { text-align: center; margin-bottom: 20px; border-bottom: 1px double #eee; padding-bottom: 15px; }
-    .letterhead-name { font-size: 2rem; color: var(--rose-deep); letter-spacing: 6px; text-transform: uppercase; margin: 0; }
     #typed-text { font-size: 1.1rem; line-height: 1.9; color: var(--text); white-space: pre-wrap; }
 
-    /* --- PHASE 2: AUTO-TEXT --- */
-    .flower-hero h2 {
-      font-size: clamp(2.2rem, 8vw, 4rem);
+    /* --- CONTENT CARDS --- */
+    .hero-text-section h2 {
+      font-size: clamp(2rem, 7vw, 3.5rem);
       color: var(--rose-deep);
       font-style: italic; text-align: center;
-      padding: 20px;
+      max-width: 800px;
     }
 
-    /* --- PHASE 3: CINEMATIC CARD --- */
     .card { 
-      background: white; border-radius: 40px; padding: 2.5rem; 
-      width: 90%; max-width: 550px;
+      background: white; border-radius: 40px; padding: 2rem; 
+      width: 100%; max-width: 500px;
       box-shadow: 0 30px 100px rgba(150,120,120,0.1);
       transform: translateY(50px);
       transition: transform 1.5s ease;
+      overflow-y: auto;
+      max-height: 85vh;
     }
     .active .card { transform: translateY(0); }
 
-    .media-reveal {
-      margin-top: 25px; border-radius: 20px; overflow: hidden;
-      background: #fafafa;
-    }
-    .media-reveal img {
-      width: 100%; display: block;
-      transition: transform 3s ease 0.5s;
-    }
+    .card-time { font-weight: bold; font-size: 0.75rem; letter-spacing: 2px; text-transform: uppercase; }
+    .card-title { font-family: Georgia; font-style: italic; color: var(--text); font-size: 1.3rem; margin: 10px 0; }
+    .card-body { color: var(--muted); line-height: 1.6; font-size: 0.9rem; }
 
-    /* SCROLL HINT */
+    .media-container { margin-top: 20px; border-radius: 20px; overflow: hidden; background: #fff; border: 4px solid #fff; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+    .media-container img, .media-container video { width: 100%; display: block; }
+
+    #matchaCard { background: #f9fbf2; }
+
+    /* UI PROMPT */
     .scroll-hint {
       position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
       color: var(--rose-deep); font-weight: bold; opacity: 0; z-index: 7000;
@@ -127,46 +121,55 @@
     <div class="envelope" id="envelope" onclick="openLetter()">
       <div class="envelope-name">Jhansy</div>
     </div>
-
     <div id="letter-scene">
-      <div class="letter-header">
-        <h1 class="letterhead-name">JHANSY <span style="color:var(--green)">🌿</span></h1>
-      </div>
       <div id="typed-text"></div>
     </div>
-
-    <div class="scroll-hint" id="scrollHint">Swipe or Scroll Up to See... ↓</div>
+    <div class="scroll-hint" id="scrollHint">Swipe up to See... ↓</div>
   </div>
 
-  <div id="main-world">
+  <div id="main-world" style="display: none;">
     
-    <div class="snap-section flower-hero" id="step1">
+    <div class="snap-section hero-text-section">
       <h2>Flowers ivvalli kada...</h2>
     </div>
 
-    <section class="snap-section" id="step2">
+    <section class="snap-section">
       <div class="card">
-        <span style="color: var(--rose-deep); font-weight: bold; font-size: 0.85rem; letter-spacing: 2px;">🌸 9:00 AM — MORNING BLOOM</span>
-        
-        <div style="margin-top: 20px;">
-          <h3 style="font-family: Georgia; font-style: italic; color: var(--text); font-size: 1.4rem; margin-bottom: 12px; line-height: 1.4;">
-            Every month, a bouquet is a must kada?
-          </h3>
-          <p style="color: var(--muted); line-height: 1.7; font-size: 0.95rem;">
-            I know you don't like me spending on these, but I have my reasons too. No matter what happens, I always want to.
-            <br><br>
-            I bought these flowers for you. Even virtually, they stay with me—my way of saying <b>"I’m right here with you."</b>
-          </p>
-        </div>
+        <span class="card-time" style="color: var(--rose-deep)">🌸 9:00 AM — MORNING BLOOM</span>
+        <h3 class="card-title">Every month, a bouquet is a must kada?</h3>
+        <p class="card-body">
+          I know you don't like me spending on these... but for me, I want to. No matter what happens, I bought these for you. Even virtually, they stay with me—my way of saying <b>"I’m right here with you."</b>
+        </p>
+        <div class="media-container"><img src="flowers1.jpg"></div>
+      </div>
+    </section>
 
-        <div class="media-reveal">
-          <img src="flowers1.jpg" alt="Morning Flowers">
+    <div class="snap-section hero-text-section">
+      <h2 style="color: var(--matcha-deep)">I went to Starbucks for the first time... just for this. 🌿</h2>
+    </div>
+
+    <section class="snap-section">
+      <div class="card" id="matchaCard">
+        <span class="card-time" style="color: var(--matcha-deep)">🍵 12:00 PM — THE MATCHA REVIEW</span>
+        <h3 class="card-title" style="color: var(--matcha-deep)">Matcha Latte: My Official Verdict</h3>
+        <p class="card-body">
+          I know how much you love Matcha, so I finally tried it. It’s definitely... an experience. 😂 Check out the video below!
+        </p>
+        <div class="media-container">
+          <img src="matcha.png" alt="Matcha Latte">
+        </div>
+        <div class="media-container">
+          <video id="matchaVideo" loop muted playsinline>
+            <source src="starbucks.mov" type="video/quicktime">
+            <source src="starbucks.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+          </video>
         </div>
       </div>
     </section>
 
-    <div class="snap-section" id="step3">
-      <h2 style="color: var(--muted); font-style: italic;">Wait for the coffee... ☕</h2>
+    <div class="snap-section hero-text-section">
+      <h2 style="color: var(--muted)">Ready for something sweet? 🍫</h2>
     </div>
 
   </div>
@@ -174,83 +177,59 @@
   <script>
     const text = `Hi Jaanu...\n\nChustu chustune 25 days ayipoyindhi kada. Last time when you got this, I was with you.\n\nBefore that, I used to send the flowers, coffee, and ice cream... but this time I can't do any of those.\n\nBut nenu idiot ni kada? Mental fellow ni! Agutanu anukuntunava? NEVER.\n\nSo Jhansy, happy menstrual day! Idi kuda "happy" antunna ani thittoku... ledu le, already tittukune unattu unnav... ninnu chuste telsustundhi le. But its ok.\n\nSo Jhansy, here we go. I made something for you to make your spirit high when your body is down.\n\nOka dialogue cheppi finish chesthe super untundhi kada...\n\nJaanu, nuvvu iroju prapanchanni chudalekapothe enti? Ah prapanchanni nee daggariki teeskuni vasta! 😂😂😍😍\n\nHahaha... Baga navvukunnaava? So roju anta ilane navvukunta undhu.`;
 
-    let currentStep = -1; // -1 means Letter is open
+    let currentStep = -1;
     const steps = document.querySelectorAll('.snap-section');
     let canScroll = false;
 
     function openLetter() {
-      const env = document.getElementById('envelope');
-      const scene = document.getElementById('letter-scene');
-      const typedTarget = document.getElementById('typed-text');
-      const scrollHint = document.getElementById('scrollHint');
-
-      env.style.opacity = '0';
-      
+      document.getElementById('envelope').style.opacity = '0';
       setTimeout(() => {
-        env.style.display = 'none';
-        scene.style.display = 'block';
-        
+        document.getElementById('envelope').style.display = 'none';
+        document.getElementById('letter-scene').style.display = 'block';
         let i = 0;
         function typeWriter() {
           if (i < text.length) {
-            typedTarget.innerHTML += text.charAt(i);
+            document.getElementById('typed-text').innerHTML += text.charAt(i);
             i++;
-            scene.scrollTop = scene.scrollHeight;
+            document.getElementById('letter-scene').scrollTop = document.getElementById('letter-scene').scrollHeight;
             setTimeout(typeWriter, 30);
           } else {
-            scrollHint.classList.add('show-hint');
-            canScroll = true; // Unlock the auto-gliding
+            document.getElementById('scrollHint').classList.add('show-hint');
+            document.getElementById('main-world').style.display = 'block';
+            canScroll = true;
           }
         }
         typeWriter();
       }, 800);
     }
 
-    // --- The Auto-Glide Engine ---
     function navigate(direction) {
       if (!canScroll) return;
+      if (direction === 'down' && currentStep < steps.length - 1) currentStep++;
+      else if (direction === 'up' && currentStep > -1) currentStep--;
+
+      document.getElementById('ceremony-overlay').style.transform = (currentStep >= 0) ? 'translateY(-100vh)' : 'translateY(0)';
       
-      if (direction === 'down' && currentStep < steps.length - 1) {
-        currentStep++;
-      } else if (direction === 'up' && currentStep > 0) {
-        currentStep--;
-      }
+      const video = document.getElementById('matchaVideo');
+      if (currentStep === 3) video.play().catch(e => console.log(e));
+      else video.pause();
 
-      // Hide the overlay when we move to step 0
-      if (currentStep >= 0) {
-        document.getElementById('ceremony-overlay').style.transform = 'translateY(-100vh)';
-      } else {
-        document.getElementById('ceremony-overlay').style.transform = 'translateY(0)';
-      }
-
-      // Update active sections
       steps.forEach((step, idx) => {
-        if (idx === currentStep) {
-          step.classList.add('active');
-        } else {
-          step.classList.remove('active');
-        }
+        step.classList.toggle('active', idx === currentStep);
       });
 
-      // Cool down to prevent rapid skipping
       canScroll = false;
-      setTimeout(() => { canScroll = true; }, 1500);
+      setTimeout(() => { canScroll = true; }, 1400);
     }
 
-    // Listen for mouse wheel and touch swipes
-    window.addEventListener('wheel', (e) => {
-      if (e.deltaY > 0) navigate('down');
-      else navigate('up');
-    });
-
+    window.addEventListener('wheel', (e) => navigate(e.deltaY > 0 ? 'down' : 'up'));
     let touchStart = 0;
-    window.addEventListener('touchstart', (e) => { touchStart = e.touches[0].clientY; });
+    window.addEventListener('touchstart', (e) => touchStart = e.touches[0].clientY);
     window.addEventListener('touchend', (e) => {
       let touchEnd = e.changedTouches[0].clientY;
-      if (touchStart - touchEnd > 50) navigate('down');
-      if (touchEnd - touchStart > 50) navigate('up');
+      if (touchStart - touchEnd > 60) navigate('down');
+      if (touchEnd - touchStart > 60) navigate('up');
     });
-
   </script>
 </body>
 </html>
