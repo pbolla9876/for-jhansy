@@ -12,9 +12,7 @@
       --paper: #ffffff;
       --text: #4a3f3f;
       --muted: #8b7676;
-      --matcha: #8fb96b;
       --matcha-deep: #5d7a44;
-      --green: #3ba35e;
     }
 
     * { box-sizing: border-box; }
@@ -25,23 +23,25 @@
       font-family: 'Georgia', serif;
       height: 100vh;
       width: 100%;
-      overflow: hidden; /* Locks the page for the auto-glide feel */
+      overflow: hidden; 
     }
 
-    /* --- AUTO-GLIDE SECTIONS --- */
+    /* --- THE FIX: CLEAN SECTION MANAGEMENT --- */
     .snap-section {
       height: 100vh;
       width: 100%;
       position: absolute;
       top: 0; left: 0;
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
       opacity: 0;
       visibility: hidden;
-      transition: all 1.2s cubic-bezier(0.65, 0, 0.35, 1);
+      transition: opacity 0.8s ease, transform 1s cubic-bezier(0.65, 0, 0.35, 1);
       z-index: 10;
-      padding: 0 20px;
+      padding: 20px;
+      text-align: center;
     }
 
     .snap-section.active {
@@ -50,224 +50,157 @@
       z-index: 20;
     }
 
-    /* --- PHASE 1: THE CEREMONY (GHOSTING FIX) --- */
+    /* --- ENVELOPE & LETTER (Z-INDEX 100+) --- */
     #ceremony-overlay {
       position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
       display: flex; flex-direction: column; align-items: center; justify-content: center;
-      z-index: 9999; /* Higher than everything else */
-      background: var(--cream);
+      z-index: 100; background: var(--cream);
       transition: transform 1.2s cubic-bezier(0.65, 0, 0.35, 1);
     }
 
     .envelope {
-      width: 300px; height: 200px;
+      width: 280px; height: 180px;
       background: #f4ecd8; border: 1px solid #dcd0b8;
       box-shadow: 0 20px 50px rgba(0,0,0,0.1);
       display: flex; align-items: center; justify-content: center;
       cursor: pointer;
     }
-    .envelope-name { font-size: 1.8rem; color: var(--rose-deep); letter-spacing: 5px; text-transform: uppercase; border-bottom: 2px solid var(--rose); }
 
     #letter-scene {
-      display: none; 
-      width: 90%; max-width: 500px; height: 75vh;
-      background: var(--paper); border: 15px solid white;
-      box-shadow: 0 0 60px rgba(0,0,0,0.15);
-      overflow-y: auto; padding: 40px 25px;
-      z-index: 10000;
-      scrollbar-width: none;
+      display: none; width: 90%; max-width: 450px; height: 70vh;
+      background: var(--paper); border: 12px solid white;
+      box-shadow: 0 0 50px rgba(0,0,0,0.1);
+      overflow-y: auto; padding: 30px;
     }
 
-    #typed-text { font-size: 1.1rem; line-height: 1.9; color: var(--text); white-space: pre-wrap; }
-
-    /* --- CONTENT CARDS --- */
-    .hero-text-section h2 {
-      font-size: clamp(2rem, 7vw, 3.5rem);
-      color: var(--rose-deep);
-      font-style: italic; text-align: center;
-      max-width: 800px;
-    }
+    /* --- HERO & CARDS --- */
+    .hero-text { font-size: clamp(1.8rem, 6vw, 3rem); color: var(--rose-deep); font-style: italic; }
 
     .card { 
-      background: white; border-radius: 40px; padding: 2.2rem; 
-      width: 100%; max-width: 500px;
-      box-shadow: 0 30px 100px rgba(150,120,120,0.1);
-      overflow-y: auto; 
-      max-height: 85vh;
-      transform: translateY(50px);
-      transition: transform 1.5s ease;
+      background: white; border-radius: 30px; padding: 1.5rem; 
+      width: 100%; max-width: 450px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.05);
+      overflow-y: auto; max-height: 80vh;
     }
-    .active .card { transform: translateY(0); }
 
-    .card-time { font-weight: bold; font-size: 0.8rem; letter-spacing: 2px; text-transform: uppercase; }
-    .card-title { font-family: Georgia; font-style: italic; color: var(--text); font-size: 1.4rem; margin: 12px 0; }
-    .card-body { color: var(--muted); line-height: 1.7; font-size: 0.95rem; }
-
-    .media-container { 
-      margin-top: 20px; border-radius: 20px; overflow: hidden; 
-      background: #fdfdfd; border: 4px solid #fff; box-shadow: 0 10px 30px rgba(0,0,0,0.05); 
-    }
+    .media-container { margin-top: 15px; border-radius: 15px; overflow: hidden; border: 3px solid #fff; }
     .media-container img, .media-container video { width: 100%; display: block; }
 
-    #matchaCard { background: #f9fbf2; border: 1px solid #eef2e1; }
-
-    /* --- UI PROMPT --- */
     .scroll-hint {
-      position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
-      color: var(--rose-deep); font-weight: bold; opacity: 0; z-index: 10001;
-      transition: opacity 1s;
+      position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+      color: var(--rose-deep); font-weight: bold; opacity: 0; z-index: 110;
     }
     .show-hint { opacity: 1; animation: bounce 2s infinite; }
     @keyframes bounce { 0%, 100% {transform:translate(-50%, 0);} 50% {transform:translate(-50%, -10px);} }
-
   </style>
 </head>
 <body>
 
   <div id="ceremony-overlay">
     <div class="envelope" id="envelope" onclick="openLetter()">
-      <div class="envelope-name">Jhansy</div>
+      <div style="font-size: 1.5rem; color: var(--rose-deep); letter-spacing: 4px;">JHANSY</div>
     </div>
-
     <div id="letter-scene">
-      <div style="text-align: center; margin-bottom: 20px; border-bottom: 1px double #eee; padding-bottom: 15px;">
-        <h1 style="font-size: 2rem; color: var(--rose-deep); letter-spacing: 6px; text-transform: uppercase; margin: 0;">JHANSY <span style="color:var(--green)">🌿</span></h1>
-      </div>
-      <div id="typed-text"></div>
+      <div id="typed-text" style="font-size: 1rem; line-height: 1.8; color: var(--text); white-space: pre-wrap;"></div>
     </div>
-
-    <div class="scroll-hint" id="scrollHint">Swipe up to See... ↓</div>
+    <div class="scroll-hint" id="scrollHint">Scroll Down... ↓</div>
   </div>
 
   <div id="main-world" style="display: none;">
     
-    <div class="snap-section hero-text-section">
-      <h2>Flowers ivvalli kada...</h2>
+    <div class="snap-section active">
+      <h2 class="hero-text">Flowers ivvalli kada...</h2>
     </div>
 
     <section class="snap-section">
       <div class="card">
-        <span class="card-time" style="color: var(--rose-deep)">🌸 9:00 AM — MORNING BLOOM</span>
-        <h3 class="card-title">Every month, a bouquet is a must kada?</h3>
-        <p class="card-body">
-          I know you don't like me spending on these, and you have your reasons... but for me, I want to. 
-          <br><br>
-          I bought these flowers for you today. Even if I can only send them virtually, they stay with me—my way of saying <b>"I’m right here with you."</b>
-        </p>
-        <div class="media-container">
-          <img src="./flowers1.jpg" alt="Morning Flowers">
-        </div>
+        <h3 style="color: var(--rose-deep); font-style: italic; margin-top:0;">Morning Bloom 🌸</h3>
+        <p style="color: var(--muted); font-size: 0.9rem;">Even virtually, they stay with me—my way of saying "I’m right here."</p>
+        <div class="media-container"><img src="./flowers1.jpg"></div>
       </div>
     </section>
 
-    <div class="snap-section hero-text-section">
-      <h2 style="color: var(--matcha-deep)">I went to Starbucks for the first time... just for this. 🌿</h2>
+    <div class="snap-section">
+      <h2 class="hero-text" style="color: var(--matcha-deep)">Starbucks for the first time... 🌿</h2>
     </div>
 
     <section class="snap-section">
-      <div class="card" id="matchaCard">
-        <span class="card-time" style="color: var(--matcha-deep)">🍵 12:00 PM — THE MATCHA REVIEW</span>
-        <h3 class="card-title" style="color: var(--matcha-deep)">Matcha Latte: My Official Verdict</h3>
-        <p class="card-body">
-          I know how much you love Matcha, so I finally tried it. It’s definitely... an experience. 😂 Check out the video below!
-        </p>
+      <div class="card" style="background: #f9fbf2;">
+        <h3 style="color: var(--matcha-deep); font-style: italic; margin-top:0;">The Matcha Verdict 🍵</h3>
+        <p style="color: var(--muted); font-size: 0.9rem;">I finally tried it! 😂 Check out the video below.</p>
         <div class="media-container">
-          <img src="./motcha.png" alt="Matcha Latte Photo">
+          <img src="./motcha.png" alt="Matcha Latte Preview">
         </div>
         <div class="media-container">
           <video id="matchaVideo" loop muted playsinline controls poster="./motcha.png">
             <source src="./starbucks.mov" type="video/quicktime">
-            <source src="./starbucks.mp4" type="video/mp4">
             Your browser does not support the video tag.
           </video>
         </div>
       </div>
     </section>
 
-    <div class="snap-section hero-text-section">
-      <h2 style="color: var(--rose-deep)">Ready for something sweet? 🍫</h2>
-      <p style="color: var(--muted); font-size: 1.2rem; margin-top: 20px;">Roju anta ilane navvukunta undhu, Jaanu.</p>
+    <div class="snap-section">
+      <h2 class="hero-text">Ready for something sweet? 🍫</h2>
     </div>
 
   </div>
 
   <script>
-    const text = `Hi Jaanu...\n\nChustu chustune 25 days ayipoyindhi kada. Last time when you got this, I was with you.\n\nBefore that, I used to send the flowers, coffee, and ice cream... but this time I can't do any of those.\n\nBut nenu idiot ni kada? Mental fellow ni! Agutanu anukuntunava? NEVER.\n\nSo Jhansy, happy menstrual day! Idi kuda "happy" antunna ani thittoku... ledu le, already tittukune unattu unnav... ninnu chuste telsustundhi le. But its ok.\n\nSo Jhansy, here we go. I made something for you to make your spirit high when your body is down.\n\nOka dialogue cheppi finish chesthe super untundhi kada...\n\nJaanu, nuvvu iroju prapanchanni chudalekapothe enti? Ah prapanchanni nee daggariki teeskuni vasta! 😂😂😍😍\n\nHahaha... Baga navvukunnaava? So roju anta ilane navvukunta undhu.`;
+    const text = `Hi Jaanu...\n\nChustu chustune 25 days ayipoyindhi kada. Last time when you got this, I was with you.\n\nBefore that, I used to send the flowers, coffee, and ice cream... but this time I can't do any of those.\n\nBut nenu idiot ni kada? Mental fellow ni! Agutanu anukuntunava? NEVER.\n\nSo Jhansy, happy menstrual day!\n\nJaanu, nuvvu iroju prapanchanni chudalekapothe enti? Ah prapanchanni nee daggariki teeskuni vasta! 😂😂\n\nRoju anta ilane navvukunta undhu.`;
 
-    let currentStep = -1;
+    let currentStep = 0;
     const steps = document.querySelectorAll('.snap-section');
     let canScroll = false;
 
-    // 1. OPEN LETTER LOGIC
     function openLetter() {
       document.getElementById('envelope').style.display = 'none';
       document.getElementById('letter-scene').style.display = 'block';
-      
       let i = 0;
       function typeWriter() {
         if (i < text.length) {
           document.getElementById('typed-text').innerHTML += text.charAt(i);
           i++;
           document.getElementById('letter-scene').scrollTop = document.getElementById('letter-scene').scrollHeight;
-          setTimeout(typeWriter, 30);
+          setTimeout(typeWriter, 35);
         } else {
           document.getElementById('scrollHint').classList.add('show-hint');
           document.getElementById('main-world').style.display = 'block';
-          canScroll = true; 
+          canScroll = true;
         }
       }
       typeWriter();
     }
 
-    // 2. THE AUTO-GLIDE ENGINE
     function navigate(direction) {
       if (!canScroll) return;
       
-      let overlay = document.getElementById('ceremony-overlay');
-      let video = document.getElementById('matchaVideo');
+      const nextStep = (direction === 'down') ? currentStep + 1 : currentStep - 1;
+      if (nextStep < 0 || nextStep >= steps.length) return;
 
-      if (direction === 'down' && currentStep < steps.length - 1) {
-        currentStep++;
-      } else if (direction === 'up' && currentStep > -1) {
-        currentStep--;
-      }
+      // Move the Overlay
+      document.getElementById('ceremony-overlay').style.transform = 'translateY(-100vh)';
+      
+      // Toggle Sections
+      steps[currentStep].classList.remove('active');
+      currentStep = nextStep;
+      steps[currentStep].classList.add('active');
 
-      // Logic to move the Letter Overlay out of the way
-      if (currentStep >= 0) {
-        overlay.style.transform = 'translateY(-100vh)';
-      } else {
-        overlay.style.transform = 'translateY(0)';
-      }
+      // Video Control
+      const v = document.getElementById('matchaVideo');
+      if (currentStep === 3) v.play().catch(e => {}); else v.pause();
 
-      // Autoplay Video on Step 3 (Matcha Card)
-      if (currentStep === 3) {
-        video.play().catch(e => console.log(e));
-      } else {
-        video.pause();
-      }
-
-      // Update active sections
-      steps.forEach((step, idx) => {
-        step.classList.toggle('active', idx === currentStep);
-      });
-
-      // Cooldown to prevent rapid skipping
       canScroll = false;
-      setTimeout(() => { canScroll = true; }, 1400);
+      setTimeout(() => { canScroll = true; }, 1200);
     }
 
-    // 3. INPUT LISTENERS
-    window.addEventListener('wheel', (e) => {
-      if (e.deltaY > 0) navigate('down');
-      else navigate('up');
-    });
-
-    let touchStart = 0;
-    window.addEventListener('touchstart', (e) => { touchStart = e.touches[0].clientY; });
+    window.addEventListener('wheel', (e) => navigate(e.deltaY > 0 ? 'down' : 'up'));
+    let ts = 0;
+    window.addEventListener('touchstart', (e) => ts = e.touches[0].clientY);
     window.addEventListener('touchend', (e) => {
-      let touchEnd = e.changedTouches[0].clientY;
-      if (touchStart - touchEnd > 60) navigate('down'); // Swipe up
-      if (touchEnd - touchStart > 60) navigate('up'); // Swipe down
+      let te = e.changedTouches[0].clientY;
+      if (ts - te > 50) navigate('down');
+      if (te - ts > 50) navigate('up');
     });
   </script>
 </body>
