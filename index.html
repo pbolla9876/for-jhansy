@@ -9,18 +9,20 @@
   <title>The Jhansy Experience</title>
   <style>
     :root {
-      --bg: #fffaf6;
-      --bg-2: #fdf4ea;
-      --paper: #ffffff;
-      --paper-line: rgba(123, 93, 74, 0.08);
+      --bg: #fbf6ee;
+      --bg-2: #f6efe4;
+      --bg-3: #efe6d8;
+      --paper: #fdfbf7;
+      --paper-2: #faf6ef;
+      --paper-line: rgba(120, 95, 70, 0.06);
       --envelope: #f4ecd8;
       --text: #2f241d;
-      --muted: #7a675d;
+      --muted: #7b675b;
       --shadow: 0 20px 60px rgba(0, 0, 0, 0.05);
       --shadow-lg: 0 30px 90px rgba(112, 79, 57, 0.12);
       --radius: 30px;
       --rose: #8d3b4c;
-      --rose-soft: #e9ccd3;
+      --rose-soft: #efd4da;
       --matcha: #638a57;
       --matcha-soft: #dfe9d8;
       --ice: #8db9d7;
@@ -31,6 +33,8 @@
       --cinema: #1a1a1a;
       --cinema-2: #0e0e0e;
       --heart: #bc4d63;
+      --glass-bg: rgba(255, 255, 255, 0.34);
+      --glass-stroke: rgba(255, 255, 255, 0.48);
     }
 
     * {
@@ -44,16 +48,13 @@
       width: 100%;
       height: 100%;
       overflow: hidden;
-      background:
-        radial-gradient(circle at top, rgba(255, 233, 214, 0.55), transparent 35%),
-        linear-gradient(180deg, var(--bg), var(--bg-2));
-      font-family: Georgia, serif;
       color: var(--text);
-    }
-
-    body.locked {
-      overflow: hidden;
-      touch-action: none;
+      font-family: Georgia, "Times New Roman", serif;
+      background:
+        radial-gradient(circle at 20% 15%, rgba(255,255,255,0.45), transparent 14%),
+        radial-gradient(circle at 85% 18%, rgba(255,244,233,0.42), transparent 16%),
+        radial-gradient(circle at 25% 80%, rgba(255,250,244,0.5), transparent 18%),
+        linear-gradient(180deg, var(--bg), var(--bg-2) 54%, var(--bg-3));
     }
 
     body::before {
@@ -61,11 +62,29 @@
       position: fixed;
       inset: 0;
       pointer-events: none;
-      background:
-        radial-gradient(circle at 10% 15%, rgba(255,255,255,0.55), transparent 18%),
-        radial-gradient(circle at 85% 12%, rgba(255,238,224,0.5), transparent 16%),
-        radial-gradient(circle at 20% 80%, rgba(255,247,240,0.6), transparent 20%);
       z-index: 0;
+      opacity: 0.75;
+      background:
+        repeating-linear-gradient(
+          90deg,
+          rgba(136, 108, 84, 0.012) 0px,
+          rgba(136, 108, 84, 0.012) 1px,
+          transparent 1px,
+          transparent 3px
+        ),
+        repeating-linear-gradient(
+          180deg,
+          rgba(255,255,255,0.018) 0px,
+          rgba(255,255,255,0.018) 2px,
+          transparent 2px,
+          transparent 4px
+        );
+      mix-blend-mode: multiply;
+    }
+
+    body.locked {
+      overflow: hidden;
+      touch-action: none;
     }
 
     .app {
@@ -74,6 +93,23 @@
       position: relative;
       overflow: hidden;
       isolation: isolate;
+    }
+
+    .preview-ribbon {
+      position: fixed;
+      top: 14px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 140;
+      padding: 10px 16px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.9);
+      color: #5c4a3e;
+      font-size: 13px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+      backdrop-filter: blur(10px);
     }
 
     .ambient {
@@ -89,7 +125,7 @@
       width: 10px;
       height: 10px;
       border-radius: 999px;
-      background: rgba(255, 255, 255, 0.75);
+      background: rgba(255, 255, 255, 0.7);
       filter: blur(1px);
       animation: floatUp linear infinite;
     }
@@ -120,21 +156,19 @@
       }
     }
 
-    .preview-ribbon {
+    #petalCanvas {
       position: fixed;
-      top: 14px;
-      left: 50%;
-      transform: translateX(-50%);
-      z-index: 120;
-      padding: 10px 16px;
-      border-radius: 999px;
-      background: rgba(255,255,255,0.9);
-      color: #5c4a3e;
-      font-size: 13px;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-      backdrop-filter: blur(10px);
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 12;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 1s ease;
+    }
+
+    #petalCanvas.active {
+      opacity: 1;
     }
 
     .envelope-screen,
@@ -242,26 +276,39 @@
 
     .typewriter-screen {
       background:
-        radial-gradient(circle at top, rgba(255,255,255,0.65), transparent 32%),
-        linear-gradient(180deg, var(--bg), #fcf5ee);
+        radial-gradient(circle at top, rgba(255,255,255,0.55), transparent 34%),
+        linear-gradient(180deg, rgba(251,246,238,0.92), rgba(247,239,229,0.94));
       opacity: 1;
       transition: opacity 0.8s ease;
+      z-index: 90;
     }
 
     .paper-card {
       position: relative;
-      width: min(92vw, 780px);
-      min-height: min(74vh, 700px);
+      width: min(92vw, 820px);
+      min-height: min(74vh, 710px);
       background:
-        linear-gradient(180deg, rgba(255,255,255,1), rgba(255,250,246,1));
-      border-radius: 28px;
-      box-shadow: var(--shadow-lg);
-      padding: clamp(24px, 4vw, 44px);
-      border: 1px solid rgba(0, 0, 0, 0.04);
+        radial-gradient(circle at 20% 12%, rgba(255,255,255,0.52), transparent 18%),
+        radial-gradient(circle at 80% 18%, rgba(255,248,242,0.45), transparent 20%),
+        linear-gradient(180deg, var(--paper), var(--paper-2));
+      border-radius: 26px;
+      box-shadow: 0 35px 90px rgba(82, 56, 36, 0.16);
+      padding: clamp(26px, 4vw, 48px);
+      border: 1px solid rgba(120, 95, 70, 0.08);
       display: flex;
       align-items: flex-start;
       justify-content: flex-start;
       overflow: hidden;
+      clip-path: polygon(
+        1.4% 3.6%, 5.2% 2.6%, 9.2% 4.1%, 13.6% 2.2%, 18.2% 3.9%, 22.8% 2.7%, 28% 4.4%,
+        33.4% 2.4%, 39.2% 4.1%, 45% 2.6%, 51.8% 4.3%, 58.6% 2.5%, 65.2% 3.8%, 71.8% 2.4%,
+        78.4% 4.2%, 84.8% 2.6%, 90.8% 3.7%, 96.8% 2.8%, 98.6% 8.8%, 97.4% 14.6%, 98.7% 21.5%,
+        97.2% 28.1%, 98.8% 34.7%, 97.6% 41.4%, 98.8% 48.2%, 97.4% 55.5%, 98.9% 62.9%, 97.4% 70.4%,
+        98.7% 77.8%, 97.2% 85.6%, 98.4% 92.8%, 94.1% 97.5%, 87.4% 96.1%, 80.6% 97.8%, 73.2% 96.3%,
+        66.1% 98%, 58.8% 96.1%, 51.2% 97.6%, 44.2% 96.4%, 37.1% 97.8%, 29.4% 96.2%, 22.1% 98%,
+        15.3% 96%, 8.8% 97.4%, 3.2% 94%, 1.5% 86.5%, 2.9% 79.2%, 1.2% 72.5%, 2.8% 65.5%, 1.4% 58.1%,
+        2.9% 51.2%, 1.4% 44.1%, 2.8% 36.6%, 1.2% 29.2%, 2.8% 21.4%, 1.1% 13.2%
+      );
     }
 
     .paper-card::before {
@@ -272,29 +319,43 @@
         repeating-linear-gradient(
           to bottom,
           transparent 0,
-          transparent 31px,
-          var(--paper-line) 32px
+          transparent 33px,
+          var(--paper-line) 34px
         );
-      opacity: 0.65;
+      opacity: 0.46;
       pointer-events: none;
     }
 
     .paper-card::after {
       content: "";
       position: absolute;
+      inset: 0;
+      opacity: 0.18;
+      background-image:
+        radial-gradient(circle at 18% 25%, rgba(125, 94, 70, 0.13) 0.6px, transparent 1.4px),
+        radial-gradient(circle at 72% 63%, rgba(125, 94, 70, 0.10) 0.7px, transparent 1.5px),
+        radial-gradient(circle at 45% 82%, rgba(125, 94, 70, 0.08) 0.8px, transparent 1.7px);
+      background-size: 110px 110px, 130px 130px, 160px 160px;
+      mix-blend-mode: multiply;
+      pointer-events: none;
+    }
+
+    .paper-margin {
+      position: absolute;
       top: 0;
       left: 46px;
       width: 2px;
       height: 100%;
-      background: rgba(207, 111, 111, 0.14);
+      background: rgba(204, 109, 109, 0.13);
       pointer-events: none;
+      z-index: 1;
     }
 
     .paper-inner {
       position: relative;
       z-index: 2;
       width: 100%;
-      padding-left: clamp(10px, 2vw, 18px);
+      padding-left: clamp(12px, 2vw, 20px);
     }
 
     .paper-title {
@@ -307,11 +368,13 @@
 
     .paper-text {
       white-space: pre-wrap;
-      line-height: 1.95;
-      font-size: clamp(17px, 2.2vw, 22px);
-      color: #3e3026;
+      line-height: 1.8;
+      font-size: clamp(18px, 2.15vw, 22px);
+      color: #3b3028;
       width: 100%;
       min-height: 280px;
+      font-family: "Courier New", Courier, monospace;
+      letter-spacing: 0.01em;
     }
 
     .paper-footer {
@@ -359,8 +422,8 @@
       content: "";
       position: absolute;
       inset: 0;
-      background: radial-gradient(circle at center, rgba(255,255,255,0.28), transparent 48%);
-      opacity: 0.65;
+      background: radial-gradient(circle at center, rgba(255,255,255,0.24), transparent 50%);
+      opacity: 0.7;
       pointer-events: none;
     }
 
@@ -370,7 +433,7 @@
       height: min(52vw, 420px);
       border-radius: 999px;
       filter: blur(40px);
-      opacity: 0.22;
+      opacity: 0.24;
       pointer-events: none;
     }
 
@@ -386,9 +449,10 @@
       padding: 18px 20px;
       max-width: 960px;
       border-radius: 28px;
-      background: rgba(255,255,255,0.34);
-      backdrop-filter: blur(8px);
-      box-shadow: 0 20px 60px rgba(255,255,255,0.18);
+      background: rgba(255,255,255,0.26);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 20px 60px rgba(255,255,255,0.16);
+      border: 1px solid rgba(255,255,255,0.34);
     }
 
     .intro-sub {
@@ -399,15 +463,32 @@
       color: rgba(47,36,29,0.62);
     }
 
+    .fade-up {
+      opacity: 0;
+      transform: translateY(24px);
+      animation: fadeUpIn 1.2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+
+    @keyframes fadeUpIn {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
     .card {
       position: relative;
       z-index: 2;
       width: min(92vw, 760px);
       background:
-        linear-gradient(180deg, rgba(255,255,255,1), rgba(255,251,248,1));
-      border: 1px solid rgba(145, 118, 97, 0.08);
+        linear-gradient(180deg, rgba(255,255,255,0.34), rgba(255,255,255,0.2));
+      border: 1px solid var(--glass-stroke);
       border-radius: var(--radius);
-      box-shadow: var(--shadow-lg);
+      box-shadow:
+        0 30px 90px rgba(112, 79, 57, 0.12),
+        inset 0 1px 0 rgba(255,255,255,0.55);
+      backdrop-filter: blur(14px) saturate(1.04);
+      -webkit-backdrop-filter: blur(14px) saturate(1.04);
       padding: 28px;
       overflow: hidden;
     }
@@ -416,16 +497,18 @@
       content: "";
       position: absolute;
       inset: 0;
-      background: radial-gradient(circle at top right, rgba(255,255,255,0.8), transparent 30%);
+      background:
+        radial-gradient(circle at top right, rgba(255,255,255,0.62), transparent 28%),
+        linear-gradient(180deg, rgba(255,255,255,0.08), transparent 45%, rgba(255,255,255,0.04));
       pointer-events: none;
     }
 
     .card.dark {
       background:
         radial-gradient(circle at top right, rgba(255, 209, 102, 0.08), transparent 22%),
-        linear-gradient(180deg, var(--cinema), var(--cinema-2));
+        linear-gradient(180deg, rgba(26,26,26,0.84), rgba(14,14,14,0.92));
       color: #f7efe6;
-      border: 1px solid rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
       box-shadow: 0 30px 90px rgba(0,0,0,0.35);
     }
 
@@ -457,14 +540,15 @@
       font-size: 12px;
       letter-spacing: 0.08em;
       text-transform: uppercase;
-      background: rgba(198, 162, 108, 0.12);
+      background: rgba(255,255,255,0.28);
       color: #8a6940;
-      border: 1px solid rgba(198, 162, 108, 0.14);
+      border: 1px solid rgba(255,255,255,0.36);
+      backdrop-filter: blur(10px);
     }
 
     .card.dark .card-chip {
       color: #f0d1a1;
-      background: rgba(255, 209, 102, 0.08);
+      background: rgba(255,255,255,0.08);
       border-color: rgba(255,255,255,0.08);
     }
 
@@ -490,19 +574,22 @@
       overflow: hidden;
       background:
         radial-gradient(circle at top, rgba(255,255,255,0.55), transparent 35%),
-        linear-gradient(180deg, #faf3ee, #f2e5d9);
+        linear-gradient(180deg, rgba(250,243,238,0.85), rgba(242,229,217,0.75));
       display: flex;
       align-items: center;
       justify-content: center;
-      border: 1px solid rgba(115, 82, 57, 0.06);
-      box-shadow: inset 0 1px 0 rgba(255,255,255,0.8);
+      border: 1px solid rgba(255,255,255,0.48);
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.78),
+        0 12px 32px rgba(93, 69, 49, 0.08);
+      backdrop-filter: blur(8px);
     }
 
     .card.dark .media-frame {
       background:
         radial-gradient(circle at top, rgba(255,255,255,0.06), transparent 35%),
         linear-gradient(180deg, #171717, #0b0b0b);
-      border-color: rgba(255,255,255,0.05);
+      border-color: rgba(255,255,255,0.07);
     }
 
     .media-frame::after {
@@ -717,13 +804,14 @@
       z-index: 2;
       width: min(92vw, 760px);
       background:
-        linear-gradient(180deg, rgba(255,255,255,0.92), rgba(255,249,244,0.98));
-      border: 1px solid rgba(145, 118, 97, 0.08);
+        linear-gradient(180deg, rgba(255,255,255,0.88), rgba(255,249,244,0.96));
+      border: 1px solid rgba(255,255,255,0.5);
       border-radius: var(--radius);
-      box-shadow: var(--shadow-lg);
+      box-shadow: 0 30px 90px rgba(112, 79, 57, 0.12);
       padding: 28px;
       overflow: hidden;
       text-align: center;
+      backdrop-filter: blur(14px);
     }
 
     .locked-phase-card::before {
@@ -858,7 +946,7 @@
         height: 8px;
       }
 
-      .paper-card::after {
+      .paper-margin {
         left: 28px;
       }
 
@@ -891,7 +979,8 @@
       .journey,
       .envelope-btn,
       .lock-badge,
-      .progress-dot {
+      .progress-dot,
+      #petalCanvas {
         transition: none !important;
       }
     }
@@ -899,6 +988,8 @@
 </head>
 <body class="locked">
   <div class="app">
+    <canvas id="petalCanvas"></canvas>
+
     <div class="ambient" aria-hidden="true">
       <span></span><span></span><span></span><span></span>
       <span></span><span></span><span></span><span></span>
@@ -919,6 +1010,7 @@
 
     <div class="typewriter-screen" id="typewriterScreen" style="display: none;">
       <div class="paper-card">
+        <div class="paper-margin"></div>
         <div class="paper-inner">
           <div class="paper-title">A little something, from your idiot 💌</div>
           <div class="paper-text" id="paperText"></div>
@@ -931,16 +1023,18 @@
     <div class="phase-tag" id="phaseTag" style="display: none;">Phase 1 / 11</div>
 
     <div class="journey" id="journey" style="display: none;">
-      <section class="section">
+      <!-- PHASE 0 -->
+      <section class="section" data-section-index="0">
         <div class="section-accent accent-left" style="background: var(--rose-soft);"></div>
         <div class="section-accent accent-right" style="background: #f7dce1;"></div>
-        <div class="intro-text" style="color: var(--rose);">
+        <div class="intro-text fade-up" id="flowersIntroText" style="color: var(--rose);">
           Flowers ivvalli kada...
           <span class="intro-sub">So I brought them to you in the only way I can right now.</span>
         </div>
       </section>
 
-      <section class="section">
+      <!-- PHASE 1 -->
+      <section class="section" data-section-index="1">
         <div class="section-accent accent-left" style="background: #f6dbe1;"></div>
         <div class="card">
           <div class="card-header">
@@ -954,7 +1048,8 @@
         </div>
       </section>
 
-      <section class="section">
+      <!-- PHASE 2 -->
+      <section class="section" data-section-index="2">
         <div class="section-accent accent-left" style="background: var(--matcha-soft);"></div>
         <div class="section-accent accent-right" style="background: #edf4e9;"></div>
         <div class="intro-text" style="color: var(--matcha);">
@@ -963,7 +1058,8 @@
         </div>
       </section>
 
-      <section class="section">
+      <!-- PHASE 3 -->
+      <section class="section" data-section-index="3">
         <div class="section-accent accent-right" style="background: #e6f0df;"></div>
         <div class="card">
           <div class="card-header">
@@ -977,7 +1073,8 @@
         </div>
       </section>
 
-      <section class="section">
+      <!-- PHASE 4 -->
+      <section class="section" data-section-index="4">
         <div class="section-accent accent-left" style="background: #dfe9d8;"></div>
         <div class="card">
           <div class="card-header">
@@ -993,7 +1090,8 @@
         </div>
       </section>
 
-      <section class="section">
+      <!-- PHASE 5 -->
+      <section class="section" data-section-index="5">
         <div class="section-accent accent-left" style="background: var(--ice-soft);"></div>
         <div class="section-accent accent-right" style="background: #eef7fd;"></div>
         <div class="intro-text" style="color: var(--ice);">
@@ -1002,7 +1100,8 @@
         </div>
       </section>
 
-      <section class="section">
+      <!-- PHASE 6 -->
+      <section class="section" data-section-index="6">
         <div class="section-accent accent-right" style="background: #edf7fb;"></div>
         <div class="card">
           <div class="card-header">
@@ -1016,7 +1115,8 @@
         </div>
       </section>
 
-      <section class="section">
+      <!-- PHASE 7 -->
+      <section class="section" data-section-index="7">
         <div class="section-accent accent-left" style="background: #dfeef7;"></div>
         <div class="card">
           <div class="card-header">
@@ -1044,7 +1144,8 @@
         </div>
       </section>
 
-      <section class="section">
+      <!-- PHASE 8 -->
+      <section class="section" data-section-index="8">
         <div class="section-accent accent-left" style="background: var(--popcorn-soft);"></div>
         <div class="section-accent accent-right" style="background: #f7ecdf;"></div>
         <div class="intro-text" style="color: var(--popcorn);">
@@ -1053,7 +1154,8 @@
         </div>
       </section>
 
-      <section class="section">
+      <!-- PHASE 9 -->
+      <section class="section" data-section-index="9">
         <div class="card dark">
           <div class="card-header">
             <h2 class="card-title">Movie Night Console 🎬</h2>
@@ -1071,7 +1173,8 @@
         </div>
       </section>
 
-      <section class="section">
+      <!-- PHASE 10 -->
+      <section class="section" data-section-index="10">
         <div class="section-accent accent-left" style="background: #f4d7df;"></div>
         <div class="section-accent accent-right" style="background: #f7e6ea;"></div>
         <div class="card final-card">
@@ -1087,9 +1190,20 @@
   </div>
 
   <script>
-    const PREVIEW_MODE = true;
+    // ======================================
+    // PREVIEW MODE
+    // true  = unlock everything now for testing
+    // false = use real CST time-lock schedule
+    // ======================================
+    const PREVIEW_MODE = false;
 
-    const VIDEO_ID = "dQw4w9WgXcQ";
+    // ======================================
+    // PASTE YOUR YOUTUBE VIDEO ID HERE
+    // Example:
+    // https://www.youtube.com/watch?v=abc123XYZ
+    // VIDEO_ID = "abc123XYZ"
+    // ======================================
+    const VIDEO_ID = "PASTE_YOUR_YOUTUBE_VIDEO_ID_HERE";
 
     const TYPEWRITER_TEXT = `Hi Jaanu...
 
@@ -1149,7 +1263,7 @@ Hahaha... baga navvukunnaava? So, roju antha ilane navvukunta undu.`;
     ];
 
     const STORAGE_KEYS = {
-      envelopeOpened: "jhansy_experience_envelope_opened_v3"
+      envelopeOpened: "jhansy_experience_envelope_opened_v4"
     };
 
     const envelopeScreen = document.getElementById("envelopeScreen");
@@ -1166,6 +1280,7 @@ Hahaha... baga navvukunnaava? So, roju antha ilane navvukunta undu.`;
     const envelopeHint = document.getElementById("envelopeHint");
     const envelopeLockedNote = document.getElementById("envelopeLockedNote");
     const previewRibbon = document.getElementById("previewRibbon");
+    const petalCanvas = document.getElementById("petalCanvas");
 
     let currentSection = 0;
     let typingDone = false;
@@ -1178,6 +1293,175 @@ Hahaha... baga navvukunnaava? So, roju antha ilane navvukunta undu.`;
     let envelopeAvailable = false;
     let typewriterStarted = false;
 
+    // ---------------------------
+    // Falling Petals System
+    // ---------------------------
+    const petalCtx = petalCanvas.getContext("2d");
+    let petalAnimationId = null;
+    let petals = [];
+    let petalsEnabled = false;
+    let petalDensityMultiplier = 0;
+    let petalOpacityTarget = 0;
+    let petalGlobalOpacity = 0;
+    let petalLastTime = 0;
+
+    function resizePetalCanvas() {
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      petalCanvas.width = Math.floor(window.innerWidth * dpr);
+      petalCanvas.height = Math.floor(window.innerHeight * dpr);
+      petalCanvas.style.width = window.innerWidth + "px";
+      petalCanvas.style.height = window.innerHeight + "px";
+      petalCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+
+    function createPetal(initial = false) {
+      const sideBias = Math.random() < 0.7 ? Math.random() * window.innerWidth : Math.random() * window.innerWidth;
+      return {
+        x: sideBias,
+        y: initial ? Math.random() * window.innerHeight : -40 - Math.random() * 120,
+        baseX: sideBias,
+        size: 8 + Math.random() * 14,
+        speedY: 18 + Math.random() * 26,
+        swayAmp: 10 + Math.random() * 30,
+        swayFreq: 0.6 + Math.random() * 1.4,
+        rot: Math.random() * Math.PI * 2,
+        rotSpeed: (-1 + Math.random() * 2) * 1.2,
+        tilt: Math.random() * Math.PI,
+        tiltSpeed: 0.5 + Math.random() * 1.4,
+        opacity: 0.35 + Math.random() * 0.45,
+        colorA: Math.random() > 0.5 ? "rgba(242, 184, 198," : "rgba(245, 201, 214,",
+        drift: (-1 + Math.random() * 2) * 8,
+        phase: Math.random() * Math.PI * 2,
+      };
+    }
+
+    function seedPetals(count) {
+      petals = [];
+      for (let i = 0; i < count; i++) {
+        petals.push(createPetal(true));
+      }
+    }
+
+    function drawPetal(petal) {
+      const t = performance.now() * 0.001;
+      const sway = Math.sin(t * petal.swayFreq + petal.phase) * petal.swayAmp;
+      const tiltY = Math.sin(t * petal.tiltSpeed + petal.phase) * 0.55;
+      const width = petal.size * (0.7 + 0.45 * Math.cos(tiltY));
+      const height = petal.size * 1.15;
+
+      petalCtx.save();
+      petalCtx.translate(petal.x + sway, petal.y);
+      petalCtx.rotate(petal.rot);
+
+      const g = petalCtx.createLinearGradient(-width / 2, -height / 2, width / 2, height / 2);
+      g.addColorStop(0, `${petal.colorA}${(petal.opacity * petalGlobalOpacity).toFixed(3)})`);
+      g.addColorStop(1, `rgba(215, 132, 157, ${(petal.opacity * 0.88 * petalGlobalOpacity).toFixed(3)})`);
+
+      petalCtx.fillStyle = g;
+      petalCtx.beginPath();
+      petalCtx.moveTo(0, -height * 0.52);
+      petalCtx.bezierCurveTo(width * 0.62, -height * 0.42, width * 0.74, height * 0.14, 0, height * 0.54);
+      petalCtx.bezierCurveTo(-width * 0.74, height * 0.14, -width * 0.62, -height * 0.42, 0, -height * 0.52);
+      petalCtx.fill();
+
+      petalCtx.strokeStyle = `rgba(255,255,255, ${(0.16 * petalGlobalOpacity).toFixed(3)})`;
+      petalCtx.lineWidth = 0.8;
+      petalCtx.beginPath();
+      petalCtx.moveTo(0, -height * 0.4);
+      petalCtx.quadraticCurveTo(width * 0.06, 0, 0, height * 0.34);
+      petalCtx.stroke();
+
+      petalCtx.restore();
+    }
+
+    function updatePetals(dt) {
+      const width = window.innerWidth;
+      const height = window.innerHeight;
+      const desiredCount = Math.floor((18 + 22 * petalDensityMultiplier) * Math.max(1, width / 1200));
+
+      while (petals.length < desiredCount) petals.push(createPetal(false));
+      while (petals.length > desiredCount && petals.length > 0) petals.pop();
+
+      petals.forEach((petal, i) => {
+        petal.y += petal.speedY * dt;
+        petal.x += petal.drift * dt;
+        petal.rot += petal.rotSpeed * dt;
+
+        if (petal.y > height + 70 || petal.x < -80 || petal.x > width + 80) {
+          petals[i] = createPetal(false);
+          petals[i].x = Math.random() * width;
+        }
+      });
+    }
+
+    function petalLoop(ts) {
+      if (!petalLastTime) petalLastTime = ts;
+      const dt = Math.min((ts - petalLastTime) / 1000, 0.033);
+      petalLastTime = ts;
+
+      petalGlobalOpacity += (petalOpacityTarget - petalGlobalOpacity) * Math.min(1, dt * 2.6);
+      if (petalOpacityTarget > 0.01 || petalGlobalOpacity > 0.01 || petalsEnabled) {
+        petalCtx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+        updatePetals(dt);
+        petals.forEach(drawPetal);
+      } else {
+        petalCtx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+      }
+
+      petalAnimationId = requestAnimationFrame(petalLoop);
+    }
+
+    function startPetals() {
+      petalsEnabled = true;
+      petalCanvas.classList.add("active");
+      if (!petalAnimationId) {
+        resizePetalCanvas();
+        seedPetals(24);
+        petalLastTime = 0;
+        petalAnimationId = requestAnimationFrame(petalLoop);
+      }
+      syncPetalsWithSection();
+    }
+
+    function stopPetals() {
+      petalsEnabled = false;
+      petalOpacityTarget = 0;
+      petalDensityMultiplier = 0;
+      petalCanvas.classList.remove("active");
+    }
+
+    function syncPetalsWithSection() {
+      if (!petalsEnabled) {
+        petalOpacityTarget = 0;
+        petalDensityMultiplier = 0;
+        return;
+      }
+
+      if (!typingDone) {
+        petalOpacityTarget = 0.95;
+        petalDensityMultiplier = 0.7;
+        petalCanvas.classList.add("active");
+        return;
+      }
+
+      if (currentSection === 0) {
+        petalOpacityTarget = 0.95;
+        petalDensityMultiplier = 1.25;
+        petalCanvas.classList.add("active");
+      } else if (currentSection === 1) {
+        petalOpacityTarget = 1;
+        petalDensityMultiplier = 1.75;
+        petalCanvas.classList.add("active");
+      } else {
+        petalOpacityTarget = 0;
+        petalDensityMultiplier = 0;
+        petalCanvas.classList.remove("active");
+      }
+    }
+
+    // ---------------------------
+    // Time Lock Logic
+    // ---------------------------
     function setupYouTube() {
       if (VIDEO_ID && VIDEO_ID !== "PASTE_YOUR_YOUTUBE_VIDEO_ID_HERE") {
         youtubeFrame.src = `https://www.youtube.com/embed/${VIDEO_ID}?rel=0&modestbranding=1`;
@@ -1201,9 +1485,7 @@ Hahaha... baga navvukunnaava? So, roju antha ilane navvukunta undu.`;
       const parts = formatter.formatToParts(new Date());
       const data = {};
       parts.forEach((part) => {
-        if (part.type !== "literal") {
-          data[part.type] = Number(part.value);
-        }
+        if (part.type !== "literal") data[part.type] = Number(part.value);
       });
 
       return {
@@ -1226,9 +1508,7 @@ Hahaha... baga navvukunnaava? So, roju antha ilane navvukunta undu.`;
     }
 
     function getUnlockedScheduleKeys() {
-      if (PREVIEW_MODE) {
-        return PHASE_SCHEDULES.map((schedule) => schedule.key);
-      }
+      if (PREVIEW_MODE) return PHASE_SCHEDULES.map((s) => s.key);
 
       const nowSeconds = getCurrentCSTTotalSeconds();
       return PHASE_SCHEDULES
@@ -1304,9 +1584,7 @@ Hahaha... baga navvukunnaava? So, roju antha ilane navvukunta undu.`;
       sections.forEach((section) => section.classList.remove("section-enter"));
       clearTimeout(sectionAnimationTimer);
       sectionAnimationTimer = setTimeout(() => {
-        if (sections[currentSection]) {
-          sections[currentSection].classList.add("section-enter");
-        }
+        if (sections[currentSection]) sections[currentSection].classList.add("section-enter");
       }, 60);
     }
 
@@ -1315,24 +1593,19 @@ Hahaha... baga navvukunnaava? So, roju antha ilane navvukunta undu.`;
       updateProgress();
       renderLockedPlaceholders();
       animateCurrentSection();
+      syncPetalsWithSection();
       setTimeout(() => {
         controlVideos();
       }, 140);
     }
 
     function stopAndResetVideo(video) {
-      try {
-        video.pause();
-      } catch (e) {}
-
-      try {
-        video.currentTime = 0;
-      } catch (e) {}
+      try { video.pause(); } catch (e) {}
+      try { video.currentTime = 0; } catch (e) {}
     }
 
     function tryPlayVideo(video) {
       if (!video) return;
-
       video.muted = true;
       video.setAttribute("muted", "");
       video.setAttribute("playsinline", "");
@@ -1341,9 +1614,7 @@ Hahaha... baga navvukunnaava? So, roju antha ilane navvukunta undu.`;
       const playPromise = video.play();
       if (playPromise && typeof playPromise.catch === "function") {
         playPromise.catch(() => {
-          try {
-            video.load();
-          } catch (e) {}
+          try { video.load(); } catch (e) {}
           const secondTry = video.play();
           if (secondTry && typeof secondTry.catch === "function") {
             secondTry.catch(() => {});
@@ -1355,7 +1626,6 @@ Hahaha... baga navvukunnaava? So, roju antha ilane navvukunta undu.`;
     function controlVideos() {
       videos.forEach((video) => {
         const phaseIndex = Number(video.dataset.phase);
-
         if (phaseIndex === currentSection && isSectionUnlocked(phaseIndex)) {
           tryPlayVideo(video);
         } else {
@@ -1378,9 +1648,7 @@ Hahaha... baga navvukunnaava? So, roju antha ilane navvukunta undu.`;
 
       if (!isSectionUnlocked(nextIndex)) {
         const schedule = getScheduleForSection(nextIndex);
-        if (schedule) {
-          showLockBadge(`Next reveal at ${schedule.revealLabel}`);
-        }
+        if (schedule) showLockBadge(`Next reveal at ${schedule.revealLabel}`);
         return;
       }
 
@@ -1401,9 +1669,7 @@ Hahaha... baga navvukunnaava? So, roju antha ilane navvukunta undu.`;
       }
 
       const schedule = getScheduleForSection(target);
-      if (schedule) {
-        showLockBadge(`Next reveal at ${schedule.revealLabel}`);
-      }
+      if (schedule) showLockBadge(`Next reveal at ${schedule.revealLabel}`);
     }
 
     function getEnvelopeOpenedState() {
@@ -1417,6 +1683,7 @@ Hahaha... baga navvukunnaava? So, roju antha ilane navvukunta undu.`;
     function startTypewriterIfNeeded() {
       if (typewriterStarted || !envelopeAvailable) return;
       typewriterStarted = true;
+      startPetals();
       envelopeScreen.classList.add("open-fade");
       setTimeout(() => {
         envelopeScreen.style.display = "none";
@@ -1437,13 +1704,11 @@ Hahaha... baga navvukunnaava? So, roju antha ilane navvukunta undu.`;
       journey.style.display = "block";
 
       const firstLocked = getFirstLockedSectionIndex();
-      if (firstLocked === 0) {
-        currentSection = 0;
-      } else if (firstLocked === -1) {
-        currentSection = 0;
-      } else {
-        currentSection = Math.max(0, firstLocked - 1);
-      }
+      if (firstLocked === 0) currentSection = 0;
+      else if (firstLocked === -1) currentSection = 0;
+      else currentSection = Math.max(0, firstLocked - 1);
+
+      startPetals();
       updateJourneyPosition();
     }
 
@@ -1492,12 +1757,7 @@ Hahaha... baga navvukunnaava? So, roju antha ilane navvukunta undu.`;
       openBtn.style.opacity = "1";
       openBtn.style.cursor = "pointer";
       envelopeLockedNote.style.display = "none";
-
-      if (openedBefore) {
-        envelopeHint.textContent = "welcome back, jaanu";
-      } else {
-        envelopeHint.textContent = "tap to open your letter";
-      }
+      envelopeHint.textContent = openedBefore ? "welcome back, jaanu" : "tap to open your letter";
     }
 
     function buildLockedCardHtml(schedule, remaining) {
@@ -1600,11 +1860,8 @@ Hahaha... baga navvukunnaava? So, roju antha ilane navvukunta undu.`;
         if (!typingDone) return;
         if (navigationLocked) return;
 
-        if (e.deltaY > 0) {
-          moveBy(1);
-        } else if (e.deltaY < 0) {
-          moveBy(-1);
-        }
+        if (e.deltaY > 0) moveBy(1);
+        else if (e.deltaY < 0) moveBy(-1);
       },
       { passive: false }
     );
@@ -1614,9 +1871,7 @@ Hahaha... baga navvukunnaava? So, roju antha ilane navvukunta undu.`;
       const keysUp = ["ArrowUp", "PageUp"];
 
       if (!typingDone) {
-        if (keysDown.includes(e.code) || keysUp.includes(e.code)) {
-          e.preventDefault();
-        }
+        if (keysDown.includes(e.code) || keysUp.includes(e.code)) e.preventDefault();
         return;
       }
 
@@ -1638,9 +1893,7 @@ Hahaha... baga navvukunnaava? So, roju antha ilane navvukunta undu.`;
           e.preventDefault();
           return;
         }
-        if (e.touches.length > 0) {
-          touchStartY = e.touches[0].clientY;
-        }
+        if (e.touches.length > 0) touchStartY = e.touches[0].clientY;
       },
       { passive: false }
     );
@@ -1665,11 +1918,8 @@ Hahaha... baga navvukunnaava? So, roju antha ilane navvukunta undu.`;
         const diff = touchStartY - endY;
 
         if (Math.abs(diff) >= 35) {
-          if (diff > 0) {
-            moveBy(1);
-          } else {
-            moveBy(-1);
-          }
+          if (diff > 0) moveBy(1);
+          else moveBy(-1);
         }
 
         touchStartY = null;
@@ -1679,31 +1929,30 @@ Hahaha... baga navvukunnaava? So, roju antha ilane navvukunta undu.`;
 
     window.addEventListener("resize", () => {
       updateJourneyPosition();
+      resizePetalCanvas();
     });
 
     window.addEventListener("beforeunload", () => {
       if (typingTimer) clearTimeout(typingTimer);
       if (sectionAnimationTimer) clearTimeout(sectionAnimationTimer);
       if (countdownInterval) clearInterval(countdownInterval);
+      if (petalAnimationId) cancelAnimationFrame(petalAnimationId);
     });
 
     setupYouTube();
+    resizePetalCanvas();
     createProgressDots();
     renderEnvelopeState();
     renderLockedPlaceholders();
 
-    if (PREVIEW_MODE) {
-      previewRibbon.style.display = "block";
-    }
+    if (PREVIEW_MODE) previewRibbon.style.display = "block";
 
     if ((PREVIEW_MODE || isScheduleUnlocked("opening")) && getEnvelopeOpenedState()) {
       skipTypewriterAndShowJourney();
     }
 
     countdownInterval = setInterval(() => {
-      if (!PREVIEW_MODE) {
-        refreshTimeLocks();
-      }
+      if (!PREVIEW_MODE) refreshTimeLocks();
     }, 1000);
   </script>
 </body>
