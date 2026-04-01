@@ -13,11 +13,8 @@
       --bg-2: #f6efe4;
       --bg-3: #efe6d8;
       --paper: #fdfbf7;
-      --paper-2: #faf6ef;
       --paper-line: rgba(120, 95, 70, 0.06);
-      --envelope: #f4ecd8;
       --text: #2f241d;
-      --muted: #7b675b;
       --rose: #8d3b4c;
       --rose-soft: #efd4da;
       --matcha: #638a57;
@@ -617,6 +614,19 @@
       background: #000;
     }
 
+    .cinema-stack {
+      display: grid;
+      gap: 22px;
+    }
+
+    .cinema-block-title {
+      margin: 0 0 10px;
+      color: #fff5eb;
+      font-size: clamp(18px, 2.5vw, 24px);
+      line-height: 1.3;
+      letter-spacing: 0.02em;
+    }
+
     .cinema-frame {
       position: relative;
       width: 100%;
@@ -1128,14 +1138,7 @@
           </div>
           <p class="card-caption">Okay, now the full vibe. Not just the treat... the feeling.</p>
           <div class="media-frame">
-            <video
-              class="phase-video"
-              muted
-              loop
-              playsinline
-              preload="auto"
-              data-phase="7"
-            >
+            <video class="phase-video" muted loop playsinline preload="auto" data-phase="7">
               <source src="icecream.mov" type="video/quicktime" />
             </video>
           </div>
@@ -1160,14 +1163,32 @@
             <h2 class="card-title">Movie Night Console 🎬</h2>
             <div class="card-chip">our theatre</div>
           </div>
-          <p class="card-caption">A little theatre made just for you. Press play, sit back, and imagine I’m right there annoying you throughout the movie.</p>
-          <div class="cinema-frame">
-            <iframe
-              id="youtubeFrame"
-              title="Movie Night"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-              allowfullscreen
-            ></iframe>
+          <p class="card-caption">A little theatre made just for you. Start with Part 1, then continue with Part 2. Full cosy movie-night mode. ❤️</p>
+
+          <div class="cinema-stack">
+            <div>
+              <h3 class="cinema-block-title">Part 1</h3>
+              <div class="cinema-frame">
+                <iframe
+                  id="youtubeFrame1"
+                  title="Movie Night Part 1"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  allowfullscreen
+                ></iframe>
+              </div>
+            </div>
+
+            <div>
+              <h3 class="cinema-block-title">Part 2</h3>
+              <div class="cinema-frame">
+                <iframe
+                  id="youtubeFrame2"
+                  title="Movie Night Part 2"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  allowfullscreen
+                ></iframe>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -1188,19 +1209,11 @@
   </div>
 
   <script>
-    // =========================
-    // TEST MODE
-    // true  = unlock everything now for testing
-    // false = use CST timed unlocks
-    // =========================
+    // true = test mode, false = CST timed unlocks
     const PREVIEW_MODE = true;
 
-    // =========================
-    // PASTE YOUR YOUTUBE VIDEO ID HERE
-    // Example:
-    // const VIDEO_ID = "dQw4w9WgXcQ";
-    // =========================
-    const VIDEO_ID = "PASTE_YOUR_YOUTUBE_VIDEO_ID_HERE";
+    const VIDEO_ID_1 = "3FO__vGFYTs";
+    const VIDEO_ID_2 = "NbXxcu5ZMjA";
 
     const TYPEWRITER_TEXT = `Hi Jaanu...
 
@@ -1260,7 +1273,7 @@ Hahaha... baga navvukunnaava? So, roju antha ilane navvukunta undu.`;
     ];
 
     const STORAGE_KEYS = {
-      envelopeOpened: "jhansy_experience_envelope_opened_v6"
+      envelopeOpened: "jhansy_experience_envelope_opened_v7"
     };
 
     const envelopeScreen = document.getElementById("envelopeScreen");
@@ -1269,7 +1282,8 @@ Hahaha... baga navvukunnaava? So, roju antha ilane navvukunta undu.`;
     const openBtn = document.getElementById("openBtn");
     const paperText = document.getElementById("paperText");
     const lockBadge = document.getElementById("lockBadge");
-    const youtubeFrame = document.getElementById("youtubeFrame");
+    const youtubeFrame1 = document.getElementById("youtubeFrame1");
+    const youtubeFrame2 = document.getElementById("youtubeFrame2");
     const videos = Array.from(document.querySelectorAll(".phase-video"));
     const sections = Array.from(document.querySelectorAll(".section"));
     const progressRail = document.getElementById("progressRail");
@@ -1292,7 +1306,6 @@ Hahaha... baga navvukunnaava? So, roju antha ilane navvukunta undu.`;
     let envelopeAvailable = false;
     let typewriterStarted = false;
 
-    // Petals
     const petalCtx = petalCanvas.getContext("2d");
     let petalAnimationId = null;
     let petals = [];
@@ -1445,13 +1458,9 @@ Hahaha... baga navvukunnaava? So, roju antha ilane navvukunta undu.`;
       }
     }
 
-    // Time lock
     function setupYouTube() {
-      if (VIDEO_ID && VIDEO_ID !== "PASTE_YOUR_YOUTUBE_VIDEO_ID_HERE") {
-        youtubeFrame.src = `https://www.youtube.com/embed/${VIDEO_ID}?rel=0&modestbranding=1`;
-      } else {
-        youtubeFrame.src = "";
-      }
+      youtubeFrame1.src = `https://www.youtube.com/embed/${VIDEO_ID_1}?rel=0&modestbranding=1`;
+      youtubeFrame2.src = `https://www.youtube.com/embed/${VIDEO_ID_2}?rel=0&modestbranding=1`;
     }
 
     function getCSTDateParts() {
@@ -1889,8 +1898,8 @@ Hahaha... baga navvukunnaava? So, roju antha ilane navvukunta undu.`;
       const diffX = touchStartX - endX;
 
       if (Math.abs(diffY) > Math.abs(diffX) && Math.abs(diffY) >= 30) {
-        if (diffY > 0) moveBy(1);     // swipe up -> next
-        else moveBy(-1);              // swipe down -> previous
+        if (diffY > 0) moveBy(1);
+        else moveBy(-1);
       }
 
       touchStartY = null;
