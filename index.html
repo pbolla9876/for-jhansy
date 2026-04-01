@@ -20,7 +20,7 @@
       overflow: hidden; 
     }
 
-    /* Section Control */
+    /* Section Control - Ensures clean transitions */
     .snap-section {
       height: 100vh; width: 100%; 
       position: absolute; top: 0; left: 0;
@@ -33,7 +33,7 @@
 
     .snap-section.active { opacity: 1; visibility: visible; z-index: 20; }
 
-    /* The Opening Envelope */
+    /* The Opening Envelope Ceremony */
     #ceremony-overlay {
       position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
       display: flex; flex-direction: column; align-items: center; justify-content: center;
@@ -63,22 +63,6 @@
       box-shadow: 0 20px 60px rgba(0,0,0,0.05); 
     }
 
-    /* Cinematic Console Styling */
-    .movie-card {
-      background: var(--cinema-black); color: white; border-radius: 20px;
-      padding: 10px; width: 100%; max-width: 500px;
-      box-shadow: 0 0 40px rgba(0,0,0,0.5);
-    }
-
-    .video-wrapper {
-      position: relative; padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
-      height: 0; overflow: hidden; border-radius: 12px;
-    }
-
-    .video-wrapper iframe {
-      position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none;
-    }
-
     .media-container { 
       margin-top: 15px; border-radius: 15px; 
       overflow: hidden; border: 3px solid #fff; 
@@ -88,6 +72,19 @@
     
     .media-container img, .media-container video { 
       width: 100%; display: block; object-fit: contain; 
+    }
+
+    /* YouTube Console Styling */
+    .movie-card {
+      background: var(--cinema-black); color: white; border-radius: 20px;
+      padding: 15px; width: 100%; max-width: 500px;
+      box-shadow: 0 0 40px rgba(0,0,0,0.5);
+    }
+    .video-wrapper {
+      position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 12px;
+    }
+    .video-wrapper iframe {
+      position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none;
     }
 
     .scroll-hint { 
@@ -154,7 +151,9 @@
     <section class="snap-section">
       <div class="card">
         <h3 style="color: var(--ice-blue); font-style: italic; margin:0;">The Perfect Treat 🍨</h3>
-        <div class="media-container"><img src="./icecream.jpg"></div>
+        <div class="media-container">
+          <img src="./icecream.jpg" alt="Ice Cream">
+        </div>
       </div>
     </section>
 
@@ -175,13 +174,8 @@
 
     <section class="snap-section">
       <div class="movie-card">
-        <p style="font-size: 0.9rem; color: #888; margin-bottom: 10px; font-style: italic;">Press play for a little surprise...</p>
         <div class="video-wrapper">
-          <iframe 
-            src="https://www.youtube.com/embed/YOUR_YOUTUBE_ID?enablejsapi=1" 
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-            allowfullscreen>
-          </iframe>
+          <iframe id="ytPlayer" src="https://www.youtube.com/embed/YOUR_YOUTUBE_ID?enablejsapi=1" allowfullscreen></iframe>
         </div>
         <h4 style="margin-top: 15px; letter-spacing: 2px; color: var(--rose);">THE MOVIE NIGHT</h4>
       </div>
@@ -189,12 +183,13 @@
 
     <div class="snap-section">
       <h2 class="hero-text">Roju anta ilane navvukunta undhu, Jaanu. ❤️</h2>
-      <p style="color: var(--muted); margin-top: 20px;">Happy Menstrual Day!</p>
+      <p style="color: var(--muted); margin-top: 20px; font-style: italic;">Happy Menstrual Day, my mental fellow! 😂</p>
     </div>
 
   </div>
 
   <script>
+    // FULL RESTORED TEXT
     const text = `Hi Jaanu...\n\nChustu chustune 25 days ayipoyindhi kada. Last time when you got this, I was with you.\n\nBefore that, I used to send the flowers, coffee, and ice cream... but this time I can't do any of those.\n\nBut nenu idiot ni kada? Mental fellow ni! Agutanu anukuntunava? NEVER.\n\nSo Jhansy, happy menstrual day!\n\nJaanu, nuvvu iroju prapanchanni chudalekapothe enti? Ah prapanchanni nee daggariki teeskuni vasta! 😂😂\n\nRoju anta ilane navvukunta undhu.`;
 
     let currentStep = -1; 
@@ -210,7 +205,7 @@
           document.getElementById('typed-text').innerHTML += text.charAt(i);
           i++;
           document.getElementById('letter-scene').scrollTop = document.getElementById('letter-scene').scrollHeight;
-          setTimeout(typeWriter, 30);
+          setTimeout(typeWriter, 35);
         } else {
           document.getElementById('scrollHint').classList.add('show-hint');
           document.getElementById('main-world').style.display = 'block';
@@ -223,6 +218,7 @@
     function navigate(direction) {
       if (!canScroll) return;
       const nextStep = (direction === 'down') ? currentStep + 1 : currentStep - 1;
+      
       if (nextStep < 0 || nextStep >= steps.length) return;
 
       document.getElementById('ceremony-overlay').style.transform = 'translateY(-100vh)';
@@ -231,13 +227,14 @@
       currentStep = nextStep;
       steps[currentStep].classList.add('active');
 
-      // Media Logic
+      // Video Controls
       const vMatcha = document.getElementById('matchaVideo');
       const vIceCream = document.getElementById('iceCreamVideo');
       
       if (currentStep === 4) { vMatcha.play().catch(e=>{}); } else { vMatcha.pause(); }
       if (currentStep === 7) { vIceCream.play().catch(e=>{}); } else { vIceCream.pause(); }
 
+      // Scroll Shield: Restored the 1.5s delay
       canScroll = false;
       setTimeout(() => { canScroll = true; }, 1500); 
     }
