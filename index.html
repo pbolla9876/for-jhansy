@@ -1,249 +1,618 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>A Gift for Jhansy</title>
-  <style>
-    :root {
-      --rose: #c95e8b; --rose-deep: #a84871; --cream: #fffaf6;
-      --paper: #ffffff; --text: #4a3f3f; --muted: #8b7676; 
-      --matcha-deep: #5d7a44; --ice-blue: #7aa2af; --cinema-black: #1a1a1a;
-    }
+import React, { useEffect, useMemo, useRef, useState } from "react";
 
-    * { box-sizing: border-box; }
-    html, body { 
-      margin: 0; padding: 0; 
-      background: var(--cream); 
-      font-family: 'Georgia', serif; 
-      height: 100vh; width: 100%; 
-      overflow: hidden; 
-    }
+const TYPEWRITER_TEXT = `Hi Jaanu...
 
-    .snap-section {
-      height: 100vh; width: 100%; 
-      position: absolute; top: 0; left: 0;
-      display: flex; flex-direction: column; 
-      align-items: center; justify-content: center;
-      opacity: 0; visibility: hidden; 
-      transition: opacity 0.6s ease; 
-      z-index: 10; padding: 20px; text-align: center;
-    }
+Chustu chustune 25 days ayipoyindhi kada. Last time when you got this, I was with you. Before that, I used to send the flowers, coffee, and ice cream... but this time I can't do any of those.
 
-    .snap-section.active { opacity: 1; visibility: visible; z-index: 20; }
+But nenu idiot ni kada? Mental fellow ni! Agutanu anukuntunava? Never.
 
-    #ceremony-overlay {
-      position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
-      z-index: 100; background: var(--cream); 
-      transition: transform 1s cubic-bezier(0.65, 0, 0.35, 1);
-    }
+So... Jhansy, Happy Menstrual Day! Idi kuda "Happy" antunna ani thittoku... ledu le, already thittukune unnattu unnav, ninnu chuste telustundhi le. But it's okay.
 
-    .envelope { 
-      width: 280px; height: 180px; 
-      background: #f4ecd8; border: 1px solid #dcd0b8; 
-      display: flex; align-items: center; justify-content: center; 
-      cursor: pointer; box-shadow: 0 10px 30px rgba(0,0,0,0.1); 
-    }
+So Jhansy, here we go. I made something for you to make your spirit high when your body is down. Oka dialogue cheppi finish chesthe super untundhi kada...
 
-    #letter-scene { 
-      display: none; width: 90%; max-width: 450px; height: 70vh; 
-      background: var(--paper); border: 12px solid white; 
-      box-shadow: 0 0 50px rgba(0,0,0,0.1); 
-      overflow-y: auto; padding: 30px; scrollbar-width: none; 
-    }
+Jaanu, nuvvu iroju prapanchanni chudalekapothe enti? Aa prapanchanni nee daggariki teeskuni vasta! 😂😂😂😍
 
-    .hero-text { font-size: clamp(1.6rem, 5vw, 2.3rem); color: var(--rose-deep); font-style: italic; margin: 0; line-height: 1.4; }
-    
-    .card { 
-      background: white; border-radius: 30px; padding: 1.5rem; 
-      width: 100%; max-width: 420px; 
-      box-shadow: 0 20px 60px rgba(0,0,0,0.05); 
-    }
+Hahaha... baga navvukunnaava? So, roju antha ilane navvukunta undu.`;
 
-    .media-container { 
-      margin-top: 15px; border-radius: 15px; 
-      overflow: hidden; border: 3px solid #fff; 
-      background: #eee; width: 100%; min-height: 200px;
-      display: flex; align-items: center; justify-content: center;
-    }
-    
-    .media-container img, .media-container video { 
-      width: 100%; display: block; object-fit: contain; 
-    }
+const sections = [
+  {
+    id: 0,
+    type: "intro",
+    text: "Flowers ivvalli kada...",
+    accent: "#8d3b4c",
+  },
+  {
+    id: 1,
+    type: "media",
+    title: "Morning Bloom 🌸",
+    mediaType: "image",
+    src: "./flowers1.jpg",
+  },
+  {
+    id: 2,
+    type: "intro",
+    text: "Starbucks for the first time... 🌿",
+    accent: "#638a57",
+  },
+  {
+    id: 3,
+    type: "media",
+    title: "The Matcha Review 🍵",
+    caption: "I finally tried it! It’s definitely... green. 😂",
+    mediaType: "image",
+    src: "./motcha.png",
+  },
+  {
+    id: 4,
+    type: "video",
+    title: "First Sip Reactions...",
+    src: "./starbucks.mp4",
+    mimeType: "video/mp4",
+  },
+  {
+    id: 5,
+    type: "intro",
+    text: "And now for the best part... 🍦",
+    accent: "#8db9d7",
+  },
+  {
+    id: 6,
+    type: "media",
+    title: "The Perfect Treat 🍨",
+    mediaType: "image",
+    src: "./icecream_photo.jpg",
+  },
+  {
+    id: 7,
+    type: "video",
+    title: "Sweet Happiness...",
+    src: "./icecream.mov",
+    mimeType: "video/quicktime",
+  },
+  {
+    id: 8,
+    type: "intro",
+    text: "Popcorn ready? 🍿",
+    accent: "#6e4d2f",
+  },
+  {
+    id: 9,
+    type: "cinema",
+    title: "Movie Night Console 🎬",
+    caption: "A little theatre made just for you.",
+    youtubeEmbed:
+      "https://www.youtube.com/embed/dQw4w9WgXcQ?rel=0&modestbranding=1",
+  },
+  {
+    id: 10,
+    type: "final",
+    text: "Roju anta ilane navvukunta undhu, Jaanu. ❤️",
+    caption: "Happy Menstrual Day, my mental fellow! 😂",
+  },
+];
 
-    .movie-card {
-      background: var(--cinema-black); color: white; border-radius: 20px;
-      padding: 15px; width: 100%; max-width: 500px;
-      box-shadow: 0 0 40px rgba(0,0,0,0.5);
-    }
-    .video-wrapper {
-      position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 12px;
-    }
-    .video-wrapper iframe {
-      position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none;
-    }
+const sectionBaseStyle = {
+  minHeight: "100vh",
+  height: "100vh",
+  width: "100%",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  padding: "24px",
+  boxSizing: "border-box",
+  scrollSnapAlign: "start",
+  scrollSnapStop: "always",
+};
 
-    .scroll-hint { 
-      position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); 
-      color: var(--rose-deep); font-weight: bold; opacity: 0; z-index: 110; 
-    }
-    
-    .show-hint { opacity: 1; animation: bounce 2s infinite; }
-    @keyframes bounce { 0%, 100% {transform:translate(-50%, 0);} 50% {transform:translate(-50%, -10px);} }
-  </style>
-</head>
-<body>
+const cardStyle = {
+  width: "min(92vw, 760px)",
+  background: "#ffffff",
+  borderRadius: "30px",
+  boxShadow: "0 20px 60px rgba(0,0,0,0.05)",
+  padding: "28px",
+  boxSizing: "border-box",
+};
 
-  <div id="ceremony-overlay">
-    <div class="envelope" id="envelope" onclick="openLetter()">
-      <div style="font-size: 1.5rem; color: var(--rose-deep); letter-spacing: 4px;">JHANSY</div>
+function MediaFrame({ children }) {
+  return (
+    <div
+      style={{
+        width: "100%",
+        height: "clamp(300px, 48vh, 400px)",
+        borderRadius: "24px",
+        overflow: "hidden",
+        background: "#f8f3ee",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
+      {children}
     </div>
-    <div id="letter-scene">
-      <div id="typed-text" style="font-size: 1rem; line-height: 1.8; color: var(--text); white-space: pre-wrap;"></div>
-    </div>
-    <div class="scroll-hint" id="scrollHint">Scroll Down slowly... ↓</div>
-  </div>
+  );
+}
 
-  <div id="main-world" style="display: none;">
-    
-    <div class="snap-section">
-      <h2 class="hero-text">Flowers ivvalli kada...</h2>
-    </div>
+export default function JhansyExperienceSite() {
+  const [opened, setOpened] = useState(false);
+  const [typedText, setTypedText] = useState("");
+  const [typingDone, setTypingDone] = useState(false);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [lockScroll, setLockScroll] = useState(false);
+  const [touchStartY, setTouchStartY] = useState(null);
 
-    <section class="snap-section">
-      <div class="card">
-        <h3 style="color: var(--rose-deep); font-style: italic; margin:0;">Morning Bloom 🌸</h3>
-        <div class="media-container"><img src="./flowers1.jpg"></div>
-      </div>
-    </section>
+  const scrollerRef = useRef(null);
+  const videoRefs = useRef({});
+  const lockRef = useRef(false);
+  const typingIntervalRef = useRef(null);
 
-    <div class="snap-section">
-      <h2 class="hero-text" style="color: var(--matcha-deep)">Starbucks for the first time... 🌿</h2>
-    </div>
+  const reducedMotion = useMemo(() => {
+    if (typeof window === "undefined") return false;
+    return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  }, []);
 
-    <section class="snap-section">
-      <div class="card" style="background: #f9fbf2;">
-        <h3 style="color: var(--matcha-deep); font-style: italic; margin:0;">The Matcha Review 🍵</h3>
-        <p style="color: var(--muted); font-size: 0.95rem;">I finally tried it! It’s definitely... green. 😂</p>
-        <div class="media-container"><img src="./motcha.png"></div>
-      </div>
-    </section>
+  useEffect(() => {
+    document.body.style.margin = "0";
+    document.body.style.fontFamily = 'Georgia, serif';
+    document.body.style.background = "#fffaf6";
+    document.body.style.overflow = opened && typingDone ? "hidden" : "hidden";
+    return () => {
+      document.body.style.overflow = "auto";
+      if (typingIntervalRef.current) clearInterval(typingIntervalRef.current);
+    };
+  }, [opened, typingDone]);
 
-    <section class="snap-section">
-      <div class="card" style="background: #f9fbf2;">
-        <h3 style="color: var(--matcha-deep); font-style: italic; margin:0;">First Sip Reactions...</h3>
-        <div class="media-container">
-          <video id="matchaVideo" loop muted playsinline controls poster="./motcha.png" preload="auto">
-            <source src="./starbucks.mp4" type="video/mp4">
-          </video>
-        </div>
-      </div>
-    </section>
+  useEffect(() => {
+    if (!opened) return;
 
-    <div class="snap-section">
-      <h2 class="hero-text" style="color: var(--ice-blue)">And now for the best part... 🍦</h2>
-    </div>
+    setTypedText("");
+    setTypingDone(false);
 
-    <section class="snap-section">
-      <div class="card">
-        <h3 style="color: var(--ice-blue); font-style: italic; margin:0;">The Perfect Treat 🍨</h3>
-        <div class="media-container">
-          <img src="./icecream_photo.jpg" alt="Ice Cream">
-        </div>
-      </div>
-    </section>
+    const chars = TYPEWRITER_TEXT.split("");
+    let i = 0;
+    const speed = reducedMotion ? 5 : 28;
 
-    <section class="snap-section">
-      <div class="card">
-        <h3 style="color: var(--ice-blue); font-style: italic; margin:0;">Sweet Happiness...</h3>
-        <div class="media-container">
-          <video id="iceCreamVideo" loop muted playsinline controls poster="./icecream_photo.jpg" preload="auto">
-            <source src="./icecream.mov" type="video/quicktime">
-          </video>
-        </div>
-      </div>
-    </section>
-
-    <div class="snap-section">
-      <h2 class="hero-text" style="color: var(--muted)">Popcorn ready? 🍿</h2>
-    </div>
-
-    <section class="snap-section">
-      <div class="movie-card">
-        <div class="video-wrapper">
-          <iframe id="ytPlayer" src="https://www.youtube.com/embed/YOUR_YOUTUBE_ID?enablejsapi=1" allowfullscreen></iframe>
-        </div>
-        <h4 style="margin-top: 15px; letter-spacing: 2px; color: var(--rose);">THE MOVIE NIGHT</h4>
-      </div>
-    </section>
-
-    <div class="snap-section">
-      <h2 class="hero-text">Roju anta ilane navvukunta undhu, Jaanu. ❤️</h2>
-      <p style="color: var(--muted); margin-top: 20px; font-style: italic;">Happy Menstrual Day, my mental fellow! 😂</p>
-    </div>
-
-  </div>
-
-  <script>
-    const text = `Hi Jaanu...\n\nChustu chustune 25 days ayipoyindhi kada. Last time when you got this, I was with you.\n\nBefore that, I used to send the flowers, coffee, and ice cream... but this time I can't do any of those.\n\nBut nenu idiot ni kada? Mental fellow ni! Agutanu anukuntunava? NEVER.\n\nSo Jhansy, happy menstrual day!\n\nJaanu, nuvvu iroju prapanchanni chudalekapothe enti? Ah prapanchanni nee daggariki teeskuni vasta! 😂😂\n\nRoju anta ilane navvukunta undhu.`;
-
-    let currentStep = -1; 
-    const steps = document.querySelectorAll('.snap-section');
-    let canScroll = false;
-
-    function openLetter() {
-      document.getElementById('envelope').style.display = 'none';
-      document.getElementById('letter-scene').style.display = 'block';
-      let i = 0;
-      function typeWriter() {
-        if (i < text.length) {
-          document.getElementById('typed-text').innerHTML += text.charAt(i);
-          i++;
-          document.getElementById('letter-scene').scrollTop = document.getElementById('letter-scene').scrollHeight;
-          setTimeout(typeWriter, 35);
-        } else {
-          document.getElementById('scrollHint').classList.add('show-hint');
-          document.getElementById('main-world').style.display = 'block';
-          canScroll = true;
-        }
+    typingIntervalRef.current = window.setInterval(() => {
+      i += 1;
+      setTypedText(chars.slice(0, i).join(""));
+      if (i >= chars.length) {
+        clearInterval(typingIntervalRef.current);
+        setTypingDone(true);
       }
-      typeWriter();
-    }
+    }, speed);
 
-    function navigate(direction) {
-      if (!canScroll) return;
-      const nextStep = (direction === 'down') ? currentStep + 1 : currentStep - 1;
-      if (nextStep < 0 || nextStep >= steps.length) return;
+    return () => {
+      if (typingIntervalRef.current) clearInterval(typingIntervalRef.current);
+    };
+  }, [opened, reducedMotion]);
 
-      document.getElementById('ceremony-overlay').style.transform = 'translateY(-100vh)';
-      
-      if (currentStep >= 0) steps[currentStep].classList.remove('active');
-      currentStep = nextStep;
-      steps[currentStep].classList.add('active');
+  useEffect(() => {
+    Object.entries(videoRefs.current).forEach(([key, video]) => {
+      if (!video) return;
+      const idx = Number(key);
+      if (idx === activeIndex) {
+        const playPromise = video.play();
+        if (playPromise?.catch) playPromise.catch(() => {});
+      } else {
+        video.pause();
+      }
+    });
+  }, [activeIndex]);
 
-      const vMatcha = document.getElementById('matchaVideo');
-      const vIceCream = document.getElementById('iceCreamVideo');
-      
-      if (currentStep === 4) { vMatcha.play().catch(e=>{}); } else { vMatcha.pause(); }
-      if (currentStep === 7) { vIceCream.play().catch(e=>{}); } else { vIceCream.pause(); }
+  useEffect(() => {
+    const wheelHandler = (e) => {
+      if (!opened || !typingDone) {
+        e.preventDefault();
+        return;
+      }
+      if (lockRef.current) {
+        e.preventDefault();
+        return;
+      }
+      const direction = e.deltaY > 0 ? 1 : -1;
+      if (direction === 0) return;
+      e.preventDefault();
+      moveSection(direction);
+    };
 
-      canScroll = false;
-      setTimeout(() => { canScroll = true; }, 1500); 
-    }
+    const keyHandler = (e) => {
+      if (!opened || !typingDone) {
+        if (["ArrowDown", "ArrowUp", "PageDown", "PageUp", "Space"].includes(e.code)) {
+          e.preventDefault();
+        }
+        return;
+      }
+      if (lockRef.current) {
+        if (["ArrowDown", "ArrowUp", "PageDown", "PageUp", "Space"].includes(e.code)) {
+          e.preventDefault();
+        }
+        return;
+      }
 
-    window.addEventListener('wheel', (e) => {
-      if (Math.abs(e.deltaY) < 15) return;
-      navigate(e.deltaY > 0 ? 'down' : 'up');
+      if (["ArrowDown", "PageDown", "Space"].includes(e.code)) {
+        e.preventDefault();
+        moveSection(1);
+      }
+      if (["ArrowUp", "PageUp"].includes(e.code)) {
+        e.preventDefault();
+        moveSection(-1);
+      }
+    };
+
+    const touchMoveHandler = (e) => {
+      if (!opened || !typingDone || lockRef.current) {
+        e.preventDefault();
+      }
+    };
+
+    window.addEventListener("wheel", wheelHandler, { passive: false });
+    window.addEventListener("keydown", keyHandler, { passive: false });
+    window.addEventListener("touchmove", touchMoveHandler, { passive: false });
+
+    return () => {
+      window.removeEventListener("wheel", wheelHandler);
+      window.removeEventListener("keydown", keyHandler);
+      window.removeEventListener("touchmove", touchMoveHandler);
+    };
+  }, [opened, typingDone, activeIndex]);
+
+  const moveSection = (direction) => {
+    if (!scrollerRef.current) return;
+    const nextIndex = Math.max(0, Math.min(sections.length - 1, activeIndex + direction));
+    if (nextIndex === activeIndex) return;
+
+    lockRef.current = true;
+    setLockScroll(true);
+    setActiveIndex(nextIndex);
+
+    scrollerRef.current.scrollTo({
+      top: nextIndex * window.innerHeight,
+      behavior: "smooth",
     });
 
-    let ts = 0;
-    window.addEventListener('touchstart', (e) => ts = e.touches[0].clientY);
-    window.addEventListener('touchend', (e) => {
-      let te = e.changedTouches[0].clientY;
-      if (ts - te > 60) navigate('down');
-      if (te - ts > 60) navigate('up');
-    });
-  </script>
-</body>
-</html>
+    window.setTimeout(() => {
+      lockRef.current = false;
+      setLockScroll(false);
+    }, 1500);
+  };
+
+  const handleTouchStart = (e) => {
+    if (!typingDone) return;
+    setTouchStartY(e.touches[0].clientY);
+  };
+
+  const handleTouchEnd = (e) => {
+    if (!typingDone || touchStartY === null || lockRef.current) return;
+    const endY = e.changedTouches[0].clientY;
+    const diff = touchStartY - endY;
+    if (Math.abs(diff) < 35) return;
+    moveSection(diff > 0 ? 1 : -1);
+    setTouchStartY(null);
+  };
+
+  return (
+    <div
+      style={{
+        minHeight: "100vh",
+        background: "#fffaf6",
+        color: "#2f241d",
+        fontFamily: "Georgia, serif",
+        overflow: "hidden",
+      }}
+    >
+      {!opened && (
+        <div
+          style={{
+            position: "fixed",
+            inset: 0,
+            zIndex: 50,
+            background: "#f4ecd8",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: "24px",
+          }}
+        >
+          <button
+            onClick={() => setOpened(true)}
+            style={{
+              appearance: "none",
+              border: "1px solid rgba(47,36,29,0.22)",
+              background: "transparent",
+              color: "#2f241d",
+              borderRadius: "6px",
+              width: "min(82vw, 340px)",
+              height: "min(24vw, 120px)",
+              fontFamily: "Georgia, serif",
+              fontSize: "clamp(22px, 4vw, 36px)",
+              letterSpacing: "4px",
+              textTransform: "uppercase",
+              cursor: "pointer",
+              boxShadow: "0 12px 36px rgba(0,0,0,0.06)",
+            }}
+          >
+            JHANSY
+          </button>
+        </div>
+      )}
+
+      {opened && !typingDone && (
+        <div
+          style={{
+            position: "fixed",
+            inset: 0,
+            zIndex: 40,
+            background: "#fffaf6",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: "20px",
+          }}
+        >
+          <div
+            style={{
+              width: "min(92vw, 760px)",
+              minHeight: "min(72vh, 680px)",
+              background: "#ffffff",
+              borderRadius: "28px",
+              boxShadow: "0 20px 60px rgba(0,0,0,0.05)",
+              padding: "clamp(22px, 4vw, 42px)",
+              boxSizing: "border-box",
+              border: "1px solid rgba(0,0,0,0.04)",
+            }}
+          >
+            <div
+              style={{
+                whiteSpace: "pre-wrap",
+                lineHeight: 1.9,
+                fontSize: "clamp(17px, 2.2vw, 22px)",
+                color: "#3e3026",
+              }}
+            >
+              {typedText}
+              <span
+                style={{
+                  display: "inline-block",
+                  width: "10px",
+                  marginLeft: "2px",
+                  animation: "blink 1s step-end infinite",
+                }}
+              >
+                |
+              </span>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {opened && typingDone && (
+        <div
+          ref={scrollerRef}
+          onTouchStart={handleTouchStart}
+          onTouchEnd={handleTouchEnd}
+          style={{
+            height: "100vh",
+            overflow: "hidden",
+            scrollSnapType: "y mandatory",
+          }}
+        >
+          {sections.map((section, index) => {
+            if (section.type === "intro") {
+              return (
+                <section key={section.id} style={sectionBaseStyle}>
+                  <div
+                    style={{
+                      textAlign: "center",
+                      fontSize: "clamp(34px, 7vw, 68px)",
+                      lineHeight: 1.18,
+                      color: section.accent,
+                      padding: "12px",
+                    }}
+                  >
+                    {section.text}
+                  </div>
+                </section>
+              );
+            }
+
+            if (section.type === "media") {
+              return (
+                <section key={section.id} style={sectionBaseStyle}>
+                  <div style={cardStyle}>
+                    <h2
+                      style={{
+                        margin: "0 0 10px",
+                        fontSize: "clamp(28px, 4vw, 40px)",
+                        color: "#30241d",
+                      }}
+                    >
+                      {section.title}
+                    </h2>
+                    {section.caption && (
+                      <p
+                        style={{
+                          margin: "0 0 20px",
+                          fontSize: "clamp(16px, 2vw, 20px)",
+                          color: "#6c5b50",
+                          lineHeight: 1.7,
+                        }}
+                      >
+                        {section.caption}
+                      </p>
+                    )}
+                    <MediaFrame>
+                      <img
+                        src={section.src}
+                        alt={section.title}
+                        style={{
+                          width: "100%",
+                          height: "100%",
+                          objectFit: "contain",
+                        }}
+                      />
+                    </MediaFrame>
+                  </div>
+                </section>
+              );
+            }
+
+            if (section.type === "video") {
+              return (
+                <section key={section.id} style={sectionBaseStyle}>
+                  <div style={cardStyle}>
+                    <h2
+                      style={{
+                        margin: "0 0 20px",
+                        fontSize: "clamp(28px, 4vw, 40px)",
+                        color: "#30241d",
+                      }}
+                    >
+                      {section.title}
+                    </h2>
+                    <MediaFrame>
+                      <video
+                        ref={(el) => {
+                          videoRefs.current[index] = el;
+                        }}
+                        muted
+                        loop
+                        playsInline
+                        preload="metadata"
+                        controls={false}
+                        style={{
+                          width: "100%",
+                          height: "100%",
+                          objectFit: "contain",
+                          background: "#000",
+                        }}
+                      >
+                        <source src={section.src} type={section.mimeType} />
+                      </video>
+                    </MediaFrame>
+                  </div>
+                </section>
+              );
+            }
+
+            if (section.type === "cinema") {
+              return (
+                <section key={section.id} style={sectionBaseStyle}>
+                  <div
+                    style={{
+                      ...cardStyle,
+                      background: "#1a1a1a",
+                      color: "#f7efe6",
+                    }}
+                  >
+                    <h2
+                      style={{
+                        margin: "0 0 10px",
+                        fontSize: "clamp(28px, 4vw, 40px)",
+                      }}
+                    >
+                      {section.title}
+                    </h2>
+                    <p
+                      style={{
+                        margin: "0 0 20px",
+                        color: "rgba(247,239,230,0.78)",
+                        lineHeight: 1.7,
+                        fontSize: "clamp(16px, 2vw, 20px)",
+                      }}
+                    >
+                      {section.caption}
+                    </p>
+                    <div
+                      style={{
+                        position: "relative",
+                        width: "100%",
+                        paddingTop: "56.25%",
+                        borderRadius: "24px",
+                        overflow: "hidden",
+                        background: "#000",
+                      }}
+                    >
+                      <iframe
+                        src={section.youtubeEmbed}
+                        title="Movie Night"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        allowFullScreen
+                        style={{
+                          position: "absolute",
+                          inset: 0,
+                          width: "100%",
+                          height: "100%",
+                          border: 0,
+                        }}
+                      />
+                    </div>
+                  </div>
+                </section>
+              );
+            }
+
+            return (
+              <section key={section.id} style={sectionBaseStyle}>
+                <div style={{ ...cardStyle, textAlign: "center", padding: "44px 28px" }}>
+                  <div
+                    style={{
+                      fontSize: "clamp(30px, 4.4vw, 52px)",
+                      lineHeight: 1.25,
+                      color: "#422d33",
+                    }}
+                  >
+                    {section.text}
+                  </div>
+                  <p
+                    style={{
+                      margin: "18px 0 0",
+                      color: "#7a5b64",
+                      fontSize: "clamp(17px, 2.1vw, 22px)",
+                      lineHeight: 1.7,
+                    }}
+                  >
+                    {section.caption}
+                  </p>
+                </div>
+              </section>
+            );
+          })}
+        </div>
+      )}
+
+      {opened && typingDone && lockScroll && (
+        <div
+          style={{
+            position: "fixed",
+            right: 18,
+            bottom: 18,
+            zIndex: 60,
+            background: "rgba(255,255,255,0.92)",
+            color: "#5a4b41",
+            padding: "10px 14px",
+            borderRadius: "999px",
+            fontSize: "13px",
+            boxShadow: "0 10px 30px rgba(0,0,0,0.06)",
+          }}
+        >
+          locked for 1.5s
+        </div>
+      )}
+
+      <style>{`
+        @keyframes blink {
+          0%, 50% { opacity: 1; }
+          50.01%, 100% { opacity: 0; }
+        }
+
+        * {
+          box-sizing: border-box;
+        }
+
+        button:focus-visible {
+          outline: 2px solid rgba(47,36,29,0.6);
+          outline-offset: 4px;
+        }
+      `}</style>
+    </div>
+  );
+}
