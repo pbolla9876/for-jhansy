@@ -1105,8 +1105,11 @@
             <div class="card-chip">flowers</div>
           </div>
           <p class="card-caption">The first thing I wanted to give you... because some days deserve softness first.</p>
-          <div class="media-frame">
-            <img src="flowers1.jpg" alt="Morning Bloom" />
+          <div class="media-frame" style="padding: 14px;">
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 12px; width:100%; height:100%;">
+              <img src="flowers1.jpg" alt="Morning Bloom 1" style="width:100%; height:100%; object-fit:cover; border-radius:18px;" />
+              <img src="flowers2.jpg" alt="Morning Bloom 2" style="width:100%; height:100%; object-fit:cover; border-radius:18px;" />
+            </div>
           </div>
         </div>
       </section>
@@ -1253,8 +1256,8 @@
   </div>
 
   <script>
-    // true = test mode, false = CST timed unlocks
-    const PREVIEW_MODE = true;
+    // false = real timed unlocks, true = test mode
+    const PREVIEW_MODE = false;
 
     const VIDEO_ID_1 = "3FO__vGFYTs";
     const VIDEO_ID_2 = "NbXxcu5ZMjA";
@@ -1280,7 +1283,7 @@ Hahaha... baga navvukunnaava? So, roju antha ilane navvukunta undu.`;
         unlockMinute: 0,
         sections: [0, 1],
         lockedMessage: "Patience, Jaanu... Your first surprise arrives at 9:00 AM. ❤️",
-        revealLabel: "9:00 AM CST"
+        revealLabel: "9:00 AM CT"
       },
       {
         key: "matcha",
@@ -1288,7 +1291,7 @@ Hahaha... baga navvukunnaava? So, roju antha ilane navvukunta undu.`;
         unlockMinute: 30,
         sections: [2, 3, 4],
         lockedMessage: "Hope the flowers made you smile! Check back at 2:30 PM for a drink. 🌿",
-        revealLabel: "2:30 PM CST"
+        revealLabel: "2:30 PM CT"
       },
       {
         key: "icecream",
@@ -1296,7 +1299,7 @@ Hahaha... baga navvukunnaava? So, roju antha ilane navvukunta undu.`;
         unlockMinute: 30,
         sections: [5, 6, 7],
         lockedMessage: "Something sweet is coming at 4:30 PM... 🍦",
-        revealLabel: "4:30 PM CST"
+        revealLabel: "4:30 PM CT"
       },
       {
         key: "movie",
@@ -1304,7 +1307,7 @@ Hahaha... baga navvukunnaava? So, roju antha ilane navvukunta undu.`;
         unlockMinute: 0,
         sections: [8, 9],
         lockedMessage: "Popcorn time? Not quite yet. See you at 7:00 PM! 🍿",
-        revealLabel: "7:00 PM CST"
+        revealLabel: "7:00 PM CT"
       },
       {
         key: "final",
@@ -1312,7 +1315,7 @@ Hahaha... baga navvukunnaava? So, roju antha ilane navvukunta undu.`;
         unlockMinute: 0,
         sections: [10],
         lockedMessage: "One last message for you at 10:00 PM. Sleep well until then. ❤️",
-        revealLabel: "10:00 PM CST"
+        revealLabel: "10:00 PM CT"
       }
     ];
 
@@ -1326,9 +1329,6 @@ Hahaha... baga navvukunnaava? So, roju antha ilane navvukunta undu.`;
     const openBtn = document.getElementById("openBtn");
     const paperText = document.getElementById("paperText");
     const lockBadge = document.getElementById("lockBadge");
-    const youtubeFrame1 = document.getElementById("youtubeFrame1");
-    const youtubeFrame2 = document.getElementById("youtubeFrame2");
-    const videos = Array.from(document.querySelectorAll(".phase-video"));
     const sections = Array.from(document.querySelectorAll(".section"));
     const progressRail = document.getElementById("progressRail");
     const phaseTag = document.getElementById("phaseTag");
@@ -1371,6 +1371,17 @@ Hahaha... baga navvukunnaava? So, roju antha ilane navvukunta undu.`;
     let petalOpacityTarget = 0;
     let petalGlobalOpacity = 0;
     let petalLastTime = 0;
+
+    function getVideos() {
+      return Array.from(document.querySelectorAll(".phase-video"));
+    }
+
+    function getYouTubeFrames() {
+      return {
+        youtubeFrame1: document.getElementById("youtubeFrame1"),
+        youtubeFrame2: document.getElementById("youtubeFrame2")
+      };
+    }
 
     function resizePetalCanvas() {
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
@@ -1516,8 +1527,15 @@ Hahaha... baga navvukunnaava? So, roju antha ilane navvukunta undu.`;
     }
 
     function setupYouTube() {
-      youtubeFrame1.src = `https://www.youtube.com/embed/${VIDEO_ID_1}?rel=0&modestbranding=1`;
-      youtubeFrame2.src = `https://www.youtube.com/embed/${VIDEO_ID_2}?rel=0&modestbranding=1`;
+      const { youtubeFrame1, youtubeFrame2 } = getYouTubeFrames();
+
+      if (youtubeFrame1) {
+        youtubeFrame1.src = `https://www.youtube.com/embed/${VIDEO_ID_1}?rel=0&modestbranding=1`;
+      }
+
+      if (youtubeFrame2) {
+        youtubeFrame2.src = `https://www.youtube.com/embed/${VIDEO_ID_2}?rel=0&modestbranding=1`;
+      }
     }
 
     function getCSTDateParts() {
@@ -1622,10 +1640,10 @@ Hahaha... baga navvukunnaava? So, roju antha ilane navvukunta undu.`;
       phaseTag.textContent = `Phase ${currentSection + 1} / ${sections.length}`;
     }
 
-    function showLockBadge(message = "locked for 1.5s") {
+    function showLockBadge(message = "locked for 1.5s", duration = 1500) {
       lockBadge.textContent = message;
       lockBadge.classList.add("show");
-      setTimeout(() => lockBadge.classList.remove("show"), 1200);
+      setTimeout(() => lockBadge.classList.remove("show"), duration);
     }
 
     function animateCurrentSection() {
@@ -1670,9 +1688,15 @@ Hahaha... baga navvukunnaava? So, roju antha ilane navvukunta undu.`;
     }
 
     function controlVideos() {
-      videos.forEach((video) => {
+      const liveVideos = getVideos();
+
+      liveVideos.forEach((video) => {
         const phaseIndex = Number(video.dataset.phase);
-        if (journey.style.display === "block" && phaseIndex === currentSection && isSectionUnlocked(phaseIndex)) {
+        if (
+          journey.style.display === "block" &&
+          phaseIndex === currentSection &&
+          isSectionUnlocked(phaseIndex)
+        ) {
           tryPlayVideo(video);
         } else {
           stopAndResetVideo(video);
@@ -1682,10 +1706,10 @@ Hahaha... baga navvukunnaava? So, roju antha ilane navvukunta undu.`;
 
     function lockNavigation() {
       navigationLocked = true;
-      showLockBadge();
+      showLockBadge("locked for 1.5s", 1500);
       setTimeout(() => {
         navigationLocked = false;
-      }, 900);
+      }, 1500);
     }
 
     function goToSection(nextIndex) {
@@ -1835,6 +1859,7 @@ Hahaha... baga navvukunnaava? So, roju antha ilane navvukunta undu.`;
       openBtn.style.opacity = "1";
       openBtn.style.cursor = "pointer";
       envelopeLockedNote.style.display = "none";
+      envelopeHint.style.display = "block";
       envelopeHint.textContent = openedBefore ? "welcome back, jaanu" : "tap to open your letter";
     }
 
@@ -1891,11 +1916,10 @@ Hahaha... baga navvukunnaava? So, roju antha ilane navvukunta undu.`;
           return;
         }
 
-        const remaining = secondsUntilSchedule(schedule);
         section.innerHTML = `
           <div class="section-accent accent-left" style="background: rgba(188,77,99,0.08);"></div>
           <div class="section-accent accent-right" style="background: rgba(198,162,108,0.12);"></div>
-          ${buildLockedCardHtml(schedule, remaining)}
+          ${buildLockedCardHtml(schedule, secondsUntilSchedule(schedule))}
         `;
         section.dataset.lockedState = "true";
       });
@@ -1904,6 +1928,7 @@ Hahaha... baga navvukunnaava? So, roju antha ilane navvukunta undu.`;
     function refreshTimeLocks() {
       renderEnvelopeState();
       renderLockedPlaceholders();
+      setupYouTube();
       updateProgress();
 
       if (typingDone && journey.style.display === "block") {
@@ -1924,7 +1949,7 @@ Hahaha... baga navvukunnaava? So, roju antha ilane navvukunta undu.`;
     function handleEnvelopeOpen(e) {
       if (e) e.preventDefault();
       if (!envelopeAvailable) {
-        showLockBadge("First reveal at 9:00 AM CST");
+        showLockBadge("First reveal at 9:00 AM CT");
         return;
       }
       startTypewriterIfNeeded();
@@ -1968,7 +1993,7 @@ Hahaha... baga navvukunnaava? So, roju antha ilane navvukunta undu.`;
 
       if (touchState.axis === "y") {
         const strongDistance = absY > 52;
-        const quickFlick = absY > 26 && velocityY > 0.35;
+        const quickFlick = absY > 40 && velocityY > 0.45;
 
         if ((strongDistance || quickFlick) && absY > absX * 1.1) {
           if (dy < 0) moveBy(1);
@@ -1997,8 +2022,10 @@ Hahaha... baga navvukunnaava? So, roju antha ilane navvukunta undu.`;
     window.addEventListener(
       "wheel",
       (e) => {
-        e.preventDefault();
-        tryWheelNavigate(e.deltaY);
+        if (journey.style.display === "block" && typingDone) {
+          e.preventDefault();
+          tryWheelNavigate(e.deltaY);
+        }
       },
       { passive: false }
     );
@@ -2092,6 +2119,7 @@ Hahaha... baga navvukunnaava? So, roju antha ilane navvukunta undu.`;
     createProgressDots();
     renderEnvelopeState();
     renderLockedPlaceholders();
+    setupYouTube();
 
     if (PREVIEW_MODE) previewRibbon.style.display = "block";
 
