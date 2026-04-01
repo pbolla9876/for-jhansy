@@ -325,8 +325,8 @@
 
     .paper-card {
       position: relative;
-      width: min(94vw, 900px);
-      min-height: min(80vh, 760px);
+      width: min(92vw, 820px);
+      min-height: min(74vh, 710px);
       background:
         radial-gradient(circle at 20% 12%, rgba(255,255,255,0.52), transparent 18%),
         radial-gradient(circle at 80% 18%, rgba(255,248,242,0.45), transparent 20%),
@@ -408,11 +408,11 @@
 
     .paper-text {
       white-space: pre-wrap;
-      line-height: 1.95;
+      line-height: 1.85;
       font-size: clamp(18px, 2.1vw, 22px);
       color: #3b3028;
       width: 100%;
-      min-height: 340px;
+      min-height: 300px;
       font-family: "Courier New", Courier, monospace;
       letter-spacing: 0.01em;
     }
@@ -491,10 +491,10 @@
       position: relative;
       z-index: 2;
       text-align: center;
-      font-size: clamp(38px, 7vw, 76px);
+      font-size: clamp(36px, 7vw, 72px);
       line-height: 1.14;
-      padding: 24px 24px;
-      max-width: 1080px;
+      padding: 22px 22px;
+      max-width: 1020px;
       border-radius: 28px;
       background: rgba(255,255,255,0.26);
       backdrop-filter: blur(10px);
@@ -505,7 +505,7 @@
     .intro-sub {
       display: block;
       margin-top: 14px;
-      font-size: clamp(16px, 2vw, 22px);
+      font-size: clamp(16px, 2vw, 21px);
       line-height: 1.6;
       color: rgba(47,36,29,0.62);
     }
@@ -526,7 +526,7 @@
     .card {
       position: relative;
       z-index: 2;
-      width: min(96vw, 980px);
+      width: min(95vw, 900px);
       background:
         linear-gradient(180deg, rgba(255,255,255,1), rgba(255,251,248,1));
       border: 1px solid var(--glass-stroke);
@@ -536,7 +536,7 @@
         inset 0 1px 0 rgba(255,255,255,0.55);
       backdrop-filter: blur(14px) saturate(1.04);
       -webkit-backdrop-filter: blur(14px) saturate(1.04);
-      padding: 34px;
+      padding: 32px;
       overflow: hidden;
     }
 
@@ -551,7 +551,7 @@
     }
 
     .card.dark {
-      width: min(97vw, 1120px);
+      width: min(94vw, 820px);
       background:
         radial-gradient(circle at top right, rgba(255, 209, 102, 0.08), transparent 22%),
         linear-gradient(180deg, rgba(26,26,26,0.84), rgba(14,14,14,0.92));
@@ -572,7 +572,7 @@
 
     .card-title {
       margin: 0;
-      font-size: clamp(30px, 4vw, 44px);
+      font-size: clamp(30px, 4vw, 42px);
       color: #30241d;
       line-height: 1.15;
     }
@@ -603,8 +603,8 @@
     .card-caption {
       position: relative;
       z-index: 2;
-      margin: 0 0 24px;
-      font-size: clamp(18px, 2vw, 22px);
+      margin: 0 0 22px;
+      font-size: clamp(17px, 2vw, 21px);
       line-height: 1.7;
       color: #6c5b50;
     }
@@ -617,7 +617,7 @@
       position: relative;
       z-index: 2;
       width: 100%;
-      height: clamp(380px, 58vh, 520px);
+      height: clamp(360px, 54vh, 480px);
       border-radius: 24px;
       overflow: hidden;
       background:
@@ -664,13 +664,13 @@
 
     .cinema-stack {
       display: grid;
-      gap: 28px;
+      gap: 22px;
     }
 
     .cinema-block-title {
-      margin: 0 0 12px;
+      margin: 0 0 10px;
       color: #fff5eb;
-      font-size: clamp(20px, 2.5vw, 28px);
+      font-size: clamp(18px, 2.5vw, 24px);
       line-height: 1.3;
       letter-spacing: 0.02em;
     }
@@ -678,7 +678,7 @@
     .cinema-frame {
       position: relative;
       width: 100%;
-      padding-top: 60%;
+      padding-top: 56.25%;
       border-radius: 24px;
       overflow: hidden;
       background:
@@ -716,7 +716,7 @@
 
     .final-card {
       text-align: center;
-      padding: 52px 34px;
+      padding: 48px 30px;
     }
 
     .final-heart {
@@ -1266,7 +1266,7 @@
   </div>
 
   <script>
-    const PREVIEW_MODE = true;
+    const PREVIEW_MODE = false;
 
     const VIDEO_ID_1 = "3FO__vGFYTs";
     const VIDEO_ID_2 = "NbXxcu5ZMjA";
@@ -1753,12 +1753,18 @@ Hahaha... baga navvukunnaava? So, roju antha ilane navvukunta undu.`;
 
     function startTypewriterIfNeeded() {
       if (typewriterStarted || !envelopeAvailable) return;
+
       typewriterStarted = true;
+      typeIndex = 0;
+      paperText.innerHTML = "";
       startPetals();
+
       envelopeScreen.classList.add("open-fade");
+
       setTimeout(() => {
         envelopeScreen.style.display = "none";
         typewriterScreen.style.display = "flex";
+        typewriterScreen.style.opacity = "1";
         if (!progressRail.innerHTML.trim()) createProgressDots();
         typeWriter();
       }, 650);
