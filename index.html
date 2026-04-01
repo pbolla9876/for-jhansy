@@ -212,8 +212,10 @@
 
     .envelope-screen {
       background:
-        radial-gradient(circle at top, rgba(255,255,255,0.42), transparent 30%),
-        linear-gradient(180deg, #f6eddc, #efe2c8);
+        radial-gradient(circle at 18% 20%, rgba(255,255,255,0.55), transparent 18%),
+        radial-gradient(circle at 82% 18%, rgba(221, 239, 220, 0.55), transparent 18%),
+        radial-gradient(circle at 50% 75%, rgba(255, 244, 236, 0.5), transparent 24%),
+        linear-gradient(180deg, #f8f1e6 0%, #efe3cc 55%, #e7d8be 100%);
     }
 
     .envelope-wrap {
@@ -227,13 +229,15 @@
 
     .envelope-glow {
       position: absolute;
-      width: min(92vw, 420px);
-      height: min(40vw, 180px);
-      border-radius: 18px;
-      background: radial-gradient(circle, rgba(255,255,255,0.75), rgba(255,255,255,0));
-      filter: blur(30px);
-      transform: scale(1.1);
-      opacity: 0.7;
+      width: min(92vw, 460px);
+      height: min(44vw, 220px);
+      border-radius: 28px;
+      background:
+        radial-gradient(circle at 50% 50%, rgba(255,255,255,0.85), rgba(255,255,255,0) 55%),
+        radial-gradient(circle at 30% 50%, rgba(205, 230, 198, 0.45), rgba(205, 230, 198, 0) 60%);
+      filter: blur(34px);
+      transform: scale(1.08);
+      opacity: 0.9;
       pointer-events: none;
     }
 
@@ -242,11 +246,11 @@
       width: min(82vw, 340px);
       height: min(24vw, 120px);
       min-height: 84px;
-      border: 1px solid rgba(47, 36, 29, 0.18);
-      border-radius: 10px;
+      border: 1px solid rgba(47, 36, 29, 0.16);
+      border-radius: 16px;
       background:
-        linear-gradient(180deg, rgba(255,255,255,0.55), rgba(255,255,255,0.1)),
-        linear-gradient(180deg, #f6eedc, #ecd8b7);
+        linear-gradient(180deg, rgba(255,255,255,0.72), rgba(255,255,255,0.16)),
+        linear-gradient(135deg, #f7efdf 0%, #ecdab9 60%, #e5d4b4 100%);
       color: var(--text);
       font-family: Georgia, serif;
       font-size: clamp(22px, 4vw, 36px);
@@ -254,10 +258,19 @@
       text-transform: uppercase;
       cursor: pointer;
       box-shadow:
-        0 20px 60px rgba(113, 83, 54, 0.18),
-        inset 0 1px 0 rgba(255,255,255,0.7);
+        0 24px 70px rgba(113, 83, 54, 0.18),
+        inset 0 1px 0 rgba(255,255,255,0.78);
       transition: transform 0.35s ease, box-shadow 0.35s ease;
       overflow: hidden;
+    }
+
+    .envelope-btn .name-petal {
+      display: inline-block;
+      margin-left: 10px;
+      color: #6f9b62;
+      font-size: 0.9em;
+      transform: rotate(-18deg);
+      text-shadow: 0 2px 10px rgba(111, 155, 98, 0.18);
     }
 
     .envelope-btn::before {
@@ -312,8 +325,8 @@
 
     .paper-card {
       position: relative;
-      width: min(92vw, 820px);
-      min-height: min(74vh, 710px);
+      width: min(94vw, 900px);
+      min-height: min(80vh, 760px);
       background:
         radial-gradient(circle at 20% 12%, rgba(255,255,255,0.52), transparent 18%),
         radial-gradient(circle at 80% 18%, rgba(255,248,242,0.45), transparent 20%),
@@ -395,11 +408,11 @@
 
     .paper-text {
       white-space: pre-wrap;
-      line-height: 1.8;
-      font-size: clamp(18px, 2.15vw, 22px);
+      line-height: 1.95;
+      font-size: clamp(18px, 2.1vw, 22px);
       color: #3b3028;
       width: 100%;
-      min-height: 280px;
+      min-height: 340px;
       font-family: "Courier New", Courier, monospace;
       letter-spacing: 0.01em;
     }
@@ -478,10 +491,10 @@
       position: relative;
       z-index: 2;
       text-align: center;
-      font-size: clamp(34px, 7vw, 68px);
+      font-size: clamp(38px, 7vw, 76px);
       line-height: 1.14;
-      padding: 18px 20px;
-      max-width: 960px;
+      padding: 24px 24px;
+      max-width: 1080px;
       border-radius: 28px;
       background: rgba(255,255,255,0.26);
       backdrop-filter: blur(10px);
@@ -492,7 +505,7 @@
     .intro-sub {
       display: block;
       margin-top: 14px;
-      font-size: clamp(15px, 2vw, 20px);
+      font-size: clamp(16px, 2vw, 22px);
       line-height: 1.6;
       color: rgba(47,36,29,0.62);
     }
@@ -513,7 +526,7 @@
     .card {
       position: relative;
       z-index: 2;
-      width: min(92vw, 760px);
+      width: min(96vw, 980px);
       background:
         linear-gradient(180deg, rgba(255,255,255,1), rgba(255,251,248,1));
       border: 1px solid var(--glass-stroke);
@@ -523,7 +536,7 @@
         inset 0 1px 0 rgba(255,255,255,0.55);
       backdrop-filter: blur(14px) saturate(1.04);
       -webkit-backdrop-filter: blur(14px) saturate(1.04);
-      padding: 28px;
+      padding: 34px;
       overflow: hidden;
     }
 
@@ -538,6 +551,7 @@
     }
 
     .card.dark {
+      width: min(97vw, 1120px);
       background:
         radial-gradient(circle at top right, rgba(255, 209, 102, 0.08), transparent 22%),
         linear-gradient(180deg, rgba(26,26,26,0.84), rgba(14,14,14,0.92));
@@ -558,7 +572,7 @@
 
     .card-title {
       margin: 0;
-      font-size: clamp(28px, 4vw, 40px);
+      font-size: clamp(30px, 4vw, 44px);
       color: #30241d;
       line-height: 1.15;
     }
@@ -589,8 +603,8 @@
     .card-caption {
       position: relative;
       z-index: 2;
-      margin: 0 0 20px;
-      font-size: clamp(16px, 2vw, 20px);
+      margin: 0 0 24px;
+      font-size: clamp(18px, 2vw, 22px);
       line-height: 1.7;
       color: #6c5b50;
     }
@@ -603,7 +617,7 @@
       position: relative;
       z-index: 2;
       width: 100%;
-      height: clamp(300px, 48vh, 400px);
+      height: clamp(380px, 58vh, 520px);
       border-radius: 24px;
       overflow: hidden;
       background:
@@ -650,13 +664,13 @@
 
     .cinema-stack {
       display: grid;
-      gap: 22px;
+      gap: 28px;
     }
 
     .cinema-block-title {
-      margin: 0 0 10px;
+      margin: 0 0 12px;
       color: #fff5eb;
-      font-size: clamp(18px, 2.5vw, 24px);
+      font-size: clamp(20px, 2.5vw, 28px);
       line-height: 1.3;
       letter-spacing: 0.02em;
     }
@@ -664,7 +678,7 @@
     .cinema-frame {
       position: relative;
       width: 100%;
-      padding-top: 56.25%;
+      padding-top: 60%;
       border-radius: 24px;
       overflow: hidden;
       background:
@@ -702,7 +716,7 @@
 
     .final-card {
       text-align: center;
-      padding: 46px 28px;
+      padding: 52px 34px;
     }
 
     .final-heart {
@@ -980,7 +994,7 @@
       }
 
       .media-frame {
-        height: clamp(300px, 42vh, 360px);
+        height: clamp(320px, 46vh, 400px);
       }
 
       .progress-rail {
@@ -1063,7 +1077,9 @@
     <div class="envelope-screen" id="envelopeScreen">
       <div class="envelope-wrap">
         <div class="envelope-glow"></div>
-        <button class="envelope-btn" id="openBtn">JHANSY</button>
+        <button class="envelope-btn" id="openBtn">
+          JHANSY <span class="name-petal">✿</span>
+        </button>
         <div class="envelope-hint" id="envelopeHint">tap to open your letter</div>
         <div class="envelope-locked-note" id="envelopeLockedNote" style="display:none;"></div>
       </div>
@@ -1105,11 +1121,8 @@
             <div class="card-chip">flowers</div>
           </div>
           <p class="card-caption">The first thing I wanted to give you... because some days deserve softness first.</p>
-          <div class="media-frame" style="padding: 14px;">
-            <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 12px; width:100%; height:100%;">
-              <img src="flowers1.jpg" alt="Morning Bloom 1" style="width:100%; height:100%; object-fit:cover; border-radius:18px;" />
-              <img src="flowers2.jpg" alt="Morning Bloom 2" style="width:100%; height:100%; object-fit:cover; border-radius:18px;" />
-            </div>
+          <div class="media-frame">
+            <img src="flowers1.jpg" alt="Morning Bloom" />
           </div>
         </div>
       </section>
@@ -1186,11 +1199,8 @@
           <p class="card-caption">Okay, now the full vibe. Not just the treat... the feeling.</p>
           <div class="media-frame">
             <video class="phase-video" muted loop playsinline preload="auto" data-phase="7">
-              <source src="icecream.mov" type="video/quicktime" />
+              <source src="icecream.mp4" type="video/mp4" />
             </video>
-          </div>
-          <div class="video-note">
-            If this .mov does not play on a phone browser, convert the same clip to MP4 and replace only the source filename.
           </div>
         </div>
       </section>
@@ -1256,8 +1266,7 @@
   </div>
 
   <script>
-    // false = real timed unlocks, true = test mode
-    const PREVIEW_MODE = true;
+    const PREVIEW_MODE = false;
 
     const VIDEO_ID_1 = "3FO__vGFYTs";
     const VIDEO_ID_2 = "NbXxcu5ZMjA";
@@ -1350,7 +1359,6 @@ Hahaha... baga navvukunnaava? So, roju antha ilane navvukunta undu.`;
     let envelopeAvailable = false;
     let typewriterStarted = false;
     let showingLetterAgain = false;
-
     let wheelCooldown = false;
 
     const touchState = {
@@ -1528,14 +1536,8 @@ Hahaha... baga navvukunnaava? So, roju antha ilane navvukunta undu.`;
 
     function setupYouTube() {
       const { youtubeFrame1, youtubeFrame2 } = getYouTubeFrames();
-
-      if (youtubeFrame1) {
-        youtubeFrame1.src = `https://www.youtube.com/embed/${VIDEO_ID_1}?rel=0&modestbranding=1`;
-      }
-
-      if (youtubeFrame2) {
-        youtubeFrame2.src = `https://www.youtube.com/embed/${VIDEO_ID_2}?rel=0&modestbranding=1`;
-      }
+      if (youtubeFrame1) youtubeFrame1.src = `https://www.youtube.com/embed/${VIDEO_ID_1}?rel=0&modestbranding=1`;
+      if (youtubeFrame2) youtubeFrame2.src = `https://www.youtube.com/embed/${VIDEO_ID_2}?rel=0&modestbranding=1`;
     }
 
     function getCSTDateParts() {
@@ -1689,7 +1691,6 @@ Hahaha... baga navvukunnaava? So, roju antha ilane navvukunta undu.`;
 
     function controlVideos() {
       const liveVideos = getVideos();
-
       liveVideos.forEach((video) => {
         const phaseIndex = Number(video.dataset.phase);
         if (
@@ -1822,22 +1823,25 @@ Hahaha... baga navvukunnaava? So, roju antha ilane navvukunta undu.`;
           TYPEWRITER_TEXT.slice(0, typeIndex + 1).replace(/\n/g, "<br>") +
           '<span class="caret">|</span>';
         typeIndex++;
-        typingTimer = setTimeout(typeWriter, 28);
+        typingTimer = setTimeout(typeWriter, 55);
       } else {
         paperText.innerHTML =
           TYPEWRITER_TEXT.replace(/\n/g, "<br>") + '<span class="caret">|</span>';
+
         typingDone = true;
         setEnvelopeOpenedState(true);
         backToLetterBtn.classList.add("show");
 
-        requestAnimationFrame(() => {
-          typewriterScreen.style.opacity = "0";
-          setTimeout(() => {
-            typewriterScreen.style.display = "none";
-            currentSection = 0;
-            showJourney();
-          }, 700);
-        });
+        setTimeout(() => {
+          requestAnimationFrame(() => {
+            typewriterScreen.style.opacity = "0";
+            setTimeout(() => {
+              typewriterScreen.style.display = "none";
+              currentSection = 0;
+              showJourney();
+            }, 700);
+          });
+        }, 10000);
       }
     }
 
