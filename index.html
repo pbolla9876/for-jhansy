@@ -26,7 +26,7 @@
       overflow: hidden; 
     }
 
-    /* Section Management - Prevents Ghosting and Overlaps */
+    /* Section Management - Prevents overlaps */
     .snap-section {
       height: 100vh;
       width: 100%;
@@ -50,7 +50,7 @@
       z-index: 20;
     }
 
-    /* Envelope and Letter Overlay */
+    /* Overlay Letter/Envelope */
     #ceremony-overlay {
       position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
       display: flex; flex-direction: column; align-items: center; justify-content: center;
@@ -125,7 +125,7 @@
 
     <section class="snap-section">
       <div class="card">
-        <h3 style="color: var(--rose-deep); font-style: italic; margin-top:0;">Morning Bloom 🌸</h3>
+        <h3 style="color: var(--rose-deep); font-style: italic; margin:0;">Morning Bloom 🌸</h3>
         <div class="media-container">
           <img src="./flowers1.jpg" alt="Flowers Photo">
         </div>
@@ -138,7 +138,7 @@
 
     <section class="snap-section">
       <div class="card" style="background: #f9fbf2;">
-        <h3 style="color: var(--matcha-deep); font-style: italic; margin-top:0;">The Matcha Review 🍵</h3>
+        <h3 style="color: var(--matcha-deep); font-style: italic; margin:0;">The Matcha Review 🍵</h3>
         <p style="color: var(--muted); font-size: 0.95rem; line-height: 1.6; margin-top: 10px;">
           I know how much you love Matcha, so I finally tried it. It’s definitely... green. 😂
         </p>
@@ -150,10 +150,10 @@
 
     <section class="snap-section">
       <div class="card" style="background: #f9fbf2;">
-        <h3 style="color: var(--matcha-deep); font-style: italic; margin-top:0;">First Sip Reactions...</h3>
+        <h3 style="color: var(--matcha-deep); font-style: italic; margin:0;">First Sip Reactions...</h3>
         <div class="media-container">
           <video id="matchaVideo" loop muted playsinline controls poster="./motcha.png" preload="auto">
-            <source src="./starbucks.mov" type="video/quicktime">
+            <source src="./starbucks.mp4" type="video/mp4">
             Your browser does not support the video tag.
           </video>
         </div>
@@ -170,8 +170,7 @@
   <script>
     const text = `Hi Jaanu...\n\nChustu chustune 25 days ayipoyindhi kada. Last time when you got this, I was with you.\n\nBefore that, I used to send the flowers, coffee, and ice cream... but this time I can't do any of those.\n\nBut nenu idiot ni kada? Mental fellow ni! Agutanu anukuntunava? NEVER.\n\nSo Jhansy, happy menstrual day!\n\nJaanu, nuvvu iroju prapanchanni chudalekapothe enti? Ah prapanchanni nee daggariki teeskuni vasta! 😂😂\n\nRoju anta ilane navvukunta undhu.`;
 
-    // Starts at -1 so the first scroll moves to Step 0 (the first text)
-    let currentStep = -1; 
+    let currentStep = -1; // Starts before Step 0
     const steps = document.querySelectorAll('.snap-section');
     let canScroll = false;
 
@@ -199,44 +198,37 @@
       
       const nextStep = (direction === 'down') ? currentStep + 1 : currentStep - 1;
       
-      // Boundary check
       if (nextStep < 0 || nextStep >= steps.length) return;
 
-      // Move the Letter Overlay out of sight
       document.getElementById('ceremony-overlay').style.transform = 'translateY(-100vh)';
       
-      // Update active classes for fade effects
       if (currentStep >= 0) steps[currentStep].classList.remove('active');
       currentStep = nextStep;
       steps[currentStep].classList.add('active');
 
-      // Video logic: Handle the video specifically on Step 4
       const v = document.getElementById('matchaVideo');
+      // Logic for Step 4 (Video)
       if (currentStep === 4) {
-        v.load(); // Ensure the file is ready
-        v.play().catch(e => console.log("Video playback started."));
+        v.play().catch(e => console.log("Playing video..."));
       } else {
         v.pause();
       }
 
-      // Scroll Shield: Prevent accidental skipping for 1.5 seconds
       canScroll = false;
       setTimeout(() => { canScroll = true; }, 1500); 
     }
 
-    // Listener for Mouse/Trackpad
     window.addEventListener('wheel', (e) => {
       if (Math.abs(e.deltaY) < 15) return; 
       navigate(e.deltaY > 0 ? 'down' : 'up');
     });
 
-    // Listener for Mobile Touch
     let ts = 0;
     window.addEventListener('touchstart', (e) => ts = e.touches[0].clientY);
     window.addEventListener('touchend', (e) => {
       let te = e.changedTouches[0].clientY;
-      if (ts - te > 60) navigate('down'); // Swipe up = Scroll down
-      if (te - ts > 60) navigate('up');   // Swipe down = Scroll up
+      if (ts - te > 60) navigate('down');
+      if (te - ts > 60) navigate('up');
     });
   </script>
 </body>
