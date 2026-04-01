@@ -88,10 +88,75 @@
     }
 
     .flower-hero.reveal h2 { opacity: 1; transform: scale(1); filter: blur(0); }
-    .flower-sub { margin-top: 20px; color: var(--muted); letter-spacing: 3px; font-size: 0.9rem; opacity: 0; transition: opacity 2s ease 1s; }
+    .flower-sub { margin-top: 20px; color: var(--muted); letter-spacing: 3px; font-size: 0.9rem; opacity: 0; transition: opacity 2s ease 1.5s; }
     .flower-hero.reveal .flower-sub { opacity: 1; }
 
-    /* --- PROMPTS & UI --- */
+    /* --- PHASE 3: CINEMATIC IMAGE REVEAL --- */
+    #main-world { opacity: 0; filter: blur(20px); transition: all 2.5s ease; }
+    .world-active #main-world { opacity: 1; filter: blur(0); }
+    .world-active #ceremony-overlay { opacity: 0; pointer-events: none; }
+
+    .section { 
+      padding: 10vh 1rem; 
+      max-width: 700px; 
+      margin: 0 auto; 
+      perspective: 1000px; 
+    }
+
+    .card { 
+      background: white; 
+      border-radius: 40px; 
+      padding: 3rem; 
+      box-shadow: 0 30px 100px rgba(150,120,120,0.12);
+      opacity: 0;
+      transform: translateY(100px) rotateX(-10deg);
+      filter: blur(10px);
+      transition: all 2.5s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .section.visible .card { 
+      opacity: 1; 
+      transform: translateY(0) rotateX(0deg); 
+      filter: blur(0);
+    }
+
+    .media-reveal {
+      margin-top: 2.5rem;
+      border-radius: 25px;
+      overflow: hidden;
+      position: relative;
+      background: #fdfdfd;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    }
+
+    .media-reveal img {
+      width: 100%;
+      display: block;
+      opacity: 0;
+      transform: scale(1.15); /* Zoomed in start */
+      transition: all 3.5s cubic-bezier(0.1, 0.5, 0.1, 1) 0.5s;
+    }
+
+    .section.visible .media-reveal img {
+      opacity: 1;
+      transform: scale(1); /* Zoom to normal */
+    }
+
+    /* Soft light overlay that fades as photo "develops" */
+    .media-reveal::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: white;
+      opacity: 1;
+      transition: opacity 3s ease 0.5s;
+    }
+
+    .section.visible .media-reveal::after {
+      opacity: 0;
+    }
+
+    /* --- UI PROMPTS --- */
     .scroll-hint {
       position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
       color: var(--rose-deep); font-weight: bold; opacity: 0;
@@ -100,14 +165,6 @@
     .show-hint { opacity: 1; animation: bounce 2s infinite; }
     @keyframes bounce { 0%, 100% {transform:translate(-50%, 0);} 50% {transform:translate(-50%, -10px);} }
 
-    /* --- MAIN CONTENT SECTIONS --- */
-    #main-world { opacity: 0; filter: blur(20px); transition: all 2.5s ease; }
-    .world-active #main-world { opacity: 1; filter: blur(0); }
-    .world-active #ceremony-overlay { opacity: 0; pointer-events: none; }
-
-    .section { padding: 5rem 1rem; max-width: 800px; margin: 0 auto; opacity: 0; transform: translateY(40px); transition: 1.5s; }
-    .section.visible { opacity: 1; transform: translateY(0); }
-    .card { background: white; border-radius: 30px; padding: 2.5rem; box-shadow: 0 20px 60px rgba(150,120,120,0.1); }
   </style>
 </head>
 <body>
@@ -139,10 +196,16 @@
 
     <section class="section" id="morningSection">
       <div class="card">
-        <span style="color: var(--rose-deep); font-weight: bold;">🌸 9:00 AM — Morning Bloom</span>
-        <p style="margin-top: 1rem;">Good morning, Jaanu. Nuvvu bayataki vellalenu ante emi parvaledu... ee flowers chustu refresh avvu.</p>
-        <div style="margin-top: 2rem; border-radius: 20px; overflow: hidden;">
-          <img src="flowers1.jpg" alt="Flowers" style="width: 100%; display: block;">
+        <span style="color: var(--rose-deep); font-weight: bold; letter-spacing: 2px;">🌸 9:00 AM — Morning Bloom</span>
+        <h3 style="font-family: Georgia; font-style: italic; color: var(--text); margin-top: 10px;">Refreshing start</h3>
+        
+        <p style="margin-top: 1.5rem; line-height: 1.8; color: var(--muted);">
+          Good morning, Jaanu. Nuvvu bayataki vellalenu ante emi parvaledu... 
+          ee flowers chustu refresh avvu. If you can't see the world today, I'll bring it right here.
+        </p>
+
+        <div class="media-reveal">
+          <img src="flowers1.jpg" alt="Morning Flowers">
         </div>
       </div>
     </section>
@@ -188,12 +251,19 @@
       const hero = document.getElementById('flowerHero');
       const section = document.getElementById('morningSection');
 
-      if (hero.getBoundingClientRect().top < window.innerHeight * 0.7) hero.classList.add('reveal');
-      if (section.getBoundingClientRect().top < window.innerHeight * 0.8) section.classList.add('visible');
+      // Trigger "ivvalli kada" reveal
+      if (hero.getBoundingClientRect().top < window.innerHeight * 0.7) {
+        hero.classList.add('reveal');
+      }
+      
+      // Trigger Cinematic Card & Photo reveal
+      if (section.getBoundingClientRect().top < window.innerHeight * 0.75) {
+        section.classList.add('visible');
+      }
     }
 
     window.addEventListener('scroll', updateAnimations);
-    document.body.style.overflow = 'hidden'; // Lock at start
+    document.body.style.overflow = 'hidden'; // Locked until letter is opened
   </script>
 </body>
 </html>
