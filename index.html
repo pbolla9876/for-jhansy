@@ -171,6 +171,24 @@
       opacity: 1;
     }
 
+    .swipe-hint {
+      position: fixed;
+      left: 50%;
+      bottom: 72px;
+      transform: translateX(-50%);
+      z-index: 25;
+      background: rgba(255,255,255,0.88);
+      color: #5b4a40;
+      padding: 10px 14px;
+      border-radius: 999px;
+      font-size: 13px;
+      letter-spacing: 0.03em;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+      backdrop-filter: blur(10px);
+      opacity: 0.96;
+      pointer-events: none;
+    }
+
     .envelope-screen,
     .typewriter-screen {
       position: fixed;
@@ -481,7 +499,7 @@
       z-index: 2;
       width: min(92vw, 760px);
       background:
-        linear-gradient(180deg, rgba(255,255,255,0.34), rgba(255,255,255,0.2));
+        linear-gradient(180deg, rgba(255,255,255,1), rgba(255,251,248,1));
       border: 1px solid var(--glass-stroke);
       border-radius: var(--radius);
       box-shadow:
@@ -967,6 +985,13 @@
         text-align: center;
         font-size: 12px;
       }
+
+      .swipe-hint {
+        bottom: 64px;
+        font-size: 12px;
+        max-width: calc(100% - 30px);
+        text-align: center;
+      }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -1021,9 +1046,9 @@
 
     <div class="progress-rail" id="progressRail" style="display: none;"></div>
     <div class="phase-tag" id="phaseTag" style="display: none;">Phase 1 / 11</div>
+    <div class="swipe-hint" id="swipeHint" style="display:none;">Swipe up for next • Swipe down to go back</div>
 
     <div class="journey" id="journey" style="display: none;">
-      <!-- PHASE 0 -->
       <section class="section" data-section-index="0">
         <div class="section-accent accent-left" style="background: var(--rose-soft);"></div>
         <div class="section-accent accent-right" style="background: #f7dce1;"></div>
@@ -1033,7 +1058,6 @@
         </div>
       </section>
 
-      <!-- PHASE 1 -->
       <section class="section" data-section-index="1">
         <div class="section-accent accent-left" style="background: #f6dbe1;"></div>
         <div class="card">
@@ -1048,7 +1072,6 @@
         </div>
       </section>
 
-      <!-- PHASE 2 -->
       <section class="section" data-section-index="2">
         <div class="section-accent accent-left" style="background: var(--matcha-soft);"></div>
         <div class="section-accent accent-right" style="background: #edf4e9;"></div>
@@ -1058,7 +1081,6 @@
         </div>
       </section>
 
-      <!-- PHASE 3 -->
       <section class="section" data-section-index="3">
         <div class="section-accent accent-right" style="background: #e6f0df;"></div>
         <div class="card">
@@ -1073,7 +1095,6 @@
         </div>
       </section>
 
-      <!-- PHASE 4 -->
       <section class="section" data-section-index="4">
         <div class="section-accent accent-left" style="background: #dfe9d8;"></div>
         <div class="card">
@@ -1090,7 +1111,6 @@
         </div>
       </section>
 
-      <!-- PHASE 5 -->
       <section class="section" data-section-index="5">
         <div class="section-accent accent-left" style="background: var(--ice-soft);"></div>
         <div class="section-accent accent-right" style="background: #eef7fd;"></div>
@@ -1100,7 +1120,6 @@
         </div>
       </section>
 
-      <!-- PHASE 6 -->
       <section class="section" data-section-index="6">
         <div class="section-accent accent-right" style="background: #edf7fb;"></div>
         <div class="card">
@@ -1115,7 +1134,6 @@
         </div>
       </section>
 
-      <!-- PHASE 7 -->
       <section class="section" data-section-index="7">
         <div class="section-accent accent-left" style="background: #dfeef7;"></div>
         <div class="card">
@@ -1144,7 +1162,6 @@
         </div>
       </section>
 
-      <!-- PHASE 8 -->
       <section class="section" data-section-index="8">
         <div class="section-accent accent-left" style="background: var(--popcorn-soft);"></div>
         <div class="section-accent accent-right" style="background: #f7ecdf;"></div>
@@ -1154,7 +1171,6 @@
         </div>
       </section>
 
-      <!-- PHASE 9 -->
       <section class="section" data-section-index="9">
         <div class="card dark">
           <div class="card-header">
@@ -1173,7 +1189,6 @@
         </div>
       </section>
 
-      <!-- PHASE 10 -->
       <section class="section" data-section-index="10">
         <div class="section-accent accent-left" style="background: #f4d7df;"></div>
         <div class="section-accent accent-right" style="background: #f7e6ea;"></div>
@@ -1190,18 +1205,8 @@
   </div>
 
   <script>
-    // ======================================
-    // PREVIEW MODE
-    // true  = unlock everything now for testing
-    // false = use real CST time-lock schedule
-    // ======================================
-const PREVIEW_MODE = true;
-    // ======================================
-    // PASTE YOUR YOUTUBE VIDEO ID HERE
-    // Example:
-    // https://www.youtube.com/watch?v=abc123XYZ
-    // VIDEO_ID = "abc123XYZ"
-    // ======================================
+    const PREVIEW_MODE = false;
+
     const VIDEO_ID = "PASTE_YOUR_YOUTUBE_VIDEO_ID_HERE";
 
     const TYPEWRITER_TEXT = `Hi Jaanu...
@@ -1262,7 +1267,7 @@ Hahaha... baga navvukunnaava? So, roju antha ilane navvukunta undu.`;
     ];
 
     const STORAGE_KEYS = {
-      envelopeOpened: "jhansy_experience_envelope_opened_v4"
+      envelopeOpened: "jhansy_experience_envelope_opened_v5"
     };
 
     const envelopeScreen = document.getElementById("envelopeScreen");
@@ -1280,21 +1285,20 @@ Hahaha... baga navvukunnaava? So, roju antha ilane navvukunta undu.`;
     const envelopeLockedNote = document.getElementById("envelopeLockedNote");
     const previewRibbon = document.getElementById("previewRibbon");
     const petalCanvas = document.getElementById("petalCanvas");
+    const swipeHint = document.getElementById("swipeHint");
 
     let currentSection = 0;
     let typingDone = false;
     let navigationLocked = false;
     let typeIndex = 0;
     let touchStartY = null;
+    let touchStartX = null;
     let typingTimer = null;
     let sectionAnimationTimer = null;
     let countdownInterval = null;
     let envelopeAvailable = false;
     let typewriterStarted = false;
 
-    // ---------------------------
-    // Falling Petals System
-    // ---------------------------
     const petalCtx = petalCanvas.getContext("2d");
     let petalAnimationId = null;
     let petals = [];
@@ -1314,18 +1318,16 @@ Hahaha... baga navvukunnaava? So, roju antha ilane navvukunta undu.`;
     }
 
     function createPetal(initial = false) {
-      const sideBias = Math.random() < 0.7 ? Math.random() * window.innerWidth : Math.random() * window.innerWidth;
+      const sideBias = Math.random() * window.innerWidth;
       return {
         x: sideBias,
         y: initial ? Math.random() * window.innerHeight : -40 - Math.random() * 120,
-        baseX: sideBias,
         size: 8 + Math.random() * 14,
         speedY: 18 + Math.random() * 26,
         swayAmp: 10 + Math.random() * 30,
         swayFreq: 0.6 + Math.random() * 1.4,
         rot: Math.random() * Math.PI * 2,
         rotSpeed: (-1 + Math.random() * 2) * 1.2,
-        tilt: Math.random() * Math.PI,
         tiltSpeed: 0.5 + Math.random() * 1.4,
         opacity: 0.35 + Math.random() * 0.45,
         colorA: Math.random() > 0.5 ? "rgba(242, 184, 198," : "rgba(245, 201, 214,",
@@ -1336,9 +1338,7 @@ Hahaha... baga navvukunnaava? So, roju antha ilane navvukunta undu.`;
 
     function seedPetals(count) {
       petals = [];
-      for (let i = 0; i < count; i++) {
-        petals.push(createPetal(true));
-      }
+      for (let i = 0; i < count; i++) petals.push(createPetal(true));
     }
 
     function drawPetal(petal) {
@@ -1458,9 +1458,6 @@ Hahaha... baga navvukunnaava? So, roju antha ilane navvukunta undu.`;
       }
     }
 
-    // ---------------------------
-    // Time Lock Logic
-    // ---------------------------
     function setupYouTube() {
       if (VIDEO_ID && VIDEO_ID !== "PASTE_YOUR_YOUTUBE_VIDEO_ID_HERE") {
         youtubeFrame.src = `https://www.youtube.com/embed/${VIDEO_ID}?rel=0&modestbranding=1`;
@@ -1700,6 +1697,7 @@ Hahaha... baga navvukunnaava? So, roju antha ilane navvukunta undu.`;
       if (!progressRail.innerHTML.trim()) createProgressDots();
       progressRail.style.display = "flex";
       phaseTag.style.display = "block";
+      swipeHint.style.display = "block";
       journey.style.display = "block";
 
       const firstLocked = getFirstLockedSectionIndex();
@@ -1725,6 +1723,7 @@ Hahaha... baga navvukunnaava? So, roju antha ilane navvukunta undu.`;
         setEnvelopeOpenedState(true);
         progressRail.style.display = "flex";
         phaseTag.style.display = "block";
+        swipeHint.style.display = "block";
         journey.style.display = "block";
 
         requestAnimationFrame(() => {
@@ -1892,7 +1891,10 @@ Hahaha... baga navvukunnaava? So, roju antha ilane navvukunta undu.`;
           e.preventDefault();
           return;
         }
-        if (e.touches.length > 0) touchStartY = e.touches[0].clientY;
+        if (e.touches.length > 0) {
+          touchStartY = e.touches[0].clientY;
+          touchStartX = e.touches[0].clientX;
+        }
       },
       { passive: false }
     );
@@ -1910,18 +1912,24 @@ Hahaha... baga navvukunnaava? So, roju antha ilane navvukunta undu.`;
       (e) => {
         if (!typingDone) return;
         if (navigationLocked) return;
-        if (touchStartY === null) return;
+        if (touchStartY === null || touchStartX === null) return;
 
         const touch = e.changedTouches[0];
         const endY = touch.clientY;
-        const diff = touchStartY - endY;
+        const endX = touch.clientX;
+        const diffY = touchStartY - endY;
+        const diffX = touchStartX - endX;
 
-        if (Math.abs(diff) >= 35) {
-          if (diff > 0) moveBy(1);
-          else moveBy(-1);
+        if (Math.abs(diffY) > Math.abs(diffX) && Math.abs(diffY) >= 30) {
+          if (diffY > 0) {
+            moveBy(1);   // swipe up -> next
+          } else {
+            moveBy(-1);  // swipe down -> previous
+          }
         }
 
         touchStartY = null;
+        touchStartX = null;
       },
       { passive: false }
     );
